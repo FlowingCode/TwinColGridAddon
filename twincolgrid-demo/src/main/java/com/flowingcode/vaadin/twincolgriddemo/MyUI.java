@@ -40,8 +40,7 @@ public class MyUI extends UI {
         availableBooks.add(new Book("9529267533", "Book of Vaadin"));
         availableBooks.add(new Book("1782169776", "Learning Vaadin 7, Second Edition"));
 
-        final TwinColGrid<Book> bindedTwinColGrid = new TwinColGrid<>("TwinColGrid binding demo", availableBooks);
-        bindedTwinColGrid
+        final TwinColGrid<Book> bindedTwinColGrid = new TwinColGrid<>("TwinColGrid binding demo", availableBooks)
                 .addColumn(Book::getIsbn, "ISBN")
                 .addColumn(Book::getTitle, "Title")
                 .withLeftColumnCaption("Available books")
@@ -57,15 +56,15 @@ public class MyUI extends UI {
         binder.bind(bindedTwinColGrid, Library::getBooks, Library::setBooks);
         binder.setBean(library);
 
-        final TwinColGrid<Book> twinColGrid = new TwinColGrid<>("TwinColGrid no binding demo", availableBooks);
-        twinColGrid
+        final TwinColGrid<Book> twinColGrid = new TwinColGrid<>("TwinColGrid no binding demo", availableBooks)
                 .addColumn(Book::getIsbn, "ISBN")
                 .addColumn(Book::getTitle, "Title")
                 .withLeftColumnCaption("Available books")
                 .withRightColumnCaption("Added books")
                 .withRows(availableBooks.size() - 3)
-                .showAddAllButton()
-                .setValue(selectedBooks);
+                .showAddAllButton();
+
+        twinColGrid.setValue(selectedBooks);
 
         final HorizontalLayout twinColGridContainer = new HorizontalLayout(
                 twinColGrid);
