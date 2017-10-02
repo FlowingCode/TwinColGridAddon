@@ -49,14 +49,11 @@ public final class TwinColGrid<T> extends CustomComponent implements HasValue<Se
     private final VerticalLayout buttonContainer;
 
     /**
-     * Constructs a new TwinColGrid with caption and data provider for options.
+     * Constructs a new TwinColGrid with data provider for options.
      *
-     * @param caption the caption to set, can be {@code null}
      * @param dataProvider the data provider, not {@code null}
      */
-    public TwinColGrid(final String caption, final ListDataProvider<T> dataProvider) {
-        setCaption(caption);
-
+    public TwinColGrid(final ListDataProvider<T> dataProvider) {
         this.leftGridDataProvider = dataProvider;
         leftGrid.setDataProvider(dataProvider);
 
@@ -106,6 +103,26 @@ public final class TwinColGrid<T> extends CustomComponent implements HasValue<Se
 
         setCompositionRoot(container);
         setSizeUndefined();
+    }
+
+    /**
+     * Constructs a new TwinColGrid with the given options.
+     *
+     * @param options the options, cannot be {@code null}
+     */
+    public TwinColGrid(final Collection<T> options) {
+        this(DataProvider.ofCollection(new LinkedHashSet<>(options)));
+    }
+
+    /**
+     * Constructs a new TwinColGrid with caption and data provider for options.
+     *
+     * @param caption the caption to set, can be {@code null}
+     * @param dataProvider the data provider, not {@code null}
+     */
+    public TwinColGrid(final String caption, final ListDataProvider<T> dataProvider) {
+        this(dataProvider);
+        setCaption(caption);
     }
 
     /**
