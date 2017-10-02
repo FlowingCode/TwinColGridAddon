@@ -64,7 +64,7 @@ public class MyUI extends UI {
                 .addColumn(Book::getTitle, "Title")
                 .withLeftColumnCaption("Available books")
                 .withRightColumnCaption("Added books")
-                .withRows(availableBooks.size() - 5)
+                .withRows(availableBooks.size() - 3)
                 .showAddAllButton()
                 .withSizeFull()
                 .withDragAndDropSupport();
