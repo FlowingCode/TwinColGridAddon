@@ -306,16 +306,13 @@ public final class TwinColGrid<T> extends CustomComponent implements HasValue<Se
     @SuppressWarnings("unchecked")
     private void configDragAndDrop(final Grid<T> sourceGrid, final Grid<T> targetGrid) {
         final GridDragSource<T> dragSource = new GridDragSource<>(sourceGrid);
-        // set allowed effects
         dragSource.setEffectAllowed(EffectAllowed.MOVE);
 
-        // add a drag data generator
         dragSource.setDragDataGenerator("text", item -> "" + sourceGrid.getSelectedItems().size());
 
         final Set<T> draggedItems = new LinkedHashSet<>();
 
         dragSource.addGridDragStartListener(event -> {
-            // Keep reference to the dragged items
             if (event.getComponent().getSelectedItems().isEmpty()) {
                 draggedItems.addAll(event.getDraggedItems());
             } else {
@@ -323,7 +320,6 @@ public final class TwinColGrid<T> extends CustomComponent implements HasValue<Se
             }
         });
 
-        // Add drag end listener
         dragSource.addGridDragEndListener(event -> draggedItems.clear());
 
         final GridDropTarget<T> dropTarget = new GridDropTarget<>(targetGrid, DropMode.ON_TOP);
@@ -333,9 +329,9 @@ public final class TwinColGrid<T> extends CustomComponent implements HasValue<Se
                 if (source instanceof GridDragSource) {
                     final Grid<T> dragGridSource = (Grid<T>) source.getParent();
                     if (!dragGridSource.equals(event.getComponent())) {
-                        final ListDataProvider<T> dataProvider = (ListDataProvider<T>) event.getComponent().getDataProvider();
-                        dataProvider.getItems().addAll(draggedItems);
-                        dataProvider.refreshAll();
+                        final ListDataProvider<T> dragGridTargetDataProvider = (ListDataProvider<T>) event.getComponent().getDataProvider();
+                        dragGridTargetDataProvider.getItems().addAll(draggedItems);
+                        dragGridTargetDataProvider.refreshAll();
 
                         final ListDataProvider<T> dragGridSourceDataProvider = (ListDataProvider<T>) dragGridSource.getDataProvider();
                         dragGridSourceDataProvider.getItems().removeAll(draggedItems);
