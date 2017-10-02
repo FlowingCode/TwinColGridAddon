@@ -12,13 +12,19 @@ import com.vaadin.data.HasValue;
 import com.vaadin.data.ValueProvider;
 import com.vaadin.data.provider.DataProvider;
 import com.vaadin.data.provider.ListDataProvider;
+import com.vaadin.event.selection.SelectionListener;
 import com.vaadin.shared.Registration;
+import com.vaadin.shared.ui.dnd.DropEffect;
+import com.vaadin.shared.ui.dnd.EffectAllowed;
+import com.vaadin.shared.ui.grid.DropMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.components.grid.GridDragSource;
+import com.vaadin.ui.components.grid.GridDropTarget;
 import com.vaadin.ui.renderers.TextRenderer;
 
 public final class TwinColGrid<T> extends CustomComponent implements HasValue<Set<T>> {
@@ -69,8 +75,11 @@ public final class TwinColGrid<T> extends CustomComponent implements HasValue<Se
         buttonContainer.setSizeUndefined();
 
         final HorizontalLayout container = new HorizontalLayout(leftGrid, buttonContainer, rightGrid);
-        leftGrid.setSizeUndefined();
-        rightGrid.setSizeUndefined();
+        container.setSizeFull();
+        leftGrid.setSizeFull();
+        rightGrid.setSizeFull();
+        container.setExpandRatio(leftGrid, 1f);
+        container.setExpandRatio(rightGrid, 1f);
 
         addAllButton.addClickListener(e -> {
             leftGridDataProvider.getItems().stream().forEach(leftGrid.getSelectionModel()::select);
@@ -91,7 +100,6 @@ public final class TwinColGrid<T> extends CustomComponent implements HasValue<Se
         });
 
         setCompositionRoot(container);
-        container.setSizeUndefined();
         setSizeUndefined();
     }
 
@@ -169,6 +177,22 @@ public final class TwinColGrid<T> extends CustomComponent implements HasValue<Se
         return this;
     }
 
+    public TwinColGrid<T> withSizeFull() {
+        super.setSizeFull();
+        return this;
+    }
+
+    /**
+     * Adds drag n drop support between grids.
+     * 
+     * @return
+     */
+    public TwinColGrid<T> withDragAndDropSupport() {
+        configDragAndDrop(leftGrid, rightGrid);
+        configDragAndDrop(rightGrid, leftGrid);
+        return this;
+    }
+
     /**
      * Returns the text shown above the right column.
      *
@@ -224,19 +248,6 @@ public final class TwinColGrid<T> extends CustomComponent implements HasValue<Se
                 });
     }
 
-    private void updateSelection(final Set<T> addedItems, final Set<T> removedItems) {
-        leftGridDataProvider.getItems().addAll(removedItems);
-        leftGridDataProvider.getItems().removeAll(addedItems);
-        leftGridDataProvider.refreshAll();
-
-        rightGridDataProvider.getItems().addAll(addedItems);
-        rightGridDataProvider.getItems().removeAll(removedItems);
-        rightGridDataProvider.refreshAll();
-
-        leftGrid.getSelectionModel().deselectAll();
-        rightGrid.getSelectionModel().deselectAll();
-    }
-
     @Override
     public boolean isReadOnly() {
         return super.isReadOnly();
@@ -255,6 +266,72 @@ public final class TwinColGrid<T> extends CustomComponent implements HasValue<Se
     @Override
     public void setRequiredIndicatorVisible(final boolean visible) {
         super.setRequiredIndicatorVisible(visible);
+    }
+
+    private void updateSelection(final Set<T> addedItems, final Set<T> removedItems) {
+        leftGridDataProvider.getItems().addAll(removedItems);
+        leftGridDataProvider.getItems().removeAll(addedItems);
+        leftGridDataProvider.refreshAll();
+
+        rightGridDataProvider.getItems().addAll(addedItems);
+        rightGridDataProvider.getItems().removeAll(removedItems);
+        rightGridDataProvider.refreshAll();
+
+        leftGrid.getSelectionModel().deselectAll();
+        rightGrid.getSelectionModel().deselectAll();
+    }
+
+    @SuppressWarnings("unchecked")
+    private void configDragAndDrop(final Grid<T> sourceGrid, final Grid<T> targetGrid) {
+        final GridDragSource<T> dragSource = new GridDragSource<>(sourceGrid);
+        // set allowed effects
+        dragSource.setEffectAllowed(EffectAllowed.MOVE);
+
+        // add a drag data generator
+        dragSource.setDragDataGenerator("text", item -> "" + sourceGrid.getSelectedItems().size());
+
+        final Set<T> draggedItems = new LinkedHashSet<>();
+
+        dragSource.addGridDragStartListener(event -> {
+            // Keep reference to the dragged items
+            if (event.getComponent().getSelectedItems().isEmpty()) {
+                draggedItems.addAll(event.getDraggedItems());
+            } else {
+                draggedItems.addAll(event.getComponent().getSelectedItems());
+            }
+        });
+
+        // Add drag end listener
+        dragSource.addGridDragEndListener(event -> draggedItems.clear());
+
+        final GridDropTarget<T> dropTarget = new GridDropTarget<>(targetGrid, DropMode.ON_TOP);
+        dropTarget.setDropEffect(DropEffect.MOVE);
+        dropTarget.addGridDropListener(event -> {
+            event.getDragSourceExtension().ifPresent(source -> {
+                if (source instanceof GridDragSource) {
+                    final Grid<T> dragGridSource = (Grid<T>) source.getParent();
+                    if (!dragGridSource.equals(event.getComponent())) {
+                        final ListDataProvider<T> dataProvider = (ListDataProvider<T>) event.getComponent().getDataProvider();
+                        dataProvider.getItems().addAll(draggedItems);
+                        dataProvider.refreshAll();
+
+                        final ListDataProvider<T> dragGridSourceDataProvider = (ListDataProvider<T>) dragGridSource.getDataProvider();
+                        dragGridSourceDataProvider.getItems().removeAll(draggedItems);
+                        dragGridSourceDataProvider.refreshAll();
+
+                        dragGridSource.getSelectionModel().deselectAll();
+                    }
+                }
+            });
+        });
+    }
+
+    public void addLeftGridSelectionListener(final SelectionListener<T> listener) {
+        leftGrid.addSelectionListener(listener);
+    }
+
+    public void addRightGridSelectionListener(final SelectionListener<T> listener) {
+        rightGrid.addSelectionListener(listener);
     }
 
 }
