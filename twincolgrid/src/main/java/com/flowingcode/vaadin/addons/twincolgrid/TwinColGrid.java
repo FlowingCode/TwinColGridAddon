@@ -13,6 +13,7 @@ import com.vaadin.data.ValueProvider;
 import com.vaadin.data.provider.DataProvider;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.event.selection.SelectionListener;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.shared.Registration;
 import com.vaadin.shared.ui.dnd.DropEffect;
 import com.vaadin.shared.ui.dnd.EffectAllowed;
@@ -37,13 +38,13 @@ public final class TwinColGrid<T> extends CustomComponent implements HasValue<Se
 
     private final ListDataProvider<T> rightGridDataProvider;
 
-    private final Button addAllButton = new Button(">>");
+    private final Button addAllButton = new Button();
 
-    private final Button addButton = new Button(">");
+    private final Button addButton = new Button();
 
-    private final Button removeButton = new Button("<");
+    private final Button removeButton = new Button();
 
-    private final Button removeAllButton = new Button("<<");
+    private final Button removeAllButton = new Button();
 
     private final VerticalLayout buttonContainer;
 
@@ -65,9 +66,13 @@ public final class TwinColGrid<T> extends CustomComponent implements HasValue<Se
         leftGrid.setSelectionMode(SelectionMode.MULTI);
         rightGrid.setSelectionMode(SelectionMode.MULTI);
 
+        addButton.setIcon(VaadinIcons.ANGLE_RIGHT, ">");
         addButton.setWidth(3f, Unit.EM);
+        addAllButton.setIcon(VaadinIcons.ANGLE_DOUBLE_RIGHT, ">>");
         addAllButton.setWidth(3f, Unit.EM);
+        removeButton.setIcon(VaadinIcons.ANGLE_LEFT, "<");
         removeButton.setWidth(3f, Unit.EM);
+        removeAllButton.setIcon(VaadinIcons.ANGLE_DOUBLE_LEFT, "<<");
         removeAllButton.setWidth(3f, Unit.EM);
 
         buttonContainer = new VerticalLayout(addButton, removeButton);
