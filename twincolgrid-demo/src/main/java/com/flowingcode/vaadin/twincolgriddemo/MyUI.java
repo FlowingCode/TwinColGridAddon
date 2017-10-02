@@ -46,9 +46,9 @@ public class MyUI extends UI {
                 .addColumn(Book::getTitle, "Title")
                 .withLeftColumnCaption("Available books")
                 .withRightColumnCaption("Added books")
-                .withRows(availableBooks.size() - 3)
                 .showRemoveAllButton()
-                .withSizeFull();
+                .withSizeFull()
+                .withRows(availableBooks.size() - 3);
 
         final HorizontalLayout bindedTwinColGridContainer = new HorizontalLayout(bindedTwinColGrid);
         bindedTwinColGridContainer.setSizeFull();
@@ -64,20 +64,20 @@ public class MyUI extends UI {
                 .addColumn(Book::getTitle, "Title")
                 .withLeftColumnCaption("Available books")
                 .withRightColumnCaption("Added books")
-                .withRows(availableBooks.size() - 3)
                 .showAddAllButton()
                 .withSizeFull()
+                .withRows(availableBooks.size() - 3)
                 .withDragAndDropSupport();
         twinColGrid.setValue(selectedBooks);
+
+        final HorizontalLayout twinColGridContainer = new HorizontalLayout(
+                twinColGrid);
+        twinColGridContainer.setWidth(100, Unit.PERCENTAGE);
+        twinColGridContainer.setMargin(false);
 
         final Label countLabel = new Label("Selected items: 0");
         twinColGrid.addLeftGridSelectionListener(e -> countLabel.setValue("Selected items: " + e.getAllSelectedItems().size()));
         twinColGrid.addValueChangeListener(e -> countLabel.setValue("Selected items: 0"));
-
-        final HorizontalLayout twinColGridContainer = new HorizontalLayout(
-                twinColGrid);
-        twinColGridContainer.setSizeFull();
-        twinColGridContainer.setMargin(false);
 
         final VerticalLayout bottom = new VerticalLayout(twinColGridContainer, countLabel);
         container.addComponent(new Panel(bottom));
