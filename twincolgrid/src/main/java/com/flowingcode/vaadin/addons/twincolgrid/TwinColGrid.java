@@ -326,12 +326,12 @@ public final class TwinColGrid<T> extends CustomComponent implements HasValue<Se
         });
     }
 
-    public void addLeftGridSelectionListener(final SelectionListener<T> listener) {
-        leftGrid.addSelectionListener(listener);
+    public Registration addLeftGridSelectionListener(final SelectionListener<T> listener) {
+        return leftGrid.addSelectionListener(listener);
     }
 
-    public void addRightGridSelectionListener(final SelectionListener<T> listener) {
-        rightGrid.addSelectionListener(listener);
+    public Registration addRightGridSelectionListener(final SelectionListener<T> listener) {
+        return rightGrid.addSelectionListener(listener);
     }
 
 }
