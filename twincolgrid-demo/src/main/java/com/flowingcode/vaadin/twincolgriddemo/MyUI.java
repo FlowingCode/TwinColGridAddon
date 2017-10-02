@@ -14,6 +14,7 @@ import com.vaadin.data.Binder;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -46,9 +47,11 @@ public class MyUI extends UI {
                 .withLeftColumnCaption("Available books")
                 .withRightColumnCaption("Added books")
                 .withRows(availableBooks.size() - 3)
-                .showRemoveAllButton();
+                .showRemoveAllButton()
+                .withSizeFull();
 
         final HorizontalLayout bindedTwinColGridContainer = new HorizontalLayout(bindedTwinColGrid);
+        bindedTwinColGridContainer.setSizeFull();
         bindedTwinColGridContainer.setMargin(true);
         container.addComponent(new Panel(bindedTwinColGridContainer));
 
@@ -56,20 +59,28 @@ public class MyUI extends UI {
         binder.bind(bindedTwinColGrid, Library::getBooks, Library::setBooks);
         binder.setBean(library);
 
-        final TwinColGrid<Book> twinColGrid = new TwinColGrid<>("TwinColGrid no binding demo", availableBooks)
+        final TwinColGrid<Book> twinColGrid = new TwinColGrid<>("TwinColGrid no binding demo and drag and drop support", availableBooks)
                 .addColumn(Book::getIsbn, "ISBN")
                 .addColumn(Book::getTitle, "Title")
                 .withLeftColumnCaption("Available books")
                 .withRightColumnCaption("Added books")
-                .withRows(availableBooks.size() - 3)
-                .showAddAllButton();
-
+                .withRows(availableBooks.size() - 5)
+                .showAddAllButton()
+                .withSizeFull()
+                .withDragAndDropSupport();
         twinColGrid.setValue(selectedBooks);
+
+        final Label countLabel = new Label("Selected items: 0");
+        twinColGrid.addLeftGridSelectionListener(e -> countLabel.setValue("Selected items: " + e.getAllSelectedItems().size()));
+        twinColGrid.addValueChangeListener(e -> countLabel.setValue("Selected items: 0"));
 
         final HorizontalLayout twinColGridContainer = new HorizontalLayout(
                 twinColGrid);
-        twinColGridContainer.setMargin(true);
-        container.addComponent(new Panel(twinColGridContainer));
+        twinColGridContainer.setSizeFull();
+        twinColGridContainer.setMargin(false);
+
+        final VerticalLayout bottom = new VerticalLayout(twinColGridContainer, countLabel);
+        container.addComponent(new Panel(bottom));
 
         setContent(container);
     }
