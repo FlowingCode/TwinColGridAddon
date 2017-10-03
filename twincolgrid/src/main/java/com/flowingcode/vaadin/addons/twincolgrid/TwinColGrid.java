@@ -48,6 +48,8 @@ public final class TwinColGrid<T> extends CustomComponent implements HasValue<Se
 
     private final VerticalLayout buttonContainer;
 
+    private Grid<T> draggedGrid;
+
     /**
      * Constructs a new TwinColGrid with data provider for options.
      *
@@ -307,12 +309,12 @@ public final class TwinColGrid<T> extends CustomComponent implements HasValue<Se
     private void configDragAndDrop(final Grid<T> sourceGrid, final Grid<T> targetGrid) {
         final GridDragSource<T> dragSource = new GridDragSource<>(sourceGrid);
         dragSource.setEffectAllowed(EffectAllowed.MOVE);
-
-        dragSource.setDragDataGenerator("text", item -> "" + sourceGrid.getSelectedItems().size());
+        dragSource.setDragImage(VaadinIcons.COPY);
 
         final Set<T> draggedItems = new LinkedHashSet<>();
 
         dragSource.addGridDragStartListener(event -> {
+            draggedGrid = sourceGrid;
             if (event.getComponent().getSelectedItems().isEmpty()) {
                 draggedItems.addAll(event.getDraggedItems());
             } else {
@@ -320,25 +322,33 @@ public final class TwinColGrid<T> extends CustomComponent implements HasValue<Se
             }
         });
 
-        dragSource.addGridDragEndListener(event -> draggedItems.clear());
+        dragSource.addGridDragEndListener(event -> {
+            if (event.getDropEffect() == DropEffect.MOVE) {
+                if (draggedGrid == null) {
+                    draggedItems.clear();
+                    return;
+                }
+                final ListDataProvider<T> dragGridSourceDataProvider = (ListDataProvider<T>) draggedGrid.getDataProvider();
+                dragGridSourceDataProvider.getItems().removeAll(draggedItems);
+                dragGridSourceDataProvider.refreshAll();
+
+                draggedItems.clear();
+
+                draggedGrid.deselectAll();
+                draggedGrid = null;
+            }
+        });
 
         final GridDropTarget<T> dropTarget = new GridDropTarget<>(targetGrid, DropMode.ON_TOP);
         dropTarget.setDropEffect(DropEffect.MOVE);
         dropTarget.addGridDropListener(event -> {
             event.getDragSourceExtension().ifPresent(source -> {
-                if (source instanceof GridDragSource) {
-                    final Grid<T> dragGridSource = (Grid<T>) source.getParent();
-                    if (!dragGridSource.equals(event.getComponent())) {
-                        final ListDataProvider<T> dragGridTargetDataProvider = (ListDataProvider<T>) event.getComponent().getDataProvider();
-                        dragGridTargetDataProvider.getItems().addAll(draggedItems);
-                        dragGridTargetDataProvider.refreshAll();
-
-                        final ListDataProvider<T> dragGridSourceDataProvider = (ListDataProvider<T>) dragGridSource.getDataProvider();
-                        dragGridSourceDataProvider.getItems().removeAll(draggedItems);
-                        dragGridSourceDataProvider.refreshAll();
-
-                        dragGridSource.getSelectionModel().deselectAll();
-                    }
+                if (source instanceof GridDragSource && draggedGrid != event.getComponent()) {
+                    final ListDataProvider<T> dragGridTargetDataProvider = (ListDataProvider<T>) event.getComponent().getDataProvider();
+                    dragGridTargetDataProvider.getItems().addAll(draggedItems);
+                    dragGridTargetDataProvider.refreshAll();
+                } else {
+                    draggedGrid = null;
                 }
             });
         });
