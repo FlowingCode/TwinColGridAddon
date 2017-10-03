@@ -5,7 +5,10 @@ TwinColGrid Add-on is a UI component add-on for Vaadin Framework version 8.x
 ## Features
 
 TwinColGrid is built upon the same idea of TwinColSelect component, but using grid instead of select. 
-It provides a multiple selection component that shows two lists side by side, with the left column containing unselected items and the right column the selected items. The user can select items from the list on the left and click on the ">" button to move them to the list on the right. Items can be deselected by selecting them in the right list and clicking on the "<" button.
+It provides a multiple selection component that shows two grids side by side. Left grid contains unselected items and the right grid the selected items.
+The user can select items from the list on the left and click on the ">" button to move them to the list on the right. 
+Items can be deselected by selecting them in the right list and clicking on the "<" button.
+Component also supports drag and drop between grids.
 
 This add-on is a server-side-only component, so there's no need to recompile the widgetset.
 
