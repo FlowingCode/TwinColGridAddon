@@ -1,6 +1,6 @@
 # TwinColGrid Add-on for Vaadin
 
-TwinColGrid Add-on is a UI component add-on for Vaadin Framework versions 7 and 8.
+TwinColGrid Add-on is a UI component add-on for Vaadin Framework version 8.x
 
 ## Features
 
