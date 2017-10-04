@@ -25,7 +25,7 @@ Official releases of this add-on will be available at Vaadin Directory soon.
 ```
 git clone https://github.com/FlowingCode/TwinColGrid
 mvn clean install
-cd demo
+cd twincolgrid-demo
 mvn jetty:run
 ```
 
