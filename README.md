@@ -14,8 +14,7 @@ This add-on is a server-side-only component, so there's no need to recompile the
 
 ## Online demo
 
-Not available yet.
-<Try the add-on demo at>
+Try the add-on demo at http://addons.flowingcode.com/twincolgrid
 
 ## Download release
 
