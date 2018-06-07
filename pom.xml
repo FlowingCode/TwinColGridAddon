@@ -5,7 +5,7 @@
 	<groupId>com.flowingcode.vaadin.addons</groupId>
 	<artifactId>twincolgrid-addon</artifactId>
 	<packaging>pom</packaging>
-	<version>1.0.1-SNAPSHOT</version>
+	<version>1.0.2-SNAPSHOT</version>
 	<name>TwinColGrid Add-on Project</name>
 	<prerequisites>
 		<maven>3</maven>
