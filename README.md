@@ -18,7 +18,7 @@ Try the add-on demo at http://addons.flowingcode.com/twincolgrid
 
 ## Download release
 
-Official releases of this add-on will be available at Vaadin Directory soon. 
+Official releases are available at Vaadin Directory https://vaadin.com/directory/component/twincolgrid-add-on 
 
 ## Building and running demo
 ```
