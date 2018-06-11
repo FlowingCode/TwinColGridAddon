@@ -7,6 +7,7 @@ import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.vaadin.data.HasValue;
 import com.vaadin.data.ValueProvider;
@@ -34,7 +35,7 @@ public final class TwinColGrid<T> extends CustomComponent implements HasValue<Se
 
     private final Grid<T> rightGrid = new Grid<>();
 
-    private final ListDataProvider<T> leftGridDataProvider;
+    private ListDataProvider<T> leftGridDataProvider;
 
     private final ListDataProvider<T> rightGridDataProvider;
 
@@ -51,15 +52,21 @@ public final class TwinColGrid<T> extends CustomComponent implements HasValue<Se
     private Grid<T> draggedGrid;
 
     /**
+     * Constructs a new TwinColGrid with an empty {@link ListDataProvider}.
+     */
+    public TwinColGrid() {
+    	this(DataProvider.ofCollection(new LinkedHashSet<>()));
+    }
+    
+    /**
      * Constructs a new TwinColGrid with data provider for options.
      *
      * @param dataProvider the data provider, not {@code null}
      */
     public TwinColGrid(final ListDataProvider<T> dataProvider) {
-        this.leftGridDataProvider = dataProvider;
-        leftGrid.setDataProvider(dataProvider);
-
-        this.rightGridDataProvider = DataProvider.ofCollection(new LinkedHashSet<>());
+    	setDataProvider(dataProvider);
+    	
+    	this.rightGridDataProvider = DataProvider.ofCollection(new LinkedHashSet<>());    	
         rightGrid.setDataProvider(this.rightGridDataProvider);
 
         leftGrid.setSelectionMode(SelectionMode.MULTI);
@@ -107,7 +114,24 @@ public final class TwinColGrid<T> extends CustomComponent implements HasValue<Se
         setSizeUndefined();
     }
 
-    /**
+    public void setItems(Collection<T> items) {
+    	setDataProvider(DataProvider.ofCollection(items));
+    }
+    
+    public void setItems(Stream<T> items) {
+    	setDataProvider(DataProvider.fromStream(items));
+    }
+    
+    private void setDataProvider(ListDataProvider<T> dataProvider) {
+    	this.leftGridDataProvider = dataProvider;
+        leftGrid.setDataProvider(dataProvider);
+        if (rightGridDataProvider!=null) {
+        	rightGridDataProvider.getItems().clear();
+        	rightGridDataProvider.refreshAll();
+        }
+	}
+
+	/**
      * Constructs a new TwinColGrid with the given options.
      *
      * @param options the options, cannot be {@code null}
