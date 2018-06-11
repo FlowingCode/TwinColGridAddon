@@ -27,6 +27,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.components.grid.GridDragSource;
 import com.vaadin.ui.components.grid.GridDropTarget;
+import com.vaadin.ui.components.grid.NoSelectionModel;
 import com.vaadin.ui.renderers.TextRenderer;
 
 public final class TwinColGrid<T> extends CustomComponent implements HasValue<Set<T>> {
@@ -298,9 +299,9 @@ public final class TwinColGrid<T> extends CustomComponent implements HasValue<Se
 
     @Override
     public boolean isReadOnly() {
-        return super.isReadOnly();
+       return super.isReadOnly();
     }
-
+    
     @Override
     public boolean isRequiredIndicatorVisible() {
         return super.isRequiredIndicatorVisible();
@@ -308,7 +309,12 @@ public final class TwinColGrid<T> extends CustomComponent implements HasValue<Se
 
     @Override
     public void setReadOnly(final boolean readOnly) {
-        super.setReadOnly(readOnly);
+    	leftGrid.setSelectionMode(readOnly?SelectionMode.NONE:SelectionMode.MULTI);
+    	rightGrid.setSelectionMode(readOnly?SelectionMode.NONE:SelectionMode.MULTI);
+    	addButton.setEnabled(!readOnly);
+    	removeButton.setEnabled(!readOnly);
+    	addAllButton.setEnabled(!readOnly);
+    	removeAllButton.setEnabled(!readOnly);
     }
 
     @Override
@@ -339,10 +345,12 @@ public final class TwinColGrid<T> extends CustomComponent implements HasValue<Se
 
         dragSource.addGridDragStartListener(event -> {
             draggedGrid = sourceGrid;
-            if (event.getComponent().getSelectedItems().isEmpty()) {
-                draggedItems.addAll(event.getDraggedItems());
-            } else {
-                draggedItems.addAll(event.getComponent().getSelectedItems());
+            if (!(draggedGrid.getSelectionModel() instanceof NoSelectionModel)) {
+	            if (event.getComponent().getSelectedItems().isEmpty()) {
+	                draggedItems.addAll(event.getDraggedItems());
+	            } else {
+	                draggedItems.addAll(event.getComponent().getSelectedItems());
+	            }
             }
         });
 
@@ -385,5 +393,5 @@ public final class TwinColGrid<T> extends CustomComponent implements HasValue<Se
     public Registration addRightGridSelectionListener(final SelectionListener<T> listener) {
         return rightGrid.addSelectionListener(listener);
     }
-
+    
 }
