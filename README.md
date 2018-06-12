@@ -34,7 +34,7 @@ To see the demo, navigate to http://localhost:8080/
 
 - **Version 1.0.0** First release of the component. This version has dependencies that are not available in the public repositories.
 - **Version 1.0.1** First stable release. Compatible with Vaadin 8.1/8.2.
-- **Version 1.0.2-SNAPSHOT** Compatible with Vaadin 8.3 and later.
+- **Version 1.0.2** Compatible with Vaadin 8.3 and later. Support for Vaadin Designer. Read-only mode.
 
 ## Roadmap
 
