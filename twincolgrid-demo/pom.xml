@@ -18,11 +18,20 @@
 		<maven>3</maven>
 	</prerequisites>
 
+	<inceptionYear>2017</inceptionYear> 	
 	<organization>
 		<name>FlowingCode S.A.</name>
 		<url>http://www.flowingcode.com/</url>
 	</organization>
 
+    <licenses>
+        <license>
+            <name>Apache 2</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+	
 	<properties>
 		<vaadin.version>8.4.3</vaadin.version>
 		<vaadin.plugin.version>8.4.3</vaadin.plugin.version>
@@ -140,6 +149,16 @@
 					<scanIntervalSeconds>2</scanIntervalSeconds>
 				</configuration>
 			</plugin>
+			
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+				<version>1.14</version>    
+				<configuration>
+				<licenseName>apache_v2</licenseName>
+				</configuration>
+			</plugin>
+   
 		</plugins>
 	</build>
 

@@ -9,11 +9,12 @@
     <name>TwinColGrid add-on</name>
     <packaging>bundle</packaging>
  
+    <inceptionYear>2017</inceptionYear>
  	<organization>
 		<name>FlowingCode S.A.</name>
 		<url>http://www.flowingcode.com/</url>
 	</organization>
-
+	
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <vaadin.version>8.3.0</vaadin.version>
@@ -24,22 +25,8 @@
         <Implementation-Title>${project.name}</Implementation-Title>
         <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
         <Vaadin-License-Title>Apache License 2.0</Vaadin-License-Title>
-        <Vaadin-Addon>${project.artifactId}-${project.version}.jar</Vaadin-Addon>
-        <github.account>flowingcode</github.account>
-        <github.project>TwinColGrid</github.project>
+        <Vaadin-Addon>${project.artifactId}-${project.version}.jar</Vaadin-Addon>      
     </properties>
-
-    <scm>
-        <url>https://github.com/${github.account}/${github.project}</url>
-        <connection>scm:git:git://github.com/${github.account}/${github.project}.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com:/${github.account}/${github.project}.git</developerConnection>
-        <tag>TwinColGrid add-on for Vaadin</tag>
-    </scm>
-
-    <issueManagement>
-        <system>GitHub</system>
-        <url>https://github.com/${github.account}/${github.project}/issues</url>
-    </issueManagement>
 
     <licenses>
         <license>
@@ -81,6 +68,7 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
+			
             <!-- add proper OGSI entries to manifest -->
             <plugin>
                 <groupId>org.apache.felix</groupId>
@@ -102,6 +90,7 @@
                     </execution>
                 </executions>
             </plugin>
+			
             <plugin>
                 <!-- Skip deployment as we expect the artifact to be manually 
                 deployed to vaadin.com/directory -->
@@ -111,6 +100,7 @@
                     <skip>true</skip>
                 </configuration>
             </plugin>
+			
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -130,6 +120,7 @@
                     </archive>
                 </configuration>
             </plugin>
+			
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
@@ -149,6 +140,7 @@
                     </execution>
                 </executions>
             </plugin>
+			
             <!-- build javadocs during development builds as well to 
              show javadoc syntax issues before release. Remove this 
              to speed up the build a bit.
@@ -166,11 +158,21 @@
                     </execution>
                 </executions>
             </plugin>
+			
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.19.1</version>
             </plugin>
+			
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+				<version>1.14</version>    
+				<configuration>
+				<licenseName>apache_v2</licenseName>
+				</configuration>
+			</plugin>			
         </plugins>
     </build>
     

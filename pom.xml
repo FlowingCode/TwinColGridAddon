@@ -10,12 +10,43 @@
 	<prerequisites>
 		<maven>3</maven>
 	</prerequisites>
-
+	
 	<modules>
 		<module>twincolgrid</module>
 		<module>twincolgrid-demo</module>
 	</modules>
 
+	<properties>
+	  <github.account>flowingcode</github.account>
+      <github.project>TwinColGrid</github.project>
+	</properties>
+	
+	<scm>
+        <url>https://github.com/${github.account}/${github.project}</url>
+        <connection>scm:git:git://github.com/${github.account}/${github.project}.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com:/${github.account}/${github.project}.git</developerConnection>
+        <tag>TwinColGrid add-on for Vaadin</tag>
+    </scm>
+
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/${github.account}/${github.project}/issues</url>
+    </issueManagement>
+
+    <inceptionYear>2017</inceptionYear>
+    <organization>
+      <name>Flowing Code</name>
+      <url>https://www.flowingcode.com</url>
+    </organization>
+
+    <licenses>
+        <license>
+            <name>Apache 2</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+	
 	<profiles>
 		<profile>
 			<!-- Vaadin pre-release repositories -->
@@ -59,4 +90,33 @@
 		</profile>
 	</profiles>
 
+	<build>
+	   <pluginManagement>
+		   <plugins>
+			   <plugin>
+				   <groupId>org.apache.maven.plugins</groupId>
+				   <artifactId>maven-release-plugin</artifactId>
+				   <version>2.5.3</version>
+			   </plugin>
+			   <plugin>
+				   <groupId>org.codehaus.mojo</groupId>
+				   <artifactId>versions-maven-plugin</artifactId>
+				   <version>2.5</version>
+				   <configuration>
+					   <processAllModules>true</processAllModules>
+				   </configuration>
+			   </plugin>
+			   <plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>license-maven-plugin</artifactId>
+					<version>1.14</version>    
+					<configuration>
+						<licenseName>apache_v2</licenseName>
+					</configuration>
+			   </plugin>
+		   </plugins>
+		</pluginManagement>			   
+
+	</build>
+	
 </project>
