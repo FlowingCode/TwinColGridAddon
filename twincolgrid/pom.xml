@@ -3,7 +3,7 @@
         
 	<groupId>com.flowingcode.vaadin.addons</groupId>
     <artifactId>twincolgrid</artifactId>
-	<version>1.0.2</version>
+	<version>1.0.3-SNAPSHOT</version>
 	
     <name>TwinColGrid add-on</name>
     <packaging>bundle</packaging>
