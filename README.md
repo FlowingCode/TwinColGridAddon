@@ -1,3 +1,5 @@
+[![Build Status](https://jenkins.flowingcode.com/job/TwinColGrid-addon/badge/icon)](https://jenkins.flowingcode.com/job/TwinColGrid-addon)
+
 # TwinColGrid Add-on for Vaadin
 
 TwinColGrid Add-on is a UI component add-on for Vaadin Framework version 8.x
