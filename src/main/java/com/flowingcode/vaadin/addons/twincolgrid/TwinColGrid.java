@@ -40,7 +40,6 @@ import com.vaadin.flow.component.grid.Grid.SelectionMode;
 import com.vaadin.flow.component.grid.GridNoneSelectionModel;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.provider.ListDataProvider;
@@ -89,9 +88,9 @@ public final class TwinColGrid<T> extends Div implements HasValue<ValueChangeEve
     	this.rightGridDataProvider = DataProvider.ofCollection(new LinkedHashSet<>());    	
         rightGrid.setDataProvider(this.rightGridDataProvider);
 
-        leftGrid.setSelectionMode(SelectionMode.MULTI);
+        leftGrid.setSelectionMode(SelectionMode.MULTI);        
         rightGrid.setSelectionMode(SelectionMode.MULTI);
-
+        
         addButton.setIcon(VaadinIcon.ANGLE_RIGHT.create());
         addButton.setWidth("3em");
         addAllButton.setIcon(VaadinIcon.ANGLE_DOUBLE_RIGHT.create());
@@ -105,12 +104,8 @@ public final class TwinColGrid<T> extends Div implements HasValue<ValueChangeEve
         buttonContainer.setSpacing(false);
         buttonContainer.setSizeUndefined();
 
-        final HorizontalLayout container = new HorizontalLayout(leftGrid, buttonContainer, rightGrid);
-        container.setSizeFull();
-        leftGrid.setSizeFull();
-        rightGrid.setSizeFull();
-//        container.setExpandRatio(leftGrid, 1f);
-//        container.setExpandRatio(rightGrid, 1f);
+        leftGrid.setWidth("100%");
+        rightGrid.setWidth("100%");
 
         addAllButton.addClickListener(e -> {
             leftGridDataProvider.getItems().stream().forEach(leftGrid.getSelectionModel()::select);
@@ -130,9 +125,10 @@ public final class TwinColGrid<T> extends Div implements HasValue<ValueChangeEve
             updateSelection(new HashSet<>(), rightGrid.getSelectedItems());
         });
         
-
-        add(container);
+      
 //        setCompositionRoot(container);
+        getElement().getStyle().set("display","flex");
+        add(leftGrid, buttonContainer, rightGrid);
         setSizeUndefined();
     }
 
@@ -366,7 +362,8 @@ public final class TwinColGrid<T> extends Div implements HasValue<ValueChangeEve
 //    	sourceGrid.setDragImage(VaadinIcon.COPY.create());
 
         final Set<T> draggedItems = new LinkedHashSet<>();
-
+        
+        sourceGrid.setRowsDraggable(true);
         sourceGrid.addDragStartListener(event -> {
             draggedGrid = sourceGrid;
             if (!(draggedGrid.getSelectionModel() instanceof GridNoneSelectionModel)) {
