@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.flowingcode.vaadin.addons.twincolgrid.TwinColGrid;
+import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -15,11 +16,10 @@ import com.vaadin.flow.router.Route;
 
 @SuppressWarnings("serial")
 @Route("")
-public class DemoView extends Div {
+@CssImport("styles/shared-styles.css")
+public class DemoView extends VerticalLayout {
 
 	public DemoView() {
-		final VerticalLayout container = new VerticalLayout();
-
 		final Set<Book> selectedBooks = new HashSet<>();
 		selectedBooks.add(new Book("1478375108", "Vaadin Recipes"));
 		selectedBooks.add(new Book("9789526800677", "Book of Vaadin: Volume 2 "));
@@ -35,41 +35,27 @@ public class DemoView extends Div {
 		availableBooks.add(new Book("9529267533", "Book of Vaadin"));
 		availableBooks.add(new Book("1782169776", "Learning Vaadin 7, Second Edition"));
 
-		final TwinColGrid<Book> bindedTwinColGrid = new TwinColGrid<>("TwinColGrid binding demo", availableBooks)
+		final TwinColGrid<Book> bindedTwinColGrid = new TwinColGrid<>(availableBooks, "TwinColGrid binding demo")
 				.addColumn(Book::getIsbn, "ISBN").addColumn(Book::getTitle, "Title")
 				.withLeftColumnCaption("Available books").withRightColumnCaption("Added books").showRemoveAllButton()
 				.withSizeFull();
-		// .withRows(availableBooks.size() - 3);
-
-		final HorizontalLayout bindedTwinColGridContainer = new HorizontalLayout(bindedTwinColGrid);
-		bindedTwinColGridContainer.setSizeFull();
-		bindedTwinColGridContainer.setMargin(true);
-		container.add(bindedTwinColGridContainer);
 
 		final Binder<Library> binder = new Binder<>();
 		binder.bind(bindedTwinColGrid, Library::getBooks, Library::setBooks);
 		binder.setBean(library);
 
-		final TwinColGrid<Book> twinColGrid = new TwinColGrid<>("TwinColGrid no binding demo and drag and drop support",
-				availableBooks).addColumn(Book::getIsbn, "ISBN").addColumn(Book::getTitle, "Title")
+		final TwinColGrid<Book> twinColGrid = new TwinColGrid<>(availableBooks,"TwinColGrid no binding demo and drag and drop support").addColumn(Book::getIsbn, "ISBN").addColumn(Book::getTitle, "Title")
 						.withLeftColumnCaption("Available books").withRightColumnCaption("Added books")
 						.showAddAllButton().withSizeFull()
-						// .withRows(availableBooks.size() - 3)
 						.withDragAndDropSupport();
 		twinColGrid.setValue(selectedBooks);
 
-		final HorizontalLayout twinColGridContainer = new HorizontalLayout(twinColGrid);
-		twinColGridContainer.setWidth("100%");
-		twinColGridContainer.setMargin(false);
+		final Label countLabel = new Label("Selected items in left grid: 0");
+		twinColGrid.addLeftGridSelectionListener(
+				e -> countLabel.setText("Selected items in left grid: " + e.getAllSelectedItems().size()));
+		twinColGrid.addValueChangeListener(e -> countLabel.setText("Selected items in left grid: 0"));
 
-		final Label countLabel = new Label("Selected items: 0");
-//		twinColGrid.addLeftGridSelectionListener(
-//				e -> countLabel.setValue("Selected items: " + e.getAllSelectedItems().size()));
-		twinColGrid.addValueChangeListener(e -> countLabel.setText("Selected items: 0"));
-
-		final VerticalLayout bottom = new VerticalLayout(twinColGridContainer, countLabel);
-		container.add(bottom);
-
-		add(container);
+		add(bindedTwinColGrid, twinColGrid, countLabel);
+		setSizeFull();
 	}
 }

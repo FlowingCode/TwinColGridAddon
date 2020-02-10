@@ -24,12 +24,14 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.vaadin.flow.component.AbstractField.ComponentValueChangeEvent;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasComponents;
 import com.vaadin.flow.component.HasSize;
 import com.vaadin.flow.component.HasValue;
@@ -38,17 +40,20 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.SelectionMode;
 import com.vaadin.flow.component.grid.GridNoneSelectionModel;
-import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.grid.dnd.GridDropMode;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.renderer.TextRenderer;
+import com.vaadin.flow.data.selection.SelectionListener;
 import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.shared.Registration;
 
 @SuppressWarnings("serial")
-public final class TwinColGrid<T> extends Div implements HasValue<ValueChangeEvent<Set<T>>,Set<T>>, HasComponents, HasSize {
+public final class TwinColGrid<T> extends VerticalLayout implements HasValue<ValueChangeEvent<Set<T>>,Set<T>>, HasComponents, HasSize {
 
     private final Grid<T> leftGrid = new Grid<>();
 
@@ -70,11 +75,19 @@ public final class TwinColGrid<T> extends Div implements HasValue<ValueChangeEve
 
     private Grid<T> draggedGrid;
 
+	private VerticalLayout leftVL;
+
+	private VerticalLayout rightVL;
+	
+	private Label rightColumnLabel;
+
+	private Label leftColumnLabel;
+
     /**
      * Constructs a new TwinColGrid with an empty {@link ListDataProvider}.
      */
     public TwinColGrid() {
-    	this(DataProvider.ofCollection(new LinkedHashSet<>()));
+    	this(DataProvider.ofCollection(new LinkedHashSet<>()), null);
     }
     
     /**
@@ -82,7 +95,13 @@ public final class TwinColGrid<T> extends Div implements HasValue<ValueChangeEve
      *
      * @param dataProvider the data provider, not {@code null}
      */
-    public TwinColGrid(final ListDataProvider<T> dataProvider) {
+    public TwinColGrid(final ListDataProvider<T> dataProvider, String caption) {
+    	this.setMargin(false);
+    	this.setPadding(false);
+    	if (caption!=null) {
+    		add(new Label(caption));
+    	}
+    	
     	setDataProvider(dataProvider);
     	
     	this.rightGridDataProvider = DataProvider.ofCollection(new LinkedHashSet<>());    	
@@ -101,6 +120,7 @@ public final class TwinColGrid<T> extends Div implements HasValue<ValueChangeEve
         removeAllButton.setWidth("3em");
 
         buttonContainer = new VerticalLayout(addButton, removeButton);
+        buttonContainer.setPadding(false);
         buttonContainer.setSpacing(false);
         buttonContainer.setSizeUndefined();
 
@@ -126,9 +146,19 @@ public final class TwinColGrid<T> extends Div implements HasValue<ValueChangeEve
         });
         
       
-//        setCompositionRoot(container);
         getElement().getStyle().set("display","flex");
-        add(leftGrid, buttonContainer, rightGrid);
+        leftVL = new VerticalLayout(leftGrid);
+        rightVL = new VerticalLayout(rightGrid);
+        leftVL.setSizeFull();
+        leftVL.setMargin(false);
+        leftVL.setPadding(false);
+        rightVL.setSizeFull();
+        rightVL.setMargin(false);
+        rightVL.setPadding(false);
+        HorizontalLayout hl = new HorizontalLayout(leftVL, buttonContainer, rightVL);
+        hl.setMargin(false);
+        hl.setWidthFull();
+        add(hl);
         setSizeUndefined();
     }
 
@@ -155,18 +185,7 @@ public final class TwinColGrid<T> extends Div implements HasValue<ValueChangeEve
      * @param options the options, cannot be {@code null}
      */
     public TwinColGrid(final Collection<T> options) {
-        this(DataProvider.ofCollection(new LinkedHashSet<>(options)));
-    }
-
-    /**
-     * Constructs a new TwinColGrid with caption and data provider for options.
-     *
-     * @param caption the caption to set, can be {@code null}
-     * @param dataProvider the data provider, not {@code null}
-     */
-    public TwinColGrid(final String caption, final ListDataProvider<T> dataProvider) {
-        this(dataProvider);
-//        setCaption(caption);
+        this(DataProvider.ofCollection(new LinkedHashSet<>(options)), null);
     }
 
     /**
@@ -175,37 +194,9 @@ public final class TwinColGrid<T> extends Div implements HasValue<ValueChangeEve
      * @param caption the caption to set, can be {@code null}
      * @param options the options, cannot be {@code null}
      */
-    public TwinColGrid(final String caption, final Collection<T> options) {
-        this(caption, DataProvider.ofCollection(new LinkedHashSet<>(options)));
+    public TwinColGrid(final Collection<T> options, final String caption) {
+        this(DataProvider.ofCollection(new LinkedHashSet<>(options)), caption);
     }
-
-//    /**
-//     * Returns the number of rows in the selects.
-//     *
-//     * @return the number of rows visible
-//     */
-//    public int getRows() {
-//        return (int) leftGrid.getHeightByRows();
-//    }
-
-    /**
-     * Sets the number of rows in the selects. If the number of rows is set to 0 or less, the actual number of displayed rows is determined implicitly by the
-     * selects.
-     * <p>
-     * If a height if set (using {@link #setHeight(String)} or {@link #setHeight(float, Unit)}) it overrides the number of rows. Leave the height undefined to
-     * use this method.
-     *
-     * @param rows the number of rows to set.
-     */
-//    public TwinColGrid<T> withRows(int rows) {
-//        if (rows < 0) {
-//            rows = 0;
-//        }
-//        leftGrid.setHeightByRows(rows);
-//        rightGrid.setHeightByRows(rows);
-////        markAsDirty();
-//        return this;
-//    }
 
     /**
      * Sets the text shown above the right column. {@code null} clears the caption.
@@ -213,8 +204,27 @@ public final class TwinColGrid<T> extends Div implements HasValue<ValueChangeEve
      * @param rightColumnCaption The text to show, {@code null} to clear
      */
     public TwinColGrid<T> withRightColumnCaption(final String rightColumnCaption) {
-//        rightGrid.setCaption(rightColumnCaption);
-//        markAsDirty();
+    	this.rightVL.removeAll();
+    	if (rightColumnCaption!=null) {
+        	rightColumnLabel = new Label(rightColumnCaption); 
+        	this.rightVL.add(rightColumnLabel);
+    	}
+    	this.rightVL.add(rightGrid);
+        return this;
+    }
+
+    /**
+     * Sets the text shown above the left column. {@code null} clears the caption.
+     *
+     * @param leftColumnCaption The text to show, {@code null} to clear
+     */
+    public TwinColGrid<T> withLeftColumnCaption(final String leftColumnCaption) {
+    	this.leftVL.removeAll();
+    	if (leftColumnCaption!=null) {
+	    	leftColumnLabel = new Label(leftColumnCaption); 
+	    	this.leftVL.add(leftColumnLabel);
+    	}
+    	this.leftVL.add(leftGrid);
         return this;
     }
 
@@ -234,12 +244,18 @@ public final class TwinColGrid<T> extends Div implements HasValue<ValueChangeEve
     }
 
     public TwinColGrid<T> showAddAllButton() {
-        buttonContainer.add(addAllButton/*, 0*/);
+    	long buttons = buttonContainer.getChildren().count();
+    	buttonContainer.removeAll();
+    	buttonContainer.add(addAllButton,addButton,removeButton);
+    	if (buttons>2) buttonContainer.add(removeAllButton);
         return this;
     }
 
     public TwinColGrid<T> showRemoveAllButton() {
-        buttonContainer.add(removeAllButton/*, buttonContainer.getComponentCount()*/);
+    	long buttons = buttonContainer.getChildren().count();
+    	buttonContainer.removeAll();
+    	if (buttons>2) buttonContainer.add(addAllButton);
+    	buttonContainer.add(addButton,removeButton,removeAllButton);
         return this;
     }
 
@@ -265,18 +281,7 @@ public final class TwinColGrid<T> extends Div implements HasValue<ValueChangeEve
      * @return The text shown or {@code null} if not set.
      */
     public String getRightColumnCaption() {
-        return "";/*rightGrid.getCaption();*/
-    }
-
-    /**
-     * Sets the text shown above the left column. {@code null} clears the caption.
-     *
-     * @param leftColumnCaption The text to show, {@code null} to clear
-     */
-    public TwinColGrid<T> withLeftColumnCaption(final String leftColumnCaption) {
-//        leftGrid.setCaption(leftColumnCaption);
-//        markAsDirty();
-        return this;
+        return rightColumnLabel.getText();
     }
 
     /**
@@ -285,7 +290,7 @@ public final class TwinColGrid<T> extends Div implements HasValue<ValueChangeEve
      * @return The text shown or {@code null} if not set.
      */
     public String getLeftColumnCaption() {
-        return "";/*leftGrid.getCaption();*/
+        return leftColumnLabel.getText();
     }
 
     @Override
@@ -310,7 +315,6 @@ public final class TwinColGrid<T> extends Div implements HasValue<ValueChangeEve
     public Registration addValueChangeListener(ValueChangeListener<? super ValueChangeEvent<Set<T>>> listener) {
         return rightGridDataProvider.addDataProviderListener(
                 e -> {
-                	//ComponentValueChangeEvent<TwinColGrid<T>, Set<T>> e2 = new ComponentValueChangeEvent<>(TwinColGrid.this, new LinkedHashSet<>(rightGridDataProvider.getItems()), null, true)
                 	ComponentValueChangeEvent<TwinColGrid<T>, Set<T>> e2 = new ComponentValueChangeEvent<>(TwinColGrid.this, TwinColGrid.this, null, true);
                     listener.valueChanged(e2);
                 });
@@ -357,9 +361,6 @@ public final class TwinColGrid<T> extends Div implements HasValue<ValueChangeEve
 
     @SuppressWarnings("unchecked")
     private void configDragAndDrop(final Grid<T> sourceGrid, final Grid<T> targetGrid) {
-//        final GridDragSource<T> dragSource = new GridDragSource<>(sourceGrid);
-//    	sourceGrid.setEffectAllowed(EffectAllowed.MOVE);
-//    	sourceGrid.setDragImage(VaadinIcon.COPY.create());
 
         final Set<T> draggedItems = new LinkedHashSet<>();
         
@@ -367,54 +368,39 @@ public final class TwinColGrid<T> extends Div implements HasValue<ValueChangeEve
         sourceGrid.addDragStartListener(event -> {
             draggedGrid = sourceGrid;
             if (!(draggedGrid.getSelectionModel() instanceof GridNoneSelectionModel)) {
-//	            if (event.getComponent().getSelectedItems().isEmpty()) {
 	                draggedItems.addAll(event.getDraggedItems());
-//	            } else {
-//	                draggedItems.addAll(event.getComponent().getSelectedItems());
-//	            }
             }
+            targetGrid.setDropMode(GridDropMode.ON_GRID);
         });
 
         sourceGrid.addDragEndListener(event -> {
-//            if (event.getDropEffect() == DropEffect.MOVE) {
-                if (draggedGrid == null) {
-                    draggedItems.clear();
-                    return;
-                }
-                final ListDataProvider<T> dragGridSourceDataProvider = (ListDataProvider<T>) draggedGrid.getDataProvider();
-                dragGridSourceDataProvider.getItems().removeAll(draggedItems);
-                dragGridSourceDataProvider.refreshAll();
-
-                draggedItems.clear();
-
-                draggedGrid.deselectAll();
-                draggedGrid = null;
-//            }
+	        if (draggedGrid == null) {
+	            draggedItems.clear();
+	            return;
+	        }
+	        final ListDataProvider<T> dragGridSourceDataProvider = (ListDataProvider<T>) draggedGrid.getDataProvider();
+	        dragGridSourceDataProvider.getItems().removeAll(draggedItems);
+	        dragGridSourceDataProvider.refreshAll();
+	
+	        draggedItems.clear();
+	
+	        draggedGrid.deselectAll();
+	        draggedGrid = null;
         });
 
-//        final GridDropTarget<T> dropTarget = new GridDropTarget<>(targetGrid, DropMode.ON_TOP);
-//        dropTarget.setDropEffect(DropEffect.MOVE);
         targetGrid.addDropListener(event -> {
-//            event.getSource().getDragSourceExtension().ifPresent(source -> {
-//                if (source instanceof GridDragSource && draggedGrid != event.getComponent()) {
-                    final ListDataProvider<T> dragGridTargetDataProvider = (ListDataProvider<T>) event.getSource().getDataProvider();
-                    dragGridTargetDataProvider.getItems().addAll(draggedItems);
-                    dragGridTargetDataProvider.refreshAll();
-//                } else {
-//                    draggedGrid = null;
-//                }
-//            });
+            final ListDataProvider<T> dragGridTargetDataProvider = (ListDataProvider<T>) event.getSource().getDataProvider();
+            dragGridTargetDataProvider.getItems().addAll(draggedItems);
+            dragGridTargetDataProvider.refreshAll();
         });
     }
 
-//    public Registration addLeftGridSelectionListener(final SelectionListener<T> listener) {
-//        return leftGrid.addSelectionListener(listener);
-//    }
-//
-//    public Registration addRightGridSelectionListener(final SelectionListener<T> listener) {
-//        return rightGrid.addSelectionListener(listener);
-//    }
+	public void addLeftGridSelectionListener(SelectionListener<Grid<T>,T> listener) {
+		leftGrid.addSelectionListener(listener);
+	}
 
-
+	public void addRightGridSelectionListener(SelectionListener<Grid<T>,T> listener) {
+		rightGrid.addSelectionListener(listener);
+	}
    
 }
