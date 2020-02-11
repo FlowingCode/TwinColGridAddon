@@ -24,14 +24,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.vaadin.flow.component.AbstractField.ComponentValueChangeEvent;
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasComponents;
 import com.vaadin.flow.component.HasSize;
 import com.vaadin.flow.component.HasValue;
@@ -79,10 +77,12 @@ public final class TwinColGrid<T> extends VerticalLayout implements HasValue<Val
 
 	private VerticalLayout rightVL;
 	
-	private Label rightColumnLabel;
+	private Label rightColumnLabel = new Label();
 
-	private Label leftColumnLabel;
-
+	private Label leftColumnLabel = new Label();
+	
+	private Label fakeButtonContainerLabel = new Label();
+	
     /**
      * Constructs a new TwinColGrid with an empty {@link ListDataProvider}.
      */
@@ -119,7 +119,9 @@ public final class TwinColGrid<T> extends VerticalLayout implements HasValue<Val
         removeAllButton.setIcon(VaadinIcon.ANGLE_DOUBLE_LEFT.create());
         removeAllButton.setWidth("3em");
 
-        buttonContainer = new VerticalLayout(addButton, removeButton);
+        fakeButtonContainerLabel.getElement().setProperty("innerHTML", "&nbsp;");
+        fakeButtonContainerLabel.setVisible(false);
+        buttonContainer = new VerticalLayout(fakeButtonContainerLabel, addAllButton, addButton, removeButton, removeAllButton);
         buttonContainer.setPadding(false);
         buttonContainer.setSpacing(false);
         buttonContainer.setSizeUndefined();
@@ -147,14 +149,18 @@ public final class TwinColGrid<T> extends VerticalLayout implements HasValue<Val
         
       
         getElement().getStyle().set("display","flex");
-        leftVL = new VerticalLayout(leftGrid);
-        rightVL = new VerticalLayout(rightGrid);
+        leftColumnLabel.setVisible(false);
+        rightColumnLabel.setVisible(false);
+        leftVL = new VerticalLayout(leftColumnLabel, leftGrid);
+        rightVL = new VerticalLayout(rightColumnLabel, rightGrid);
         leftVL.setSizeFull();
         leftVL.setMargin(false);
         leftVL.setPadding(false);
+        leftVL.setSpacing(false);
         rightVL.setSizeFull();
         rightVL.setMargin(false);
         rightVL.setPadding(false);
+        rightVL.setSpacing(false);
         HorizontalLayout hl = new HorizontalLayout(leftVL, buttonContainer, rightVL);
         hl.setMargin(false);
         hl.setWidthFull();
@@ -204,12 +210,9 @@ public final class TwinColGrid<T> extends VerticalLayout implements HasValue<Val
      * @param rightColumnCaption The text to show, {@code null} to clear
      */
     public TwinColGrid<T> withRightColumnCaption(final String rightColumnCaption) {
-    	this.rightVL.removeAll();
-    	if (rightColumnCaption!=null) {
-        	rightColumnLabel = new Label(rightColumnCaption); 
-        	this.rightVL.add(rightColumnLabel);
-    	}
-    	this.rightVL.add(rightGrid);
+    	rightColumnLabel.setText(rightColumnCaption);
+    	rightColumnLabel.setVisible(true);
+    	fakeButtonContainerLabel.setVisible(true);
         return this;
     }
 
@@ -219,12 +222,9 @@ public final class TwinColGrid<T> extends VerticalLayout implements HasValue<Val
      * @param leftColumnCaption The text to show, {@code null} to clear
      */
     public TwinColGrid<T> withLeftColumnCaption(final String leftColumnCaption) {
-    	this.leftVL.removeAll();
-    	if (leftColumnCaption!=null) {
-	    	leftColumnLabel = new Label(leftColumnCaption); 
-	    	this.leftVL.add(leftColumnLabel);
-    	}
-    	this.leftVL.add(leftGrid);
+    	leftColumnLabel.setText(leftColumnCaption);
+    	leftColumnLabel.setVisible(true);
+    	fakeButtonContainerLabel.setVisible(true);
         return this;
     }
 
@@ -243,21 +243,35 @@ public final class TwinColGrid<T> extends VerticalLayout implements HasValue<Val
         return this;
     }
 
-    public TwinColGrid<T> showAddAllButton() {
-    	long buttons = buttonContainer.getChildren().count();
-    	buttonContainer.removeAll();
-    	buttonContainer.add(addAllButton,addButton,removeButton);
-    	if (buttons>2) buttonContainer.add(removeAllButton);
+    public TwinColGrid<T> withoutAddAllButton() {
+    	addAllButton.setVisible(false);
+    	checkContainerVisibility();
         return this;
     }
 
-    public TwinColGrid<T> showRemoveAllButton() {
-    	long buttons = buttonContainer.getChildren().count();
-    	buttonContainer.removeAll();
-    	if (buttons>2) buttonContainer.add(addAllButton);
-    	buttonContainer.add(addButton,removeButton,removeAllButton);
+	public TwinColGrid<T> withoutRemoveAllButton() {
+    	removeAllButton.setVisible(false);
+    	checkContainerVisibility();
         return this;
     }
+
+    public TwinColGrid<T> withoutAddButton() {
+    	addButton.setVisible(false);
+    	checkContainerVisibility();
+        return this;
+    }
+
+    public TwinColGrid<T> withoutRemoveButton() {
+    	removeButton.setVisible(false);
+    	checkContainerVisibility();
+        return this;
+    }
+   
+    private void checkContainerVisibility() {
+    	boolean atLeastOneIsVisible = removeButton.isVisible() || addButton.isVisible() || removeAllButton.isVisible() || addAllButton.isVisible();
+    	buttonContainer.setVisible(atLeastOneIsVisible);
+	}
+
 
     public TwinColGrid<T> withSizeFull() {
         setSizeFull();

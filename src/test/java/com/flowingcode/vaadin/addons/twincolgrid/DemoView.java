@@ -37,7 +37,7 @@ public class DemoView extends VerticalLayout {
 
 		final TwinColGrid<Book> bindedTwinColGrid = new TwinColGrid<>(availableBooks, "TwinColGrid binding demo")
 				.addColumn(Book::getIsbn, "ISBN").addColumn(Book::getTitle, "Title")
-				.withLeftColumnCaption("Available books").withRightColumnCaption("Added books").showRemoveAllButton()
+				.withLeftColumnCaption("Available books").withRightColumnCaption("Added books").withoutRemoveAllButton()
 				.withSizeFull();
 
 		final Binder<Library> binder = new Binder<>();
@@ -46,7 +46,7 @@ public class DemoView extends VerticalLayout {
 
 		final TwinColGrid<Book> twinColGrid = new TwinColGrid<>(availableBooks,"TwinColGrid no binding demo and drag and drop support").addColumn(Book::getIsbn, "ISBN").addColumn(Book::getTitle, "Title")
 						.withLeftColumnCaption("Available books").withRightColumnCaption("Added books")
-						.showAddAllButton().withSizeFull()
+						.withoutAddAllButton().withSizeFull()
 						.withDragAndDropSupport();
 		twinColGrid.setValue(selectedBooks);
 
