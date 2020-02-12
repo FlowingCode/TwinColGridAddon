@@ -134,13 +134,9 @@ public final class TwinColGrid<T> extends VerticalLayout implements HasValue<Val
             updateSelection(new LinkedHashSet<>(leftGrid.getSelectedItems()), new HashSet<>());
         });
 
-        addButton.addClickListener(e -> {
-            updateSelection(new LinkedHashSet<>(leftGrid.getSelectedItems()), new HashSet<>());
-        });
+        addButton.addClickListener(e -> updateSelection(new LinkedHashSet<>(leftGrid.getSelectedItems()), new HashSet<>()));
 
-        removeButton.addClickListener(e -> {
-            updateSelection(new HashSet<>(), rightGrid.getSelectedItems());
-        });
+        removeButton.addClickListener(e -> updateSelection(new HashSet<>(), rightGrid.getSelectedItems()));
 
         removeAllButton.addClickListener(e -> {
             rightGridDataProvider.getItems().stream().forEach(rightGrid.getSelectionModel()::select);
@@ -237,9 +233,9 @@ public final class TwinColGrid<T> extends VerticalLayout implements HasValue<Val
      *
      * @return the new column
      */
-    public <V> TwinColGrid<T> addColumn(final ValueProvider<T, V> valueProvider, final String caption) {
-        leftGrid.addColumn(new TextRenderer<>(item->String.valueOf(valueProvider.apply(item))));/*.setCaption(caption);*/
-        rightGrid.addColumn(new TextRenderer<>(item->String.valueOf(valueProvider.apply(item))));
+    public <V> TwinColGrid<T> addColumn(final ValueProvider<T, V> valueProvider, final String header) {
+        leftGrid.addColumn(new TextRenderer<>(item->String.valueOf(valueProvider.apply(item)))).setHeader(header);
+        rightGrid.addColumn(new TextRenderer<>(item->String.valueOf(valueProvider.apply(item)))).setHeader(header);
         return this;
     }
 
