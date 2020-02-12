@@ -1,4 +1,4 @@
-[![Build Status](https://jenkins.flowingcode.com/job/TwinColGrid-addon/badge/icon)](https://jenkins.flowingcode.com/job/TwinColGrid-addon)
+[![Build Status](https://jenkins.flowingcode.com/job/TwinColGrid-8-addon/badge/icon)](https://jenkins.flowingcode.com/job/TwinColGrid-8-addon)
 
 # TwinColGrid Add-on for Vaadin
 
