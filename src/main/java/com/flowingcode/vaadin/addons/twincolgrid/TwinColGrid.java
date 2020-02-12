@@ -1,5 +1,3 @@
-package com.flowingcode.vaadin.addons.twincolgrid;
-
 /*-
  * #%L
  * TwinColGrid add-on
@@ -19,6 +17,7 @@ package com.flowingcode.vaadin.addons.twincolgrid;
  * limitations under the License.
  * #L%
  */
+package com.flowingcode.vaadin.addons.twincolgrid;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -33,6 +32,7 @@ import com.vaadin.flow.component.AbstractField.ComponentValueChangeEvent;
 import com.vaadin.flow.component.HasComponents;
 import com.vaadin.flow.component.HasSize;
 import com.vaadin.flow.component.HasValue;
+import com.vaadin.flow.component.ItemLabelGenerator;
 import com.vaadin.flow.component.HasValue.ValueChangeEvent;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
@@ -233,9 +233,9 @@ public final class TwinColGrid<T> extends VerticalLayout implements HasValue<Val
      *
      * @return the new column
      */
-    public <V> TwinColGrid<T> addColumn(final ValueProvider<T, V> valueProvider, final String header) {
-        leftGrid.addColumn(new TextRenderer<>(item->String.valueOf(valueProvider.apply(item)))).setHeader(header);
-        rightGrid.addColumn(new TextRenderer<>(item->String.valueOf(valueProvider.apply(item)))).setHeader(header);
+    public <V> TwinColGrid<T> addColumn(final ItemLabelGenerator<T> itemLabelGenerator, final String header) {
+        leftGrid.addColumn(new TextRenderer<>(itemLabelGenerator)).setHeader(header);
+        rightGrid.addColumn(new TextRenderer<>(itemLabelGenerator)).setHeader(header);
         return this;
     }
 
