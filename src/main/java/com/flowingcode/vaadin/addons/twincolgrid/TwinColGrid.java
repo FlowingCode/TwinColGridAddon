@@ -47,7 +47,6 @@ import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.renderer.TextRenderer;
 import com.vaadin.flow.data.selection.SelectionListener;
-import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.shared.Registration;
 
 @SuppressWarnings("serial")
@@ -233,7 +232,7 @@ public final class TwinColGrid<T> extends VerticalLayout implements HasValue<Val
      *
      * @return the new column
      */
-    public <V> TwinColGrid<T> addColumn(final ItemLabelGenerator<T> itemLabelGenerator, final String header) {
+    public TwinColGrid<T> addColumn(final ItemLabelGenerator<T> itemLabelGenerator, final String header) {
         leftGrid.addColumn(new TextRenderer<>(itemLabelGenerator)).setHeader(header);
         rightGrid.addColumn(new TextRenderer<>(itemLabelGenerator)).setHeader(header);
         return this;
