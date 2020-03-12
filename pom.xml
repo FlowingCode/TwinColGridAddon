@@ -135,11 +135,6 @@
 					<supportedPackagings>
 						<supportedPackaging>jar</supportedPackaging>
                     </supportedPackagings>
-                    <webAppConfig>
-                        <!-- This is only needed to be able to unzip webjars 
-                            directly into src/test/webjar-debug and modify them for testing -->
-                        <resourceBase>src/test/webjar-debug/META-INF/resources</resourceBase>
-                    </webAppConfig>
                 </configuration>
             </plugin>
         </plugins>

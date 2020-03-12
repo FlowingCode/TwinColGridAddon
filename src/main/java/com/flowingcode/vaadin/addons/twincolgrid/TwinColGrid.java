@@ -52,13 +52,13 @@ import com.vaadin.flow.shared.Registration;
 @SuppressWarnings("serial")
 public final class TwinColGrid<T> extends VerticalLayout implements HasValue<ValueChangeEvent<Set<T>>,Set<T>>, HasComponents, HasSize {
 
-    private final Grid<T> leftGrid = new Grid<>();
+    protected final Grid<T> leftGrid = new Grid<>();
 
-    private final Grid<T> rightGrid = new Grid<>();
+    protected final Grid<T> rightGrid = new Grid<>();
 
-    private ListDataProvider<T> leftGridDataProvider;
+    protected ListDataProvider<T> leftGridDataProvider;
 
-    private final ListDataProvider<T> rightGridDataProvider;
+    protected ListDataProvider<T> rightGridDataProvider;
 
     private final Button addAllButton = new Button();
 
