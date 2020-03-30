@@ -52,13 +52,13 @@ import com.vaadin.ui.renderers.TextRenderer;
 
 public final class TwinColGrid<T> extends CustomComponent implements HasValue<Set<T>> {
 
-    private final Grid<T> leftGrid = new Grid<>();
+    protected final Grid<T> leftGrid = new Grid<>();
 
-    private final Grid<T> rightGrid = new Grid<>();
+    protected final Grid<T> rightGrid = new Grid<>();
 
-    private ListDataProvider<T> leftGridDataProvider;
+    protected ListDataProvider<T> leftGridDataProvider;
 
-    private final ListDataProvider<T> rightGridDataProvider;
+    protected ListDataProvider<T> rightGridDataProvider;
 
     private final Button addAllButton = new Button();
 
