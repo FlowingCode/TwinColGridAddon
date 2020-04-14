@@ -4,7 +4,7 @@
 	<groupId>com.flowingcode.vaadin.addons</groupId>
 	<artifactId>twincolgrid-addon</artifactId>
 	<packaging>pom</packaging>
-	<version>1.0.3-SNAPSHOT</version>
+	<version>1.0.4-SNAPSHOT</version>
 	<name>TwinColGrid Add-on Project</name>
 	<prerequisites>
 		<maven>3</maven>
@@ -121,6 +121,11 @@
 						<licenseName>apache_v2</licenseName>
 					</configuration>
 			   </plugin>
+			   <plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>3.0.0-M3</version>
+				</plugin>
 		   </plugins>
 		</pluginManagement>			   
 
