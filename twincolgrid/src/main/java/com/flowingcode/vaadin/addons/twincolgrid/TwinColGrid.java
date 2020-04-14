@@ -50,7 +50,7 @@ import com.vaadin.ui.components.grid.GridDropTarget;
 import com.vaadin.ui.components.grid.NoSelectionModel;
 import com.vaadin.ui.renderers.TextRenderer;
 
-public final class TwinColGrid<T> extends CustomComponent implements HasValue<Set<T>> {
+public class TwinColGrid<T> extends CustomComponent implements HasValue<Set<T>> {
 
     protected final Grid<T> leftGrid = new Grid<>();
 
