@@ -21,6 +21,7 @@ package com.flowingcode.vaadin.addons.twincolgrid;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Objects;
@@ -32,8 +33,8 @@ import com.vaadin.flow.component.AbstractField.ComponentValueChangeEvent;
 import com.vaadin.flow.component.HasComponents;
 import com.vaadin.flow.component.HasSize;
 import com.vaadin.flow.component.HasValue;
-import com.vaadin.flow.component.ItemLabelGenerator;
 import com.vaadin.flow.component.HasValue.ValueChangeEvent;
+import com.vaadin.flow.component.ItemLabelGenerator;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.SelectionMode;
@@ -242,6 +243,13 @@ public class TwinColGrid<T> extends VerticalLayout
 		return this;
 	}
 
+	public TwinColGrid<T> addSortableColumn(final ItemLabelGenerator<T> itemLabelGenerator, Comparator<T> comparator, final String header) {
+		leftGrid.addColumn(new TextRenderer<>(itemLabelGenerator)).setHeader(header).setComparator(comparator).setSortable(true);
+		rightGrid.addColumn(new TextRenderer<>(itemLabelGenerator)).setHeader(header).setComparator(comparator).setSortable(true);;
+		return this;
+	}
+	
+	
 	public TwinColGrid<T> withoutAddAllButton() {
 		addAllButton.setVisible(false);
 		checkContainerVisibility();

@@ -20,15 +20,13 @@
 package com.flowingcode.vaadin.addons.twincolgrid;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.flowingcode.vaadin.addons.twincolgrid.TwinColGrid;
 import com.vaadin.flow.component.dependency.CssImport;
-import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Label;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.router.Route;
@@ -63,7 +61,9 @@ public class DemoView extends VerticalLayout {
 		binder.bind(bindedTwinColGrid, Library::getBooks, Library::setBooks);
 		binder.setBean(library);
 
-		final TwinColGrid<Book> twinColGrid = new TwinColGrid<>(availableBooks,"TwinColGrid no binding demo and drag and drop support").addColumn(Book::getIsbn, "ISBN").addColumn(Book::getTitle, "Title")
+		final TwinColGrid<Book> twinColGrid = new TwinColGrid<>(availableBooks,"TwinColGrid no binding demo and drag and drop support")
+						.addSortableColumn(Book::getIsbn, Comparator.comparing(Book::getIsbn), "ISBN")
+						.addSortableColumn(Book::getTitle, Comparator.comparing(Book::getTitle), "Title")
 						.withLeftColumnCaption("Available books").withRightColumnCaption("Added books")
 						.withoutAddAllButton().withSizeFull()
 						.withDragAndDropSupport();
