@@ -21,6 +21,7 @@ package com.flowingcode.vaadin.twincolgriddemo;
  */
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -80,8 +81,8 @@ public class MyUI extends UI {
         binder.setBean(library);
 
         final TwinColGrid<Book> twinColGrid = new TwinColGrid<>("TwinColGrid no binding demo and drag and drop support", availableBooks)
-                .addColumn(Book::getIsbn, "ISBN")
-                .addColumn(Book::getTitle, "Title")
+                .addSortableColumn(Book::getIsbn, Comparator.comparing(Book::getIsbn)::compare, "ISBN")
+                .addSortableColumn(Book::getTitle, Comparator.comparing(Book::getTitle)::compare, "Title")
                 .withLeftColumnCaption("Available books")
                 .withRightColumnCaption("Added books")
                 .showAddAllButton()
