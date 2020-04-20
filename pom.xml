@@ -4,7 +4,7 @@
 	<groupId>com.flowingcode.vaadin.addons</groupId>
 	<artifactId>twincolgrid-addon</artifactId>
 	<packaging>pom</packaging>
-	<version>1.0.5-SNAPSHOT</version>
+	<version>1.0.5</version>
 	<name>TwinColGrid Add-on Project</name>
 	<prerequisites>
 		<maven>3</maven>
@@ -24,7 +24,7 @@
         <url>https://github.com/${github.account}/${github.project}</url>
         <connection>scm:git:git://github.com/${github.account}/${github.project}.git</connection>
         <developerConnection>scm:git:ssh://git@github.com:/${github.account}/${github.project}.git</developerConnection>
-        <tag>TwinColGrid add-on for Vaadin</tag>
+        <tag>twincolgrid-addon-1.0.5</tag>
     </scm>
 
     <issueManagement>
