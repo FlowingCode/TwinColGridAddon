@@ -173,6 +173,30 @@ public class TwinColGrid<T> extends VerticalLayout
 	public void setItems(Stream<T> items) {
 		setDataProvider(DataProvider.fromStream(items));
 	}
+	
+	public void setLeftGridClassName(String classname) {
+		leftGrid.setClassName(classname);
+	}
+
+	public void addLeftGridClassName(String classname) {
+		leftGrid.addClassName(classname);
+	}
+
+	public void removeLeftGridClassName(String classname) {
+		leftGrid.removeClassName(classname);
+	}
+
+	public void setRightGridClassName(String classname) {
+		rightGrid.setClassName(classname);
+	}
+
+	public void addRightGridClassName(String classname) {
+		rightGrid.addClassName(classname);
+	}
+
+	public void removeRightGridClassName(String classname) {
+		rightGrid.removeClassName(classname);
+	}
 
 	private void setDataProvider(ListDataProvider<T> dataProvider) {
 		this.leftGridDataProvider = dataProvider;
