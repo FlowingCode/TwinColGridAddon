@@ -144,7 +144,30 @@ public class TwinColGrid<T> extends CustomComponent implements HasValue<Set<T>> 
 	public void setItems(Stream<T> items) {
 		setDataProvider(DataProvider.fromStream(items));
 	}
+	
+	public void setLeftGridClassName(String classname) {
+		leftGrid.setStyleName(classname);
+	}
 
+	public void addLeftGridClassName(String classname) {
+		leftGrid.addStyleName(classname);
+	}
+
+	public void removeLeftGridClassName(String classname) {
+		leftGrid.removeStyleName(classname);
+	}
+
+	public void setRightGridClassName(String classname) {
+		rightGrid.setStyleName(classname);
+	}
+
+	public void addRightGridClassName(String classname) {
+		rightGrid.addStyleName(classname);
+	}
+
+	public void removeRightGridClassName(String classname) {
+		rightGrid.removeStyleName(classname);
+	}
 	private void setDataProvider(ListDataProvider<T> dataProvider) {
 		this.leftGridDataProvider = dataProvider;
 		leftGrid.setDataProvider(dataProvider);
