@@ -160,6 +160,8 @@ public class TwinColGrid<T> extends VerticalLayout
 		rightVL.setPadding(false);
 		rightVL.setSpacing(false);
 		HorizontalLayout hl = new HorizontalLayout(leftVL, buttonContainer, rightVL);
+		hl.getElement().getStyle().set("min-height", "0px");
+		hl.getElement().getStyle().set("flex", "1 1 0px");
 		hl.setMargin(false);
 		hl.setWidthFull();
 		add(hl);
