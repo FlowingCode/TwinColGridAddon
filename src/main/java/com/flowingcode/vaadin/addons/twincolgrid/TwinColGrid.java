@@ -84,6 +84,8 @@ public class TwinColGrid<T> extends VerticalLayout
 
 	private Label fakeButtonContainerLabel = new Label();
 
+    private Boolean droppedInsideGrid = false;
+
 	/**
 	 * Constructs a new TwinColGrid with an empty {@link ListDataProvider}.
 	 */
@@ -419,27 +421,35 @@ public class TwinColGrid<T> extends VerticalLayout
 			targetGrid.setDropMode(GridDropMode.ON_GRID);
 		});
 
-		sourceGrid.addDragEndListener(event -> {
-			if (draggedGrid == null) {
-				draggedItems.clear();
-				return;
-			}
-			final ListDataProvider<T> dragGridSourceDataProvider = (ListDataProvider<T>) draggedGrid.getDataProvider();
-			dragGridSourceDataProvider.getItems().removeAll(draggedItems);
-			dragGridSourceDataProvider.refreshAll();
+        sourceGrid.addDragEndListener(event -> {
+          if (droppedInsideGrid) {
+            droppedInsideGrid = false;
+            if (draggedGrid == null) {
+              draggedItems.clear();
+              return;
+            }
+            final ListDataProvider<T> dragGridSourceDataProvider =
+                (ListDataProvider<T>) draggedGrid.getDataProvider();
+            dragGridSourceDataProvider.getItems().removeAll(draggedItems);
+            dragGridSourceDataProvider.refreshAll();
 
-			draggedItems.clear();
+            draggedItems.clear();
 
-			draggedGrid.deselectAll();
-			draggedGrid = null;
-		});
+            draggedGrid.deselectAll();
+            draggedGrid = null;
 
-		targetGrid.addDropListener(event -> {
-			final ListDataProvider<T> dragGridTargetDataProvider = (ListDataProvider<T>) event.getSource()
-					.getDataProvider();
-			dragGridTargetDataProvider.getItems().addAll(draggedItems);
-			dragGridTargetDataProvider.refreshAll();
-		});
+          } else {
+            draggedItems.clear();
+          }
+        });
+
+        targetGrid.addDropListener(event -> {
+          droppedInsideGrid = true;
+          final ListDataProvider<T> dragGridTargetDataProvider =
+              (ListDataProvider<T>) event.getSource().getDataProvider();
+          dragGridTargetDataProvider.getItems().addAll(draggedItems);
+          dragGridTargetDataProvider.refreshAll();
+        });
 	}
 
 	public void addLeftGridSelectionListener(SelectionListener<Grid<T>, T> listener) {
