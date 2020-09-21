@@ -52,10 +52,11 @@ public class DemoView extends VerticalLayout {
 		availableBooks.add(new Book("1782169776", "Learning Vaadin 7, Second Edition"));
 
         // Binded
-		final TwinColGrid<Book> bindedTwinColGrid = new TwinColGrid<>(availableBooks, "TwinColGrid binding demo")
+        final TwinColGrid<Book> bindedTwinColGrid = new TwinColGrid<>(availableBooks,
+            "TwinColGrid binding demo, row select without checkbox")
 				.addColumn(Book::getIsbn, "ISBN").addColumn(Book::getTitle, "Title")
 				.withLeftColumnCaption("Available books").withRightColumnCaption("Added books").withoutRemoveAllButton()
-				.withSizeFull();
+            .withSizeFull().setSelectRowOnClick();
 
 		final Binder<Library> binder = new Binder<>();
 		binder.bind(bindedTwinColGrid, Library::getBooks, Library::setBooks);

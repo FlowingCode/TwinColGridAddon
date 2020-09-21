@@ -31,3 +31,4 @@ rebel.xml
 /webpack.config.js
 /webpack.generated.js
 /package.json
+/bin/

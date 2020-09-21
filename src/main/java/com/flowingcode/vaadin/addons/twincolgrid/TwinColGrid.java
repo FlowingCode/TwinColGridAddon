@@ -36,6 +36,7 @@ import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.HasValue.ValueChangeEvent;
 import com.vaadin.flow.component.ItemLabelGenerator;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.grid.Grid.SelectionMode;
@@ -56,6 +57,7 @@ import com.vaadin.flow.function.SerializableFunction;
 import com.vaadin.flow.shared.Registration;
 
 @SuppressWarnings("serial")
+@CssImport(value = "./styles/multiselect-cb-hide.css", themeFor = "vaadin-grid")
 public class TwinColGrid<T> extends VerticalLayout
 		implements HasValue<ValueChangeEvent<Set<T>>, Set<T>>, HasComponents, HasSize {
 
@@ -504,5 +506,26 @@ public class TwinColGrid<T> extends VerticalLayout
       final String header, String filterPlaceholder, boolean enableClearButton) {
     return addFilterableColumn(itemLabelGenerator, itemLabelGenerator, header, filterPlaceholder,
         enableClearButton);
+  }
+
+  public TwinColGrid<T> setSelectRowOnClick() {
+    leftGrid.addClassName("hide-selector-col");
+    rightGrid.addClassName("hide-selector-col");
+
+    leftGrid.addItemClickListener(c -> {
+      if (leftGrid.getSelectedItems().contains(c.getItem())) {
+        leftGrid.deselect(c.getItem());
+      } else {
+        leftGrid.select(c.getItem());
+      }
+    });
+    rightGrid.addItemClickListener(c -> {
+      if (rightGrid.getSelectedItems().contains(c.getItem())) {
+        rightGrid.deselect(c.getItem());
+      } else {
+        rightGrid.select(c.getItem());
+      }
+    });
+    return this;
   }
 }
