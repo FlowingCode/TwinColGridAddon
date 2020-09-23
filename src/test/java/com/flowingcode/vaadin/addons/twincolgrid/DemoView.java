@@ -24,7 +24,6 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -52,29 +51,41 @@ public class DemoView extends VerticalLayout {
 		availableBooks.add(new Book("9529267533", "Book of Vaadin"));
 		availableBooks.add(new Book("1782169776", "Learning Vaadin 7, Second Edition"));
 
-		final TwinColGrid<Book> bindedTwinColGrid = new TwinColGrid<>(availableBooks, "TwinColGrid binding demo")
+        // Binded
+        final TwinColGrid<Book> bindedTwinColGrid = new TwinColGrid<>(availableBooks,
+            "TwinColGrid binding demo, row select without checkbox")
 				.addColumn(Book::getIsbn, "ISBN").addColumn(Book::getTitle, "Title")
 				.withLeftColumnCaption("Available books").withRightColumnCaption("Added books").withoutRemoveAllButton()
-				.withSizeFull();
+            .withSizeFull().selectRowOnClick();
 
 		final Binder<Library> binder = new Binder<>();
 		binder.bind(bindedTwinColGrid, Library::getBooks, Library::setBooks);
 		binder.setBean(library);
 
-		final TwinColGrid<Book> twinColGrid = new TwinColGrid<>(availableBooks,"TwinColGrid no binding demo and drag and drop support")
-						.addSortableColumn(Book::getIsbn, Comparator.comparing(Book::getIsbn), "ISBN")
-						.addSortableColumn(Book::getTitle, Comparator.comparing(Book::getTitle), "Title")
-						.withLeftColumnCaption("Available books").withRightColumnCaption("Added books")
-						.withoutAddAllButton().withSizeFull()
-						.withDragAndDropSupport();
-		twinColGrid.setValue(selectedBooks);
+        // Filterable
+        final TwinColGrid<Book> twinFilterableColGrid =
+            new TwinColGrid<>(availableBooks, "TwinColGrid no binding demo and filtering support")
+                .addFilterableColumn(Book::getIsbn, Book::getIsbn, "ISBN", "ISBN Filter", true)
+                .addFilterableColumn(Book::getTitle, "Title", "Title filter", false)
+                .withLeftColumnCaption("Available books").withRightColumnCaption("Added books")
+                .withoutAddAllButton().withSizeFull();
+        twinFilterableColGrid.setValue(selectedBooks);
+
+        // Drag and drop
+        final TwinColGrid<Book> twinColGrid = new TwinColGrid<>(availableBooks,"TwinColGrid no binding demo and drag and drop support")
+                        .addSortableColumn(Book::getIsbn, Comparator.comparing(Book::getIsbn), "ISBN")
+                        .addSortableColumn(Book::getTitle, Comparator.comparing(Book::getTitle), "Title")
+                        .withLeftColumnCaption("Available books").withRightColumnCaption("Added books")
+                        .withoutAddAllButton().withSizeFull()
+                        .withDragAndDropSupport();
+        twinColGrid.setValue(selectedBooks);
 
 		final Label countLabel = new Label("Selected items in left grid: 0");
 		twinColGrid.addLeftGridSelectionListener(
 				e -> countLabel.setText("Selected items in left grid: " + e.getAllSelectedItems().size()));
 		twinColGrid.addValueChangeListener(e -> countLabel.setText("Selected items in left grid: 0"));
 
-		add(bindedTwinColGrid, twinColGrid, countLabel);
+        add(bindedTwinColGrid, twinFilterableColGrid, twinColGrid, countLabel);
 		setSizeFull();
 	}
 }

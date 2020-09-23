@@ -28,7 +28,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
+import org.apache.commons.lang3.StringUtils;
 import com.vaadin.flow.component.AbstractField.ComponentValueChangeEvent;
 import com.vaadin.flow.component.HasComponents;
 import com.vaadin.flow.component.HasSize;
@@ -36,21 +36,28 @@ import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.HasValue.ValueChangeEvent;
 import com.vaadin.flow.component.ItemLabelGenerator;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.grid.Grid.SelectionMode;
 import com.vaadin.flow.component.grid.GridNoneSelectionModel;
+import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.grid.dnd.GridDropMode;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.renderer.TextRenderer;
 import com.vaadin.flow.data.selection.SelectionListener;
+import com.vaadin.flow.data.value.ValueChangeMode;
+import com.vaadin.flow.function.SerializableFunction;
 import com.vaadin.flow.shared.Registration;
 
 @SuppressWarnings("serial")
+@CssImport(value = "./styles/multiselect-cb-hide.css", themeFor = "vaadin-grid")
 public class TwinColGrid<T> extends VerticalLayout
 		implements HasValue<ValueChangeEvent<Set<T>>, Set<T>>, HasComponents, HasSize {
 
@@ -85,6 +92,9 @@ public class TwinColGrid<T> extends VerticalLayout
 	private Label fakeButtonContainerLabel = new Label();
 
     private Boolean droppedInsideGrid = false;
+    private HeaderRow leftHeaderRow;
+
+    private HeaderRow rightHeaderRow;
 
 	/**
 	 * Constructs a new TwinColGrid with an empty {@link ListDataProvider}.
@@ -460,4 +470,71 @@ public class TwinColGrid<T> extends VerticalLayout
 		rightGrid.addSelectionListener(listener);
 	}
 
+    public TwinColGrid<T> addFilterableColumn(final ItemLabelGenerator<T> itemLabelGenerator,
+        SerializableFunction<T, String> filterableValue, final String header, String filterPlaceholder,
+        boolean enableClearButton) {
+      Column<T> column =
+          leftGrid.addColumn(new TextRenderer<>(itemLabelGenerator)).setHeader(header);
+      
+      TextField leftFilterTF = new TextField();
+      leftFilterTF.setClearButtonVisible(enableClearButton);
+      
+      leftFilterTF.addValueChangeListener(event -> leftGridDataProvider.addFilter(
+          filterableEntity -> StringUtils
+              .containsIgnoreCase(filterableValue.apply(filterableEntity),
+              leftFilterTF.getValue())));
+
+      if (leftHeaderRow == null) {
+        leftHeaderRow = leftGrid.appendHeaderRow();
+      }
+      leftHeaderRow.getCell(column).setComponent(leftFilterTF);
+      leftFilterTF.setValueChangeMode(ValueChangeMode.EAGER);
+      leftFilterTF.setSizeFull();
+      leftFilterTF.setPlaceholder(filterPlaceholder);
+      
+      column = rightGrid.addColumn(new TextRenderer<>(itemLabelGenerator)).setHeader(header);
+
+      TextField rightFilterTF = new TextField();
+      rightFilterTF.setClearButtonVisible(enableClearButton);
+      rightFilterTF.addValueChangeListener(event -> rightGridDataProvider
+          .addFilter(filterableEntity -> StringUtils.containsIgnoreCase(
+              filterableValue.apply(filterableEntity), rightFilterTF.getValue())));
+
+      if (rightHeaderRow == null) {
+        rightHeaderRow = rightGrid.appendHeaderRow();
+      }
+
+      rightHeaderRow.getCell(column).setComponent(rightFilterTF);
+      rightFilterTF.setValueChangeMode(ValueChangeMode.EAGER);
+      rightFilterTF.setSizeFull();
+      rightFilterTF.setPlaceholder(filterPlaceholder);
+      return this;
+  }
+    
+  public TwinColGrid<T> addFilterableColumn(final ItemLabelGenerator<T> itemLabelGenerator,
+      final String header, String filterPlaceholder, boolean enableClearButton) {
+    return addFilterableColumn(itemLabelGenerator, itemLabelGenerator, header, filterPlaceholder,
+        enableClearButton);
+  }
+
+  public TwinColGrid<T> selectRowOnClick() {
+    leftGrid.addClassName("hide-selector-col");
+    rightGrid.addClassName("hide-selector-col");
+
+    leftGrid.addItemClickListener(c -> {
+      if (leftGrid.getSelectedItems().contains(c.getItem())) {
+        leftGrid.deselect(c.getItem());
+      } else {
+        leftGrid.select(c.getItem());
+      }
+    });
+    rightGrid.addItemClickListener(c -> {
+      if (rightGrid.getSelectedItems().contains(c.getItem())) {
+        rightGrid.deselect(c.getItem());
+      } else {
+        rightGrid.select(c.getItem());
+      }
+    });
+    return this;
+  }
 }
