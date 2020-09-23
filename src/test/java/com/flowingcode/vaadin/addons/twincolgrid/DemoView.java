@@ -56,7 +56,7 @@ public class DemoView extends VerticalLayout {
             "TwinColGrid binding demo, row select without checkbox")
 				.addColumn(Book::getIsbn, "ISBN").addColumn(Book::getTitle, "Title")
 				.withLeftColumnCaption("Available books").withRightColumnCaption("Added books").withoutRemoveAllButton()
-            .withSizeFull().setSelectRowOnClick();
+            .withSizeFull().selectRowOnClick();
 
 		final Binder<Library> binder = new Binder<>();
 		binder.bind(bindedTwinColGrid, Library::getBooks, Library::setBooks);

@@ -508,7 +508,7 @@ public class TwinColGrid<T> extends VerticalLayout
         enableClearButton);
   }
 
-  public TwinColGrid<T> setSelectRowOnClick() {
+  public TwinColGrid<T> selectRowOnClick() {
     leftGrid.addClassName("hide-selector-col");
     rightGrid.addClassName("hide-selector-col");
 
