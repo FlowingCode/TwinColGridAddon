@@ -80,13 +80,13 @@ public class TwinColGrid<T> extends VerticalLayout
 		}
 	}
 
-	private final TwinColModel<T> left = new TwinColModel<>();
+	private final TwinColModel<T> left;
 
-	private final TwinColModel<T> right = new TwinColModel<>();
+	private final TwinColModel<T> right;
 
-	protected final Grid<T> leftGrid = left.grid;
+	protected final Grid<T> leftGrid;
 
-	protected final Grid<T> rightGrid = right.grid;
+	protected final Grid<T> rightGrid;
 
 	/** @deprecated Use leftGrid.getDataProvider() */
 	@Deprecated
@@ -123,6 +123,11 @@ public class TwinColGrid<T> extends VerticalLayout
 	 * @param dataProvider the data provider, not {@code null}
 	 */
 	public TwinColGrid(final ListDataProvider<T> dataProvider, String caption) {
+		left = new TwinColModel<>();
+		right = new TwinColModel<>();
+		leftGrid = left.grid;
+		rightGrid = right.grid;
+
 		setMargin(false);
 		setPadding(false);
 		if (caption != null) {
@@ -131,8 +136,7 @@ public class TwinColGrid<T> extends VerticalLayout
 
 		setDataProvider(dataProvider);
 
-		ListDataProvider<T> rightGridDataProvider = DataProvider.ofCollection(new LinkedHashSet<>());
-		this.rightGridDataProvider = rightGridDataProvider;
+		rightGridDataProvider = DataProvider.ofCollection(new LinkedHashSet<>());
 		rightGrid.setDataProvider(rightGridDataProvider);
 
 		addButton.setIcon(VaadinIcon.ANGLE_RIGHT.create());
@@ -298,7 +302,7 @@ public class TwinColGrid<T> extends VerticalLayout
 
 	public TwinColGrid<T> addSortableColumn(final ItemLabelGenerator<T> itemLabelGenerator, Comparator<T> comparator, final String header) {
 		leftGrid.addColumn(new TextRenderer<>(itemLabelGenerator)).setHeader(header).setComparator(comparator).setSortable(true);
-		rightGrid.addColumn(new TextRenderer<>(itemLabelGenerator)).setHeader(header).setComparator(comparator).setSortable(true);;
+		rightGrid.addColumn(new TextRenderer<>(itemLabelGenerator)).setHeader(header).setComparator(comparator).setSortable(true);
 		return this;
 	}
 
