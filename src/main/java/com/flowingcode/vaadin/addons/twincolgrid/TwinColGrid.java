@@ -19,19 +19,6 @@
  */
 package com.flowingcode.vaadin.addons.twincolgrid;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Objects;
-import java.util.Set;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.vaadin.flow.component.AbstractField.ComponentValueChangeEvent;
 import com.vaadin.flow.component.HasComponents;
 import com.vaadin.flow.component.HasSize;
@@ -58,13 +45,25 @@ import com.vaadin.flow.data.selection.SelectionListener;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.function.SerializableFunction;
 import com.vaadin.flow.shared.Registration;
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Objects;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import org.apache.commons.lang3.StringUtils;
 
 @SuppressWarnings("serial")
 @CssImport(value = "./styles/multiselect-cb-hide.css", themeFor = "vaadin-grid")
 public class TwinColGrid<T> extends VerticalLayout
 		implements HasValue<ValueChangeEvent<Set<T>>, Set<T>>, HasComponents, HasSize {
 
-	private final static class TwinColModel<T> {
+	private static final class TwinColModel<T> implements Serializable {
 		final Grid<T> grid = new Grid<>();
 		final Label columnLabel = new Label();
 		final VerticalLayout layout = new VerticalLayout(columnLabel, grid);
