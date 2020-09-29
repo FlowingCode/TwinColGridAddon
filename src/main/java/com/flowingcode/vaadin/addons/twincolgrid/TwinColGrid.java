@@ -372,6 +372,11 @@ public class TwinColGrid<T> extends VerticalLayout
 		return left.columnLabel.getText();
 	}
 
+	/**
+	 * Set {@code value} to grid
+	 * 
+	 * @param value the value, cannot be {@code null}
+	 */
 	@Override
 	public void setValue(final Set<T> value) {
 		Objects.requireNonNull(value);
