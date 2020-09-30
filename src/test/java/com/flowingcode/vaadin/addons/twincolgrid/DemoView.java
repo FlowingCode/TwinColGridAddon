@@ -19,16 +19,19 @@
  */
 package com.flowingcode.vaadin.addons.twincolgrid;
 
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.provider.SortDirection;
+import com.vaadin.flow.router.Route;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import com.vaadin.flow.component.dependency.CssImport;
-import com.vaadin.flow.component.html.Label;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.router.Route;
 
 @SuppressWarnings("serial")
 @Route("")
@@ -73,7 +76,7 @@ public class DemoView extends VerticalLayout {
 
         // Drag and drop
         final TwinColGrid<Book> twinColGrid = new TwinColGrid<>(availableBooks,"TwinColGrid no binding demo and drag and drop support")
-                        .addSortableColumn(Book::getIsbn, Comparator.comparing(Book::getIsbn), "ISBN")
+				.addSortableColumn(Book::getIsbn, Comparator.comparing(Book::getIsbn), "ISBN")
                         .addSortableColumn(Book::getTitle, Comparator.comparing(Book::getTitle), "Title")
                         .withLeftColumnCaption("Available books").withRightColumnCaption("Added books")
                         .withoutAddAllButton().withSizeFull()
@@ -85,7 +88,22 @@ public class DemoView extends VerticalLayout {
 				e -> countLabel.setText("Selected items in left grid: " + e.getAllSelectedItems().size()));
 		twinColGrid.addValueChangeListener(e -> countLabel.setText("Selected items in left grid: 0"));
 
-        add(bindedTwinColGrid, twinFilterableColGrid, twinColGrid, countLabel);
+		final Button sortLeftBtn = new Button("Sort left grid ascending");
+		sortLeftBtn.addClickListener(c -> {
+			twinColGrid.sortLeftGrid("ISBN", SortDirection.ASCENDING);
+		});
+		final Button sortRightBtn = new Button("Sort right grid descending");
+		sortRightBtn.addClickListener(c -> {
+			twinColGrid.sortRightGrid("ISBN", SortDirection.DESCENDING);
+		});
+		final Button resetSortBtn = new Button("Reset columns sort orders");
+		resetSortBtn.addClickListener(c -> {
+			twinColGrid.sortLeftGrid("ISBN", null);
+			twinColGrid.sortRightGrid("ISBN", null);
+		});
+
+		add(bindedTwinColGrid, twinFilterableColGrid, twinColGrid,
+				new HorizontalLayout(sortLeftBtn, sortRightBtn, resetSortBtn), countLabel);
 		setSizeFull();
 	}
 }

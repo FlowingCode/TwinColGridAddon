@@ -31,6 +31,7 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.grid.Grid.SelectionMode;
 import com.vaadin.flow.component.grid.GridNoneSelectionModel;
+import com.vaadin.flow.component.grid.GridSortOrder;
 import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.grid.dnd.GridDropMode;
 import com.vaadin.flow.component.html.Label;
@@ -40,12 +41,14 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.provider.ListDataProvider;
+import com.vaadin.flow.data.provider.SortDirection;
 import com.vaadin.flow.data.renderer.TextRenderer;
 import com.vaadin.flow.data.selection.SelectionListener;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.function.SerializableFunction;
 import com.vaadin.flow.shared.Registration;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -296,14 +299,14 @@ public class TwinColGrid<T> extends VerticalLayout
 	 * @return the new column
 	 */
 	public TwinColGrid<T> addColumn(final ItemLabelGenerator<T> itemLabelGenerator, final String header) {
-		leftGrid.addColumn(new TextRenderer<>(itemLabelGenerator)).setHeader(header);
-		rightGrid.addColumn(new TextRenderer<>(itemLabelGenerator)).setHeader(header);
+		leftGrid.addColumn(new TextRenderer<>(itemLabelGenerator)).setHeader(header).setKey(header);
+		rightGrid.addColumn(new TextRenderer<>(itemLabelGenerator)).setHeader(header).setKey(header);
 		return this;
 	}
 
 	public TwinColGrid<T> addSortableColumn(final ItemLabelGenerator<T> itemLabelGenerator, Comparator<T> comparator, final String header) {
-		leftGrid.addColumn(new TextRenderer<>(itemLabelGenerator)).setHeader(header).setComparator(comparator).setSortable(true);
-		rightGrid.addColumn(new TextRenderer<>(itemLabelGenerator)).setHeader(header).setComparator(comparator).setSortable(true);
+		leftGrid.addColumn(new TextRenderer<>(itemLabelGenerator)).setHeader(header).setComparator(comparator).setSortable(true).setKey(header);
+		rightGrid.addColumn(new TextRenderer<>(itemLabelGenerator)).setHeader(header).setComparator(comparator).setSortable(true).setKey(header);
 		return this;
 	}
 
@@ -536,4 +539,36 @@ public class TwinColGrid<T> extends VerticalLayout
 		});
     return this;
   }
+
+	/**
+	 * Forces a defined sort order for the column with {@code columnHeader} header
+	 * in the left {@link Grid}. Setting {@code null} or on {@code direction} resets
+	 * the ordering of all columns.
+	 * 
+	 * @param columnHeader the header of the column to be sorted, cannot be
+	 *                     {@code null}
+	 * @param direction    the sort direction
+	 */
+	public void sortLeftGrid(String columnHeader, SortDirection direction) {
+		toggleColumnSort(leftGrid, columnHeader, direction);
+	}
+
+	/**
+	 * Forces a defined sort order for the column with {@code columnHeader} header
+	 * in the right {@link Grid}. Setting {@code null} or on {@code direction}
+	 * resets the ordering of all columns.
+	 * 
+	 * @param columnHeader the header of the column to be sorted, cannot be
+	 *                     {@code null}
+	 * @param direction    the sort direction
+	 */
+	public void sortRightGrid(String columnHeader, SortDirection direction) {
+		toggleColumnSort(rightGrid, columnHeader, direction);
+	}
+
+	private void toggleColumnSort(Grid<T> grid, String columnKey, SortDirection direction) {
+		Column<T> column = grid.getColumnByKey(columnKey);
+		GridSortOrder<T> order = new GridSortOrder<>(column, direction);
+		grid.sort(Arrays.asList(order));
+	}
 }
