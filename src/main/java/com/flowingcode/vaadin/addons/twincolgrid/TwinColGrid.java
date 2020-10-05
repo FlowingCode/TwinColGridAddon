@@ -122,6 +122,7 @@ public class TwinColGrid<T> extends VerticalLayout
 	 * Constructs a new TwinColGrid with data provider for options.
 	 *
 	 * @param dataProvider the data provider, not {@code null}
+	 * @param caption      the component caption
 	 */
 	public TwinColGrid(final ListDataProvider<T> dataProvider, String caption) {
 		left = new TwinColModel<>();
@@ -264,6 +265,7 @@ public class TwinColGrid<T> extends VerticalLayout
 	 * Sets the text shown above the right column. {@code null} clears the caption.
 	 *
 	 * @param rightColumnCaption The text to show, {@code null} to clear
+	 * @return this instance
 	 */
 	public TwinColGrid<T> withRightColumnCaption(final String rightColumnCaption) {
 		right.columnLabel.setText(rightColumnCaption);
@@ -276,6 +278,7 @@ public class TwinColGrid<T> extends VerticalLayout
 	 * Sets the text shown above the left column. {@code null} clears the caption.
 	 *
 	 * @param leftColumnCaption The text to show, {@code null} to clear
+	 * @return this instance
 	 */
 	public TwinColGrid<T> withLeftColumnCaption(final String leftColumnCaption) {
 		left.columnLabel.setText(leftColumnCaption);
@@ -286,14 +289,12 @@ public class TwinColGrid<T> extends VerticalLayout
 
 	/**
 	 * Adds a new text column to this {@link Grid} with a value provider. The column
-	 * will use a {@link TextRenderer}. The value is converted to a String using
-	 * {@link Object#toString()}. In-memory sorting will use the natural ordering of
-	 * elements if they are mutually comparable and otherwise fall back to comparing
-	 * the string representations of the values.
+	 * will use a {@link TextRenderer}. The value is converted to a String using the
+	 * provided {@code itemLabelGenerator}.
 	 *
-	 * @param valueProvider the value provider
-	 *
-	 * @return the new column
+	 * @param itemLabelGenerator the value provider
+	 * @param header             the column header
+	 * @return this instance
 	 */
 	public TwinColGrid<T> addColumn(final ItemLabelGenerator<T> itemLabelGenerator, final String header) {
 		leftGrid.addColumn(new TextRenderer<>(itemLabelGenerator)).setHeader(header);
@@ -301,6 +302,16 @@ public class TwinColGrid<T> extends VerticalLayout
 		return this;
 	}
 
+	/**
+	 * Adds a new sortable text column to this {@link Grid} with a value provider.
+	 * The column will use a {@link TextRenderer}. The value is converted to a
+	 * String using the provided {@code itemLabelGenerator}.
+	 *
+	 * @param itemLabelGenerator the value provider
+	 * @param comparator         the in-memory comparator
+	 * @param header             the column header
+	 * @return this instance
+	 */
 	public TwinColGrid<T> addSortableColumn(final ItemLabelGenerator<T> itemLabelGenerator, Comparator<T> comparator, final String header) {
 		leftGrid.addColumn(new TextRenderer<>(itemLabelGenerator)).setHeader(header).setComparator(comparator).setSortable(true);
 		rightGrid.addColumn(new TextRenderer<>(itemLabelGenerator)).setHeader(header).setComparator(comparator).setSortable(true);
@@ -346,7 +357,7 @@ public class TwinColGrid<T> extends VerticalLayout
 	/**
 	 * Adds drag n drop support between grids.
 	 *
-	 * @return
+	 * @return this instance
 	 */
 	public TwinColGrid<T> withDragAndDropSupport() {
 		configDragAndDrop(leftGrid, rightGrid);
@@ -374,7 +385,7 @@ public class TwinColGrid<T> extends VerticalLayout
 
 	/**
 	 * Set {@code value} to grid
-	 * 
+	 *
 	 * @param value the value, cannot be {@code null}
 	 */
 	@Override
