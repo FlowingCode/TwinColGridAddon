@@ -254,7 +254,7 @@
         </profile>
 		
 		<profile>
-			<id>jar-demo</id>
+			<id>demo-jar</id>
             <build>		
 				<plugins>
 					<plugin>
@@ -265,6 +265,15 @@
 								<goals>
 									<goal>test-jar</goal>
 								</goals>
+								<configuration>
+									<classifier>demo</classifier>
+									<excludes>
+										<exclude>META-INF/resources/frontend/styles/shared-styles.css</exclude>
+										<exclude>**/test/*</exclude>
+										<exclude>**/integration/*</exclude>
+										<exclude>**/DemoView.class</exclude>
+									</excludes>
+								</configuration>
 							</execution>
 						</executions>
 					</plugin>
