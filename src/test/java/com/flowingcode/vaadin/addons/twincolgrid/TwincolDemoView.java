@@ -92,19 +92,19 @@ public class TwincolDemoView extends VerticalLayout {
 		String response;
 		switch (demo) {
 		case BOUND_DEMO:
-			response = "<html style=\"overflow-y:hidden; height:100%;\"><body style=\"overflow-y: scroll; height:100%;\"><script src=\"http://gist-it.appspot.com/"
+			response = "<html style=\"overflow-y:hidden; height:100%;\"><body style=\"overflow-y: scroll; height:100%;\"><script src=\"https://gist-it.appspot.com/"
 					+ BOUND_SOURCE + "\"></script></body></html>";
 			break;
 		case FILTERABLE_DEMO:
-			response = "<html style=\"overflow-y:hidden; height:100%;\"><body style=\"overflow-y: scroll; height:100%;\"><script src=\"http://gist-it.appspot.com/"
+			response = "<html style=\"overflow-y:hidden; height:100%;\"><body style=\"overflow-y: scroll; height:100%;\"><script src=\"https://gist-it.appspot.com/"
 					+ FILTERABLE_SOURCE + "\"></script></body></html>";
 			break;
 		case DRAGNDROP_DEMO:
-			response = "<html style=\"overflow-y:hidden; height:100%;\"><body style=\"overflow-y: scroll; height:100%;\"><script src=\"http://gist-it.appspot.com/"
+			response = "<html style=\"overflow-y:hidden; height:100%;\"><body style=\"overflow-y: scroll; height:100%;\"><script src=\"https://gist-it.appspot.com/"
 					+ DRAGNDROP_SOURCE + "\"></script></body></html>";
 			break;
 		default:
-			response = "<html style=\"overflow-y:hidden; height:100%;\"><body style=\"overflow-y: scroll; height:100%;\"><script src=\"http://gist-it.appspot.com/"
+			response = "<html style=\"overflow-y:hidden; height:100%;\"><body style=\"overflow-y: scroll; height:100%;\"><script src=\"https://gist-it.appspot.com/"
 					+ BOUND_SOURCE + "\"></script></body></html>";
 			break;
 		}
