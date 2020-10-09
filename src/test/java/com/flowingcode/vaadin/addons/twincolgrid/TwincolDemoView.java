@@ -24,7 +24,7 @@ public class TwincolDemoView extends VerticalLayout {
 
 	public TwincolDemoView() {
 
-		SplitLayout layout = new SplitLayout();
+		SplitLayoutP layout = new SplitLayoutP();
 		layout.setOrientation(Orientation.HORIZONTAL);
 		layout.addToPrimary(new BoundDemo());
 		layout.setSizeFull();
