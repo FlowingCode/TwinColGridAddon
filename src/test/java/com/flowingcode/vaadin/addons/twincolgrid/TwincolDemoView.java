@@ -1,5 +1,6 @@
 package com.flowingcode.vaadin.addons.twincolgrid;
 
+import com.flowingcode.vaadin.addons.DemoLayout;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.IFrame;
@@ -11,7 +12,7 @@ import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.Route;
 
 @SuppressWarnings("serial")
-@Route("twincolgrid")
+@Route(value = "twincolgrid", layout = DemoLayout.class)
 @CssImport("styles/shared-styles.css")
 public class TwincolDemoView extends VerticalLayout {
 
@@ -57,7 +58,7 @@ public class TwincolDemoView extends VerticalLayout {
 		setSizeFull();
 
 		tabs.addSelectedChangeListener(e -> {
-			this.removeAll();
+			removeAll();
 			layout.removeAll();
 			switch (e.getSelectedTab().getLabel()) {
 			case BOUND_DEMO:
