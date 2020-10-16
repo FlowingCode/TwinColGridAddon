@@ -31,7 +31,7 @@ public class DragAndDropDemo extends VerticalLayout {
 						.addSortableColumn(Book::getIsbn, Comparator.comparing(Book::getIsbn), "ISBN")
 						.addSortableColumn(Book::getTitle, Comparator.comparing(Book::getTitle), "Title")
 						.withLeftColumnCaption("Available books").withRightColumnCaption("Added books")
-						.withoutAddAllButton().withSizeFull().withDragAndDropSupport();
+						.withoutAddAllButton().withSizeFull().withDragAndDropSupport().selectRowOnClick();
 		twinColGrid.setValue(selectedBooks);
 
 		final Label countLabel = new Label("Selected items in left grid: 0");
