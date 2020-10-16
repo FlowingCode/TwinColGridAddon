@@ -97,7 +97,7 @@ public class TwincolDemoView extends VerticalLayout {
 				break;
 			case DRAGNDROP_DEMO:
 				iframe.getElement().setAttribute("srcdoc", getSrcdoc(DRAGNDROP_DEMO));
-				layout.addToPrimary(new FilterableDemo());
+				layout.addToPrimary(new DragAndDropDemo());
 				layout.addToSecondary(iframe);
 				add(tabs, layout, footer);
 				break;
