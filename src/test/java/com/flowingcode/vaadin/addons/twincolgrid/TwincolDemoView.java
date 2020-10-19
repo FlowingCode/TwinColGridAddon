@@ -54,6 +54,8 @@ public class TwincolDemoView extends VerticalLayout {
 		layout.setSizeFull();
 		IFrame iframe = new IFrame();
 		iframe.getElement().setAttribute("frameborder", "0");
+		iframe.setMinHeight("0");
+		iframe.setMinWidth("0");
 		iframe.getElement().setAttribute("srcdoc", getSrcdoc(BOUND_SOURCE));
 		iframe.setSizeFull();
 		layout.addToSecondary(iframe);
@@ -75,7 +77,6 @@ public class TwincolDemoView extends VerticalLayout {
 			} else {
 				layout.setOrientation(Orientation.VERTICAL);
 			}
-			layout.setSplitterPosition(50);
 			layout.getPrimaryComponent().getElement().setAttribute("style", "width: 100%; height: 100%");
 			iframe.setSizeFull();
 		});
@@ -85,9 +86,11 @@ public class TwincolDemoView extends VerticalLayout {
 		codeCB.addValueChangeListener(cb -> {
 			if (cb.getValue()) {
 				layout.setSplitterPosition(50);
+				orientationCB.setEnabled(true);
 			}
 			else {
 				layout.setSplitterPosition(100);
+				orientationCB.setEnabled(false);
 			}
 		});
 		HorizontalLayout footer = new HorizontalLayout();
