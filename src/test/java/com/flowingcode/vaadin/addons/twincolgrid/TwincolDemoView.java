@@ -20,17 +20,10 @@
 package com.flowingcode.vaadin.addons.twincolgrid;
 
 import com.flowingcode.vaadin.addons.DemoLayout;
-import com.vaadin.flow.component.checkbox.Checkbox;
+import com.flowingcode.vaadin.addons.demo.impl.TabbedDemoImpl;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.StyleSheet;
-import com.vaadin.flow.component.html.IFrame;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.orderedlayout.FlexComponent.JustifyContentMode;
-import com.vaadin.flow.component.splitlayout.SplitLayout;
-import com.vaadin.flow.component.splitlayout.SplitLayout.Orientation;
-import com.vaadin.flow.component.tabs.Tab;
-import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.Route;
 
 @SuppressWarnings("serial")
@@ -47,112 +40,10 @@ public class TwincolDemoView extends VerticalLayout {
 	private static final String DRAGNDROP_SOURCE = "https://github.com/FlowingCode/TwinColGridAddon/blob/master/src/test/java/com/flowingcode/vaadin/addons/twincolgrid/DragAndDropDemo.java";
 
 	public TwincolDemoView() {
-
-		SplitLayout layout = new SplitLayout();
-		layout.setOrientation(Orientation.HORIZONTAL);
-		layout.addToPrimary(new BoundDemo());
-		layout.setSizeFull();
-		IFrame iframe = new IFrame();
-		iframe.getElement().setAttribute("frameborder", "0");
-		iframe.setMinHeight("0");
-		iframe.setMinWidth("0");
-		iframe.getElement().setAttribute("srcdoc", getSrcdoc(BOUND_SOURCE));
-		iframe.setSizeFull();
-		layout.addToSecondary(iframe);
-
-		Tabs tabs = new Tabs();
-		Tab demo1 = new Tab(BOUND_DEMO);
-		Tab demo2 = new Tab(FILTERABLE_DEMO);
-		Tab demo3 = new Tab(DRAGNDROP_DEMO);
-		tabs.setWidthFull();
-		tabs.add(demo1, demo2, demo3);
-		tabs.setSelectedTab(demo1);
-
-		Checkbox orientationCB = new Checkbox("Toggle Orientation");
-		orientationCB.setValue(true);
-		orientationCB.addClassName("smallcheckbox");
-		orientationCB.addValueChangeListener(cb -> {
-			if (cb.getValue()) {
-				layout.setOrientation(Orientation.HORIZONTAL);
-			} else {
-				layout.setOrientation(Orientation.VERTICAL);
-			}
-			layout.getPrimaryComponent().getElement().setAttribute("style", "width: 100%; height: 100%");
-			iframe.setSizeFull();
-		});
-		Checkbox codeCB = new Checkbox("Show Source Code");
-		codeCB.setValue(true);
-		codeCB.addClassName("smallcheckbox");
-		codeCB.addValueChangeListener(cb -> {
-			if (cb.getValue()) {
-				layout.setSplitterPosition(50);
-				orientationCB.setEnabled(true);
-			}
-			else {
-				layout.setSplitterPosition(100);
-				orientationCB.setEnabled(false);
-			}
-		});
-		HorizontalLayout footer = new HorizontalLayout();
-		footer.setWidthFull();
-		footer.setJustifyContentMode(JustifyContentMode.END);
-		footer.add(codeCB, orientationCB);
-		add(tabs, layout, footer);
-
+		TabbedDemoImpl<BoundDemo> twincolDemo = new TabbedDemoImpl(new BoundDemo(), BOUND_DEMO, BOUND_SOURCE);
+		twincolDemo.addDemo(new FilterableDemo(), FILTERABLE_DEMO, FILTERABLE_SOURCE);
+		twincolDemo.addDemo(new DragAndDropDemo(), DRAGNDROP_DEMO, DRAGNDROP_SOURCE);
+		add(twincolDemo);
 		setSizeFull();
-
-		tabs.addSelectedChangeListener(e -> {
-			removeAll();
-			layout.removeAll();
-			switch (e.getSelectedTab().getLabel()) {
-			case BOUND_DEMO:
-				iframe.getElement().setAttribute("srcdoc", getSrcdoc(BOUND_DEMO));
-				layout.addToPrimary(new BoundDemo());
-				layout.addToSecondary(iframe);
-				add(tabs, layout, footer);
-				break;
-			case FILTERABLE_DEMO:
-				iframe.getElement().setAttribute("srcdoc", getSrcdoc(FILTERABLE_DEMO));
-				layout.addToPrimary(new FilterableDemo());
-				layout.addToSecondary(iframe);
-				add(tabs, layout, footer);
-				break;
-			case DRAGNDROP_DEMO:
-				iframe.getElement().setAttribute("srcdoc", getSrcdoc(DRAGNDROP_DEMO));
-				layout.addToPrimary(new DragAndDropDemo());
-				layout.addToSecondary(iframe);
-				add(tabs, layout, footer);
-				break;
-			default:
-				iframe.getElement().setAttribute("srcdoc", getSrcdoc(BOUND_DEMO));
-				layout.addToPrimary(new BoundDemo());
-				layout.addToSecondary(iframe);
-				add(tabs, layout, footer);
-				break;
-			}
-		});
-	}
-
-	private String getSrcdoc(String demo) {
-		String response;
-		switch (demo) {
-		case BOUND_DEMO:
-			response = "<html style=\"overflow-y:hidden; height:100%;\"><body style=\"overflow-y: scroll; height:100%;\"><script src=\"https://gist-it.appspot.com/"
-					+ BOUND_SOURCE + "\"></script></body></html>";
-			break;
-		case FILTERABLE_DEMO:
-			response = "<html style=\"overflow-y:hidden; height:100%;\"><body style=\"overflow-y: scroll; height:100%;\"><script src=\"https://gist-it.appspot.com/"
-					+ FILTERABLE_SOURCE + "\"></script></body></html>";
-			break;
-		case DRAGNDROP_DEMO:
-			response = "<html style=\"overflow-y:hidden; height:100%;\"><body style=\"overflow-y: scroll; height:100%;\"><script src=\"https://gist-it.appspot.com/"
-					+ DRAGNDROP_SOURCE + "\"></script></body></html>";
-			break;
-		default:
-			response = "<html style=\"overflow-y:hidden; height:100%;\"><body style=\"overflow-y: scroll; height:100%;\"><script src=\"https://gist-it.appspot.com/"
-					+ BOUND_SOURCE + "\"></script></body></html>";
-			break;
-		}
-		return response;
 	}
 }
