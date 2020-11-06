@@ -21,7 +21,6 @@ package com.flowingcode.vaadin.addons.twincolgrid;
 
 import com.flowingcode.vaadin.addons.DemoLayout;
 import com.flowingcode.vaadin.addons.demo.impl.TabbedDemoImpl;
-import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
@@ -29,7 +28,6 @@ import com.vaadin.flow.router.Route;
 @SuppressWarnings("serial")
 @Route(value = "twincolgrid", layout = DemoLayout.class)
 @StyleSheet("context://frontend/styles/demo-styles.css")
-@CssImport("styles/shared-styles.css")
 public class TwincolDemoView extends VerticalLayout {
 
 	private static final String BOUND_DEMO = "Bound";

@@ -20,3 +20,7 @@
 vaadin-checkbox.smallcheckbox {
 	font-size: small;
 }
+
+body {
+	max-width: 100%;
+}
