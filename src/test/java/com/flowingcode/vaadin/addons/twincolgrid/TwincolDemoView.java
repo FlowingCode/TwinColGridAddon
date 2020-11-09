@@ -38,9 +38,10 @@ public class TwincolDemoView extends VerticalLayout {
 	private static final String DRAGNDROP_SOURCE = "https://github.com/FlowingCode/TwinColGridAddon/blob/master/src/test/java/com/flowingcode/vaadin/addons/twincolgrid/DragAndDropDemo.java";
 
 	public TwincolDemoView() {
-		TabbedDemoImpl<BoundDemo> twincolDemo = new TabbedDemoImpl(new BoundDemo(), BOUND_DEMO, BOUND_SOURCE);
+		TabbedDemoImpl<DragAndDropDemo> twincolDemo = new TabbedDemoImpl<>(new DragAndDropDemo(), DRAGNDROP_DEMO,
+				DRAGNDROP_SOURCE);
 		twincolDemo.addDemo(new FilterableDemo(), FILTERABLE_DEMO, FILTERABLE_SOURCE);
-		twincolDemo.addDemo(new DragAndDropDemo(), DRAGNDROP_DEMO, DRAGNDROP_SOURCE);
+		twincolDemo.addDemo(new BoundDemo(), BOUND_DEMO, BOUND_SOURCE);
 		add(twincolDemo);
 		setSizeFull();
 	}
