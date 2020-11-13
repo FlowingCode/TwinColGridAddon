@@ -478,7 +478,8 @@ public class TwinColGrid<T> extends VerticalLayout
                 return;
               }
 
-              final ListDataProvider<T> dragGridSourceDataProvider = draggedGrid.getDataProvider();
+              final ListDataProvider<T> dragGridSourceDataProvider = sourceModel.getDataProvider();
+
               dragGridSourceDataProvider.getItems().removeAll(draggedItems);
               dragGridSourceDataProvider.refreshAll();
 
