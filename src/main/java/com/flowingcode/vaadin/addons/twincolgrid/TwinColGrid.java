@@ -493,7 +493,8 @@ public class TwinColGrid<T> extends VerticalLayout
         });
 
         targetModel.grid.addDropListener(event -> {
-          draggedGrid = sourceModel;
+          draggedGrid = sourceModel.grid;
+
 
           targetModel.droppedInsideGrid = true;
           final ListDataProvider<T> dragGridTargetDataProvider = targetModel.getDataProvider();
