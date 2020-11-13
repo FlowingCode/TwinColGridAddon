@@ -106,7 +106,8 @@ public class TwinColGrid<T> extends VerticalLayout
 
 	private final VerticalLayout buttonContainer;
 
-	private TwinColModel<T> draggedGrid;
+	private Grid<T> draggedGrid;
+
 
 	private Label fakeButtonContainerLabel = new Label();
 
