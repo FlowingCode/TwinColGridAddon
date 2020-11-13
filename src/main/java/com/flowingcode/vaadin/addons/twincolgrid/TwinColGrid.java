@@ -469,9 +469,8 @@ public class TwinColGrid<T> extends VerticalLayout
 		});
 
         sourceModel.grid.addDragEndListener(event -> {
-          boolean sourceDiffTarget = sourceModel.equals(draggedGrid);
+          if (targetModel.droppedInsideGrid && sourceModel.grid==draggedGrid) {
 
-          if (targetModel.droppedInsideGrid && sourceDiffTarget) {
 
               if (draggedGrid == null) {
                 draggedItems.clear();
