@@ -489,7 +489,8 @@ public class TwinColGrid<T> extends VerticalLayout
               sourceModel.grid.deselectAll();
             } else {
 		        draggedItems.clear();
-		    }
+            }
+
         });
 
         targetModel.grid.addDropListener(event -> {
