@@ -21,7 +21,7 @@ package com.flowingcode.vaadin.addons.twincolgrid;
 
 import com.flowingcode.vaadin.addons.DemoLayout;
 import com.flowingcode.vaadin.addons.GithubLink;
-import com.flowingcode.vaadin.addons.demo.impl.TabbedDemoImpl;
+import com.flowingcode.vaadin.addons.demo.TabbedDemo;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
@@ -40,11 +40,11 @@ public class TwincolDemoView extends VerticalLayout {
 	private static final String DRAGNDROP_SOURCE = "https://github.com/FlowingCode/TwinColGridAddon/blob/master/src/test/java/com/flowingcode/vaadin/addons/twincolgrid/DragAndDropDemo.java";
 
 	public TwincolDemoView() {
-		TabbedDemoImpl<DragAndDropDemo> twincolDemo = new TabbedDemoImpl<>(new DragAndDropDemo(), DRAGNDROP_DEMO,
-				DRAGNDROP_SOURCE);
-		twincolDemo.addDemo(new FilterableDemo(), FILTERABLE_DEMO, FILTERABLE_SOURCE);
-		twincolDemo.addDemo(new BoundDemo(), BOUND_DEMO, BOUND_SOURCE);
-		add(twincolDemo);
+		TabbedDemo demo = new TabbedDemo();
+		demo.addDemo(new DragAndDropDemo(), DRAGNDROP_DEMO, DRAGNDROP_SOURCE);
+		demo.addDemo(new FilterableDemo(), FILTERABLE_DEMO, FILTERABLE_SOURCE);
+		demo.addDemo(new BoundDemo(), BOUND_DEMO, BOUND_SOURCE);
+		add(demo);
 		setSizeFull();
 	}
 }
