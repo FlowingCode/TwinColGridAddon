@@ -23,14 +23,13 @@ import com.flowingcode.vaadin.addons.DemoLayout;
 import com.flowingcode.vaadin.addons.GithubLink;
 import com.flowingcode.vaadin.addons.demo.TabbedDemo;
 import com.vaadin.flow.component.dependency.StyleSheet;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 
 @SuppressWarnings("serial")
 @Route(value = "twincolgrid", layout = DemoLayout.class)
 @StyleSheet("context://frontend/styles/demo-styles.css")
 @GithubLink("https://github.com/FlowingCode/TwinColGridAddon")
-public class TwincolDemoView extends VerticalLayout {
+public class TwincolDemoView extends TabbedDemo {
 
 	private static final String BOUND_DEMO = "Bound";
 	private static final String FILTERABLE_DEMO = "Filterable";
@@ -40,11 +39,9 @@ public class TwincolDemoView extends VerticalLayout {
 	private static final String DRAGNDROP_SOURCE = "https://github.com/FlowingCode/TwinColGridAddon/blob/master/src/test/java/com/flowingcode/vaadin/addons/twincolgrid/DragAndDropDemo.java";
 
 	public TwincolDemoView() {
-		TabbedDemo demo = new TabbedDemo();
-		demo.addDemo(new DragAndDropDemo(), DRAGNDROP_DEMO, DRAGNDROP_SOURCE);
-		demo.addDemo(new FilterableDemo(), FILTERABLE_DEMO, FILTERABLE_SOURCE);
-		demo.addDemo(new BoundDemo(), BOUND_DEMO, BOUND_SOURCE);
-		add(demo);
+		addDemo(new DragAndDropDemo(), DRAGNDROP_DEMO, DRAGNDROP_SOURCE);
+		addDemo(new FilterableDemo(), FILTERABLE_DEMO, FILTERABLE_SOURCE);
+		addDemo(new BoundDemo(), BOUND_DEMO, BOUND_SOURCE);
 		setSizeFull();
 	}
 }
