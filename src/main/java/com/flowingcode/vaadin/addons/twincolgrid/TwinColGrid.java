@@ -328,6 +328,33 @@ public class TwinColGrid<T> extends VerticalLayout
     return this;
   }
 
+  /**
+   * Adds a new sortable text column to this {@link Grid} with a value provider. The column will use
+   * a {@link TextRenderer}. The value is converted to a String using the provided {@code
+   * itemLabelGenerator}.
+   *
+   * @param itemLabelGenerator the value provider
+   * @param comparator the in-memory comparator
+   * @param header the column header
+   * @param header the column key
+   * @return this instance
+   */
+  public TwinColGrid<T> addSortableColumn(
+      final ItemLabelGenerator<T> itemLabelGenerator,
+      Comparator<T> comparator,
+      final String header,
+      final String key) {
+    forEachSide(
+        side ->
+            side.grid
+                .addColumn(new TextRenderer<>(itemLabelGenerator))
+                .setHeader(header)
+                .setComparator(comparator)
+                .setSortable(true)
+                .setKey(key));
+    return this;
+  }
+
   public TwinColGrid<T> withoutAddAllButton() {
     addAllButton.setVisible(false);
     checkContainerVisibility();
