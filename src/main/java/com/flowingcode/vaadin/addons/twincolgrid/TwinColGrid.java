@@ -318,16 +318,13 @@ public class TwinColGrid<T> extends VerticalLayout
       final ItemLabelGenerator<T> itemLabelGenerator,
       Comparator<T> comparator,
       final String header) {
-    leftGrid
-        .addColumn(new TextRenderer<>(itemLabelGenerator))
-        .setHeader(header)
-        .setComparator(comparator)
-        .setSortable(true);
-    rightGrid
-        .addColumn(new TextRenderer<>(itemLabelGenerator))
-        .setHeader(header)
-        .setComparator(comparator)
-        .setSortable(true);
+    forEachSide(
+        side ->
+            side.grid
+                .addColumn(new TextRenderer<>(itemLabelGenerator))
+                .setHeader(header)
+                .setComparator(comparator)
+                .setSortable(true));
     return this;
   }
 
