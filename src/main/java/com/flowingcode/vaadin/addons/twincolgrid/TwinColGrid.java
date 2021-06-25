@@ -44,6 +44,7 @@ import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.renderer.TextRenderer;
 import com.vaadin.flow.data.selection.SelectionListener;
 import com.vaadin.flow.data.value.ValueChangeMode;
+import com.vaadin.flow.function.SerializableComparator;
 import com.vaadin.flow.function.SerializableFunction;
 import com.vaadin.flow.shared.Registration;
 import java.io.Serializable;
@@ -52,9 +53,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
@@ -64,8 +67,15 @@ import org.apache.commons.lang3.StringUtils;
 public class TwinColGrid<T> extends VerticalLayout
     implements HasValue<ValueChangeEvent<Set<T>>, Set<T>>, HasComponents, HasSize {
 
+  private static final class GridEx<T> extends Grid<T> {
+    @Override
+    protected SerializableComparator<T> createSortingComparator() {
+      return super.createSortingComparator();
+    }
+  }
+
   private static final class TwinColModel<T> implements Serializable {
-    final Grid<T> grid = new Grid<>();
+    final GridEx<T> grid = new GridEx<>();
     final Label columnLabel = new Label();
     final VerticalLayout layout = new VerticalLayout(columnLabel, grid);
     HeaderRow headerRow;
@@ -471,7 +481,23 @@ public class TwinColGrid<T> extends VerticalLayout
    */
   @Override
   public Set<T> getValue() {
-    return Collections.unmodifiableSet(new LinkedHashSet<>(right.getItems()));
+    return Collections
+        .unmodifiableSet(collectValue(Collectors.<T, Set<T>>toCollection(LinkedHashSet::new)));
+  }
+
+  /**
+   * Collects the current value of this object according to the configured order.
+   *
+   * @return the current selection
+   */
+  <C> C collectValue(Collector<T, ?, C> collector) {
+    Stream<T> stream = right.getItems().stream();
+    SerializableComparator<T> comparator = right.grid.createSortingComparator();
+    if (comparator != null) {
+      return stream.sorted(comparator).collect(collector);
+    } else {
+      return stream.collect(collector);
+    }
   }
 
   @Override
