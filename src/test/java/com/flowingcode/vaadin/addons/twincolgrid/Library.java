@@ -9,9 +9,9 @@ package com.flowingcode.vaadin.addons.twincolgrid;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,25 +24,24 @@ import java.util.Set;
 
 public class Library {
 
-    private final String name;
+  private final String name;
 
-    private Set<Book> books;
+  private Set<Book> books;
 
-    public Library(final String name, final Set<Book> books) {
-        this.name = name;
-        this.books = books;
-    }
+  public Library(final String name, final Set<Book> books) {
+    this.name = name;
+    this.books = books;
+  }
 
-    public String getName() {
-        return name;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public Set<Book> getBooks() {
-        return books;
-    }
+  public Set<Book> getBooks() {
+    return books;
+  }
 
-    public void setBooks(final Set<Book> books) {
-        this.books = books;
-    }
-
+  public void setBooks(final Set<Book> books) {
+    this.books = books;
+  }
 }
