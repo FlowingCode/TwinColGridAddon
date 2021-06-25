@@ -1,10 +1,8 @@
-package com.flowingcode.vaadin.addons.twincolgrid;
-
 /*-
  * #%L
  * TwinColGrid add-on
  * %%
- * Copyright (C) 2017 - 2020 Flowing Code
+ * Copyright (C) 2017 - 2021 Flowing Code
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +17,7 @@ package com.flowingcode.vaadin.addons.twincolgrid;
  * limitations under the License.
  * #L%
  */
+package com.flowingcode.vaadin.addons.twincolgrid;
 
 import java.util.Objects;
 import java.util.function.Function;
