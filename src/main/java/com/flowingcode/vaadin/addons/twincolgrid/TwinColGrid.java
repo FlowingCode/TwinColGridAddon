@@ -643,7 +643,13 @@ public class TwinColGrid<T> extends VerticalLayout
         itemLabelGenerator, itemLabelGenerator, header, filterPlaceholder, enableClearButton);
   }
 
+  /** @deprecated. Use {@link #withSelectRowOnClick()} */
+  @Deprecated
   public TwinColGrid<T> selectRowOnClick() {
+    return withSelectRowOnClick();
+  }
+
+  public TwinColGrid<T> withSelectRowOnClick() {
     forEachSide(
         side -> {
           side.grid.addClassName("hide-selector-col");
@@ -661,10 +667,7 @@ public class TwinColGrid<T> extends VerticalLayout
   }
 
   public TwinColGrid<T> withShiftMultiselect() {
-    return selectRowOnClick().addShiftMultiselect();
-  }
-
-  private TwinColGrid<T> addShiftMultiselect() {
+    withSelectRowOnClick();
     forEachSide(
         side -> {
           // Disable checkbox
