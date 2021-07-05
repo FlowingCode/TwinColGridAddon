@@ -33,6 +33,7 @@ import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.grid.Grid.SelectionMode;
 import com.vaadin.flow.component.grid.GridNoneSelectionModel;
 import com.vaadin.flow.component.grid.HeaderRow;
+import com.vaadin.flow.component.grid.dataview.GridListDataView;
 import com.vaadin.flow.component.grid.dnd.GridDropMode;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -56,6 +57,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 
@@ -70,6 +72,7 @@ public class TwinColGrid<T> extends VerticalLayout
     final VerticalLayout layout = new VerticalLayout(columnLabel, grid);
     HeaderRow headerRow;
     boolean droppedInsideGrid = false;
+    T lastClickedItem;
 
     @SuppressWarnings("unchecked")
     ListDataProvider<T> getDataProvider() {
@@ -78,6 +81,14 @@ public class TwinColGrid<T> extends VerticalLayout
 
     Collection<T> getItems() {
       return getDataProvider().getItems();
+    }
+
+    T getLastClickedItem() {
+      return lastClickedItem;
+    }
+
+    void setLastClickedItem(T item) {
+      this.lastClickedItem = item;
     }
   }
 
@@ -643,6 +654,41 @@ public class TwinColGrid<T> extends VerticalLayout
                   side.grid.deselect(c.getItem());
                 } else {
                   side.grid.select(c.getItem());
+                }
+              });
+        });
+    return this;
+  }
+
+  public TwinColGrid<T> withShiftMultiselect() {
+    return selectRowOnClick().addShiftMultiselect();
+  }
+
+  private TwinColGrid<T> addShiftMultiselect() {
+    forEachSide(
+        side -> {
+          // Disable checkbox
+          side.grid.addClassName("hide-selector-col");
+
+          side.grid.addItemClickListener(
+              c -> {
+                T clicked = c.getItem();
+                if (c.isShiftKey()) {
+                  if (side.getLastClickedItem() != null) {
+                    GridListDataView<T> dataView = side.grid.getListDataView();
+                    int index1 = dataView.getItems().collect(Collectors.toList()).indexOf(side.lastClickedItem);
+                    int index2 = dataView.getItems().collect(Collectors.toList()).indexOf(clicked);
+                    
+                   IntStream.rangeClosed(Math.min(index1, index2), Math.max(index1, index2))
+                   .forEach(i -> side.grid.select(dataView.getItem(i)));
+                  }
+                } else {
+                  // Update lastClicked
+                  if (side.grid.getSelectedItems().contains(clicked)) {
+                    side.setLastClickedItem(clicked);
+                  } else {
+                    side.setLastClickedItem(null);
+                  }
                 }
               });
         });
