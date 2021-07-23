@@ -674,4 +674,8 @@ public class TwinColGrid<T> extends VerticalLayout
         });
     return this;
   }
+
+  public HasValue<? extends ValueChangeEvent<List<T>>, List<T>> asList() {
+    return new TwinColGridListAdapter<>(this);
+  }
 }
