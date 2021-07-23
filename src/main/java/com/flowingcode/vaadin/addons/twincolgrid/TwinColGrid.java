@@ -678,4 +678,9 @@ public class TwinColGrid<T> extends VerticalLayout
   public HasValue<? extends ValueChangeEvent<List<T>>, List<T>> asList() {
     return new TwinColGridListAdapter<>(this);
   }
+
+  @Override
+  public Set<T> getEmptyValue() {
+    return Collections.emptySet();
+  }
 }

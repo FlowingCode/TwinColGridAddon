@@ -70,6 +70,11 @@ public class BoundDemo extends VerticalLayout {
       binder.getBean().getBooks()
           .forEach(book -> Notification.show(book.getTitle(), 3000, Position.BOTTOM_START));
     }));
+
+    add(new Button("Clear TwinColGrid", ev -> {
+      bindedTwinColGrid.clear();
+    }));
+
     setSizeFull();
   }
 }
