@@ -20,18 +20,20 @@
 
 package com.flowingcode.vaadin.addons.twincolgrid;
 
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.Notification.Position;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.binder.Binder;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 
 @SuppressWarnings("serial")
 public class BoundDemo extends VerticalLayout {
 
   public BoundDemo() {
-    final Set<Book> selectedBooks = new HashSet<>();
+    final List<Book> selectedBooks = new ArrayList<>();
     selectedBooks.add(new Book("1478375108", "Vaadin Recipes"));
     selectedBooks.add(new Book("9789526800677", "Book of Vaadin: Volume 2 "));
     final Library library = new Library("Public Library", selectedBooks);
@@ -51,8 +53,8 @@ public class BoundDemo extends VerticalLayout {
     final TwinColGrid<Book> bindedTwinColGrid =
         new TwinColGrid<>(
                 availableBooks, "TwinColGrid demo with Binder and row select without checkbox")
-            .addColumn(Book::getIsbn, "ISBN")
-            .addColumn(Book::getTitle, "Title")
+            .addSortableColumn(Book::getIsbn, Comparator.comparing(Book::getIsbn), "ISBN")
+            .addSortableColumn(Book::getTitle, Comparator.comparing(Book::getTitle), "Title")
             .withLeftColumnCaption("Available books")
             .withRightColumnCaption("Added books")
             .withoutRemoveAllButton()
@@ -60,10 +62,14 @@ public class BoundDemo extends VerticalLayout {
             .selectRowOnClick();
 
     final Binder<Library> binder = new Binder<>();
-    binder.bind(bindedTwinColGrid, Library::getBooks, Library::setBooks);
+    binder.bind(bindedTwinColGrid.asList(), Library::getBooks, Library::setBooks);
     binder.setBean(library);
 
     add(bindedTwinColGrid);
+    add(new Button("Get values", ev -> {
+      binder.getBean().getBooks()
+          .forEach(book -> Notification.show(book.getTitle(), 3000, Position.BOTTOM_START));
+    }));
     setSizeFull();
   }
 }

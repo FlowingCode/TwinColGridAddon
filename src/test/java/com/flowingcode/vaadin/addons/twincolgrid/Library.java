@@ -19,15 +19,15 @@
  */
 package com.flowingcode.vaadin.addons.twincolgrid;
 
-import java.util.Set;
+import java.util.List;
 
 public class Library {
 
   private final String name;
 
-  private Set<Book> books;
+  private List<Book> books;
 
-  public Library(final String name, final Set<Book> books) {
+  public Library(final String name, final List<Book> books) {
     this.name = name;
     this.books = books;
   }
@@ -36,11 +36,11 @@ public class Library {
     return name;
   }
 
-  public Set<Book> getBooks() {
+  public List<Book> getBooks() {
     return books;
   }
 
-  public void setBooks(final Set<Book> books) {
+  public void setBooks(final List<Book> books) {
     this.books = books;
   }
 }
