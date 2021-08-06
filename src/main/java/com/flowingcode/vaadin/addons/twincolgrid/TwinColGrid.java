@@ -270,7 +270,11 @@ public class TwinColGrid<T> extends VerticalLayout
   public void removeRightGridClassName(String classname) {
     getRightGrid().removeClassName(classname);
   }
-
+  
+  public void clearAll() {
+    updateSelection(new HashSet<>(), new HashSet<>(right.getItems()));
+  }
+  
   private void setDataProvider(ListDataProvider<T> dataProvider) {
     leftGridDataProvider = dataProvider;
     getLeftGrid().setDataProvider(dataProvider);
