@@ -172,8 +172,8 @@ public class TwinColGrid<T> extends VerticalLayout
 
     addAllButton.addClickListener(
         e -> {
-          left.getItems().stream().forEach(getLeftGrid().getSelectionModel()::select);
-          updateSelection(new LinkedHashSet<>(getLeftGrid().getSelectedItems()), new HashSet<>());
+          List<T> filteredItems= left.getDataProvider().withConfigurableFilter().fetch(new Query<>()).collect(Collectors.toList());
+          updateSelection(new LinkedHashSet<>(filteredItems), new HashSet<>());
         });
 
     addButton.addClickListener(
@@ -186,8 +186,8 @@ public class TwinColGrid<T> extends VerticalLayout
 
     removeAllButton.addClickListener(
         e -> {
-          right.getItems().stream().forEach(getRightGrid().getSelectionModel()::select);
-          updateSelection(new HashSet<>(), getRightGrid().getSelectedItems());
+          List<T> filteredItems= right.getDataProvider().withConfigurableFilter().fetch(new Query<>()).collect(Collectors.toList());
+          updateSelection(new HashSet<>(), new HashSet<>(filteredItems));
         });
 
     getElement().getStyle().set("display", "flex");
