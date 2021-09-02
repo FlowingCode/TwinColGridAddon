@@ -32,20 +32,11 @@ import com.vaadin.flow.router.Route;
 @GithubLink("https://github.com/FlowingCode/TwinColGridAddon")
 public class TwincolDemoView extends TabbedDemo {
 
-  private static final String BOUND_DEMO = "Bound";
-  private static final String FILTERABLE_DEMO = "Filterable";
-  private static final String DRAGNDROP_DEMO = "Drag and Drop";
-  private static final String BOUND_SOURCE =
-      "https://github.com/FlowingCode/TwinColGridAddon/blob/master/src/test/java/com/flowingcode/vaadin/addons/twincolgrid/BoundDemo.java";
-  private static final String FILTERABLE_SOURCE =
-      "https://github.com/FlowingCode/TwinColGridAddon/blob/master/src/test/java/com/flowingcode/vaadin/addons/twincolgrid/FilterableDemo.java";
-  private static final String DRAGNDROP_SOURCE =
-      "https://github.com/FlowingCode/TwinColGridAddon/blob/master/src/test/java/com/flowingcode/vaadin/addons/twincolgrid/DragAndDropDemo.java";
-
   public TwincolDemoView() {
-    addDemo(new DragAndDropDemo(), DRAGNDROP_DEMO, DRAGNDROP_SOURCE);
-    addDemo(new FilterableDemo(), FILTERABLE_DEMO, FILTERABLE_SOURCE);
-    addDemo(new BoundDemo(), BOUND_DEMO, BOUND_SOURCE);
+    addDemo(new DragAndDropDemo());
+    addDemo(new FilterableDemo());
+    addDemo(new BoundDemo());
+    addDemo(new VerticalOrientationDemo());
     setSizeFull();
   }
 }
