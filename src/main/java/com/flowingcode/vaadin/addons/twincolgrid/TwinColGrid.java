@@ -66,6 +66,7 @@ import org.apache.commons.lang3.StringUtils;
 
 @SuppressWarnings("serial")
 @CssImport(value = "./styles/multiselect-cb-hide.css", themeFor = "vaadin-grid")
+@CssImport(value = "./styles/twin-col-grid-button.css")
 public class TwinColGrid<T> extends VerticalLayout
     implements HasValue<ValueChangeEvent<Set<T>>, Set<T>>, HasComponents, HasSize {
 
@@ -115,13 +116,13 @@ public class TwinColGrid<T> extends VerticalLayout
   /** @deprecated Use getRightGrid().getDataProvider() */
   @Deprecated protected ListDataProvider<T> rightGridDataProvider;
 
-  private final Button addAllButton = new Button();
+  private final Button addAllButton = createActionButton();
 
-  private final Button addButton = new Button();
+  private final Button addButton = createActionButton();
 
-  private final Button removeButton = new Button();
+  private final Button removeButton = createActionButton();
 
-  private final Button removeAllButton = new Button();
+  private final Button removeAllButton = createActionButton();
 
   private Component buttonContainer;
 
@@ -203,7 +204,7 @@ public class TwinColGrid<T> extends VerticalLayout
 
   /**
    * Sets orientation for TwinColGridComponent
-   * 
+   *
    * @param orientation
    * @return
    */
@@ -254,13 +255,9 @@ public class TwinColGrid<T> extends VerticalLayout
 
   private VerticalLayout getVerticalButtonContainer() {
     addButton.setIcon(VaadinIcon.ANGLE_RIGHT.create());
-    addButton.setWidth("3em");
     addAllButton.setIcon(VaadinIcon.ANGLE_DOUBLE_RIGHT.create());
-    addAllButton.setWidth("3em");
     removeButton.setIcon(VaadinIcon.ANGLE_LEFT.create());
-    removeButton.setWidth("3em");
     removeAllButton.setIcon(VaadinIcon.ANGLE_DOUBLE_LEFT.create());
-    removeAllButton.setWidth("3em");
 
     VerticalLayout vButtonContainer =
         new VerticalLayout(
@@ -273,13 +270,9 @@ public class TwinColGrid<T> extends VerticalLayout
 
   private HorizontalLayout getHorizontalButtonContainer() {
     addButton.setIcon(VaadinIcon.ANGLE_DOWN.create());
-    addButton.setWidth("3em");
     addAllButton.setIcon(VaadinIcon.ANGLE_DOUBLE_DOWN.create());
-    addAllButton.setWidth("3em");
     removeButton.setIcon(VaadinIcon.ANGLE_UP.create());
-    removeButton.setWidth("3em");
     removeAllButton.setIcon(VaadinIcon.ANGLE_DOUBLE_UP.create());
-    removeAllButton.setWidth("3em");
 
     HorizontalLayout hButtonContainer =
         new HorizontalLayout(
@@ -766,4 +759,11 @@ public class TwinColGrid<T> extends VerticalLayout
   public Set<T> getEmptyValue() {
     return Collections.emptySet();
   }
+
+  private Button createActionButton() {
+    Button button = new Button();
+    button.addThemeName("twin-col-grid-button");
+    return button;
+  }
+  
 }
