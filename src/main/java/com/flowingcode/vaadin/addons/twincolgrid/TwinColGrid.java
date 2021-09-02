@@ -21,6 +21,7 @@
 package com.flowingcode.vaadin.addons.twincolgrid;
 
 import com.vaadin.flow.component.AbstractField.ComponentValueChangeEvent;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasComponents;
 import com.vaadin.flow.component.HasSize;
 import com.vaadin.flow.component.HasValue;
@@ -92,6 +93,12 @@ public class TwinColGrid<T> extends VerticalLayout
     }
   }
 
+  /** enumeration of all available orientation for TwinGolGrid component */
+  public enum Orientation {
+    HORIZONTAL,
+    VERTICAL;
+  }
+
   private final TwinColModel<T> left;
 
   private final TwinColModel<T> right;
@@ -116,11 +123,13 @@ public class TwinColGrid<T> extends VerticalLayout
 
   private final Button removeAllButton = new Button();
 
-  private final VerticalLayout buttonContainer;
+  private Component buttonContainer;
 
   private Grid<T> draggedGrid;
 
   private Label fakeButtonContainerLabel = new Label();
+
+  private Orientation orientation = Orientation.HORIZONTAL;
 
   /** Constructs a new TwinColGrid with an empty {@link ListDataProvider}. */
   public TwinColGrid() {
@@ -150,23 +159,8 @@ public class TwinColGrid<T> extends VerticalLayout
     rightGridDataProvider = DataProvider.ofCollection(new LinkedHashSet<>());
     getRightGrid().setDataProvider(rightGridDataProvider);
 
-    addButton.setIcon(VaadinIcon.ANGLE_RIGHT.create());
-    addButton.setWidth("3em");
-    addAllButton.setIcon(VaadinIcon.ANGLE_DOUBLE_RIGHT.create());
-    addAllButton.setWidth("3em");
-    removeButton.setIcon(VaadinIcon.ANGLE_LEFT.create());
-    removeButton.setWidth("3em");
-    removeAllButton.setIcon(VaadinIcon.ANGLE_DOUBLE_LEFT.create());
-    removeAllButton.setWidth("3em");
-
     fakeButtonContainerLabel.getElement().setProperty("innerHTML", "&nbsp;");
     fakeButtonContainerLabel.setVisible(false);
-    buttonContainer =
-        new VerticalLayout(
-            fakeButtonContainerLabel, addAllButton, addButton, removeButton, removeAllButton);
-    buttonContainer.setPadding(false);
-    buttonContainer.setSpacing(false);
-    buttonContainer.setSizeUndefined();
 
     getLeftGrid().setWidth("100%");
     getRightGrid().setWidth("100%");
@@ -203,13 +197,96 @@ public class TwinColGrid<T> extends VerticalLayout
           side.layout.setSpacing(false);
         });
 
+    add(createContainerLayout());
+    setSizeUndefined();
+  }
+
+  /**
+   * Sets orientation for TwinColGridComponent
+   * 
+   * @param orientation
+   * @return
+   */
+  public TwinColGrid<T> withOrientation(Orientation orientation) {
+    if (this.orientation != orientation) {
+      this.orientation = orientation;
+      updateContainerLayout();
+    }
+    return this;
+  }
+
+  public Orientation getOrientation() {
+    return orientation;
+  }
+
+  private void updateContainerLayout() {
+    Component oldContainerComponent = left.layout.getParent().get();
+    Component newContainerComponent = createContainerLayout();
+    this.replace(oldContainerComponent, newContainerComponent);
+  }
+
+  private Component createContainerLayout() {
+    return orientation == Orientation.VERTICAL
+        ? createVerticalContainer()
+        : createHorizontalContainer();
+  }
+
+  private HorizontalLayout createHorizontalContainer() {
+    buttonContainer = getVerticalButtonContainer();
     HorizontalLayout hl = new HorizontalLayout(left.layout, buttonContainer, right.layout);
     hl.getElement().getStyle().set("min-height", "0px");
     hl.getElement().getStyle().set("flex", "1 1 0px");
     hl.setMargin(false);
     hl.setWidthFull();
-    add(hl);
-    setSizeUndefined();
+    return hl;
+  }
+
+  private VerticalLayout createVerticalContainer() {
+    buttonContainer = getHorizontalButtonContainer();
+    VerticalLayout vl = new VerticalLayout(left.layout, buttonContainer, right.layout);
+    vl.getElement().getStyle().set("min-width", "0px");
+    vl.getElement().getStyle().set("flex", "1 1 0px");
+    vl.setMargin(false);
+    vl.setPadding(false);
+    vl.setHeightFull();
+    return vl;
+  }
+
+  private VerticalLayout getVerticalButtonContainer() {
+    addButton.setIcon(VaadinIcon.ANGLE_RIGHT.create());
+    addButton.setWidth("3em");
+    addAllButton.setIcon(VaadinIcon.ANGLE_DOUBLE_RIGHT.create());
+    addAllButton.setWidth("3em");
+    removeButton.setIcon(VaadinIcon.ANGLE_LEFT.create());
+    removeButton.setWidth("3em");
+    removeAllButton.setIcon(VaadinIcon.ANGLE_DOUBLE_LEFT.create());
+    removeAllButton.setWidth("3em");
+
+    VerticalLayout vButtonContainer =
+        new VerticalLayout(
+            fakeButtonContainerLabel, addAllButton, addButton, removeButton, removeAllButton);
+    vButtonContainer.setPadding(false);
+    vButtonContainer.setSpacing(false);
+    vButtonContainer.setSizeUndefined();
+    return vButtonContainer;
+  }
+
+  private HorizontalLayout getHorizontalButtonContainer() {
+    addButton.setIcon(VaadinIcon.ANGLE_DOWN.create());
+    addButton.setWidth("3em");
+    addAllButton.setIcon(VaadinIcon.ANGLE_DOUBLE_DOWN.create());
+    addAllButton.setWidth("3em");
+    removeButton.setIcon(VaadinIcon.ANGLE_UP.create());
+    removeButton.setWidth("3em");
+    removeAllButton.setIcon(VaadinIcon.ANGLE_DOUBLE_UP.create());
+    removeAllButton.setWidth("3em");
+
+    HorizontalLayout hButtonContainer =
+        new HorizontalLayout(
+            fakeButtonContainerLabel, addAllButton, addButton, removeButton, removeAllButton);
+    hButtonContainer.setPadding(false);
+    hButtonContainer.setSizeUndefined();
+    return hButtonContainer;
   }
 
   /** Return the left grid component */
@@ -430,7 +507,8 @@ public class TwinColGrid<T> extends VerticalLayout
   }
 
   public TwinColGrid<T> withSizeFull() {
-    setSizeFull();
+    setWidthFull();
+    getElement().getStyle().set("flex-grow", "1");
     return this;
   }
 
