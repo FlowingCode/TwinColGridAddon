@@ -160,9 +160,6 @@ public class TwinColGrid<T> extends VerticalLayout
     rightGridDataProvider = DataProvider.ofCollection(new LinkedHashSet<>());
     getRightGrid().setDataProvider(rightGridDataProvider);
 
-    fakeButtonContainerLabel.getElement().setProperty("innerHTML", "&nbsp;");
-    fakeButtonContainerLabel.setVisible(false);
-
     getLeftGrid().setWidth("100%");
     getRightGrid().setWidth("100%");
 
@@ -259,6 +256,9 @@ public class TwinColGrid<T> extends VerticalLayout
     removeButton.setIcon(VaadinIcon.ANGLE_LEFT.create());
     removeAllButton.setIcon(VaadinIcon.ANGLE_DOUBLE_LEFT.create());
 
+    fakeButtonContainerLabel.getElement().setProperty("innerHTML", "&nbsp;");
+    fakeButtonContainerLabel.setVisible(false);
+
     VerticalLayout vButtonContainer =
         new VerticalLayout(
             fakeButtonContainerLabel, addAllButton, addButton, removeButton, removeAllButton);
@@ -276,7 +276,7 @@ public class TwinColGrid<T> extends VerticalLayout
 
     HorizontalLayout hButtonContainer =
         new HorizontalLayout(
-            fakeButtonContainerLabel, addAllButton, addButton, removeButton, removeAllButton);
+            addAllButton, addButton, removeButton, removeAllButton);
     hButtonContainer.setPadding(false);
     hButtonContainer.setSizeUndefined();
     return hButtonContainer;
