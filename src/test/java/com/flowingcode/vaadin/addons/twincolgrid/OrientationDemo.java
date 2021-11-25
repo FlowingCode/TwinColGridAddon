@@ -21,7 +21,9 @@ package com.flowingcode.vaadin.addons.twincolgrid;
 
 import com.flowingcode.vaadin.addons.demo.DemoSource;
 import com.flowingcode.vaadin.addons.twincolgrid.TwinColGrid.Orientation;
+import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.router.PageTitle;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -30,19 +32,19 @@ import java.util.List;
 import java.util.Set;
 
 @SuppressWarnings("serial")
-@PageTitle("Vertical Orientation")
+@PageTitle("Orientation")
 @DemoSource(
-    "https://github.com/FlowingCode/TwinColGridAddon/blob/master/src/test/java/com/flowingcode/vaadin/addons/twincolgrid/VerticalOrientationDemo.java")
-public class VerticalOrientationDemo extends VerticalLayout {
+"https://github.com/FlowingCode/TwinColGridAddon/blob/master/src/test/java/com/flowingcode/vaadin/addons/twincolgrid/OrientationDemo.java")
+public class OrientationDemo extends VerticalLayout {
 
   private final Set<Book> selectedBooks = new HashSet<>();
   private final List<Book> availableBooks = new ArrayList<>();
 
-  public VerticalOrientationDemo() {
+  public OrientationDemo() {
     initializeData();
 
     final TwinColGrid<Book> twinColGrid =
-        new TwinColGrid<>(availableBooks, "TwinColGrid demo with drag and drop support")
+        new TwinColGrid<>(availableBooks, null)
             .addSortableColumn(Book::getIsbn, Comparator.comparing(Book::getIsbn), "ISBN")
             .addSortableColumn(Book::getTitle, Comparator.comparing(Book::getTitle), "Title")
             .withAvailableGridCaption("Available books")
@@ -52,7 +54,14 @@ public class VerticalOrientationDemo extends VerticalLayout {
             .withOrientation(Orientation.VERTICAL);
     twinColGrid.setValue(selectedBooks);
 
-    add(twinColGrid);
+    FormLayout formLayout = new FormLayout();
+    Select<TwinColGrid.Orientation> orientationField = new Select<>(Orientation.values());
+    orientationField.addValueChangeListener(ev -> twinColGrid.withOrientation(ev.getValue()));
+    orientationField.setValue(twinColGrid.getOrientation());
+    orientationField.setWidth("225px");
+    formLayout.addFormItem(orientationField, "Orientation");
+
+    add(formLayout, twinColGrid);
     setSizeFull();
   }
 
