@@ -55,7 +55,7 @@ public class DragAndDropDemo extends VerticalLayout {
     twinColGrid.setValue(selectedBooks);
 
     final Label countLabel = new Label("Selected items in left grid: 0");
-    twinColGrid.addLeftGridSelectionListener(
+    twinColGrid.getAvailableGrid().addSelectionListener(
         e -> countLabel.setText("Selected items in left grid: " + e.getAllSelectedItems().size()));
     twinColGrid.addValueChangeListener(e -> countLabel.setText("Selected items in left grid: 0"));
 
