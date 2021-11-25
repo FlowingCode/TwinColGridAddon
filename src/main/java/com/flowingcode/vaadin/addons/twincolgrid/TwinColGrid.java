@@ -606,7 +606,7 @@ public class TwinColGrid<T> extends VerticalLayout
 
   @Override
   public boolean isRequiredIndicatorVisible() {
-    return isRequiredIndicatorVisible();
+    return getElement().getAttribute("required") != null;
   }
 
   @Override
@@ -620,8 +620,8 @@ public class TwinColGrid<T> extends VerticalLayout
   }
 
   @Override
-  public void setRequiredIndicatorVisible(final boolean visible) {
-    setRequiredIndicatorVisible(visible);
+  public void setRequiredIndicatorVisible(boolean requiredIndicatorVisible) {
+    getElement().setAttribute("required", requiredIndicatorVisible);
   }
 
   private void updateSelection(final Set<T> addedItems, final Set<T> removedItems) {

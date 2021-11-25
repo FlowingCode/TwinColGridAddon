@@ -57,7 +57,7 @@ public class BoundDemo extends VerticalLayout {
             .selectRowOnClick();
 
     final Binder<Library> binder = new Binder<>();
-    binder.bind(twinColGrid.asList(), Library::getBooks, Library::setBooks);
+    binder.forField(twinColGrid.asList()).asRequired().bind(Library::getBooks, Library::setBooks);
     binder.setBean(library);
 
     add(twinColGrid);
