@@ -45,8 +45,8 @@ public class VerticalOrientationDemo extends VerticalLayout {
         new TwinColGrid<>(availableBooks, "TwinColGrid demo with drag and drop support")
             .addSortableColumn(Book::getIsbn, Comparator.comparing(Book::getIsbn), "ISBN")
             .addSortableColumn(Book::getTitle, Comparator.comparing(Book::getTitle), "Title")
-            .withLeftColumnCaption("Available books")
-            .withRightColumnCaption("Added books")
+            .withAvailableGridCaption("Available books")
+            .withSelectionGridCaption("Added books")
             .withSizeFull()
             .selectRowOnClick()
             .withOrientation(Orientation.VERTICAL);
