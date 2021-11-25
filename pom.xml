@@ -164,7 +164,7 @@
             <plugin>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>
-                <version>9.4.18.v20190429</version>
+                <version>9.4.36.v20210114</version>
                 <configuration>
                     <scanIntervalSeconds>3</scanIntervalSeconds>
                     <!-- Use test scope because the UI/demo classes are in 
