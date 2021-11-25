@@ -44,8 +44,8 @@ public class FilterableDemo extends VerticalLayout {
         new TwinColGrid<>(availableBooks, "TwinColGrid demo with filtering support")
             .addFilterableColumn(Book::getIsbn, Book::getIsbn, "ISBN", "ISBN Filter", true)
             .addFilterableColumn(Book::getTitle, "Title", "Title filter", false)
-            .withLeftColumnCaption("Available books")
-            .withRightColumnCaption("Added books")
+            .withAvailableGridCaption("Available books")
+            .withSelectionGridCaption("Added books")
             .withoutAddAllButton()
             .withSizeFull();
     twinColGrid.setValue(selectedBooks);

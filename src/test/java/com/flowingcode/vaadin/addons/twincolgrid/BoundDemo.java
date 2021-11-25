@@ -50,8 +50,8 @@ public class BoundDemo extends VerticalLayout {
                 availableBooks, "TwinColGrid demo with Binder and row select without checkbox")
             .addSortableColumn(Book::getIsbn, Comparator.comparing(Book::getIsbn), "ISBN")
             .addSortableColumn(Book::getTitle, Comparator.comparing(Book::getTitle), "Title")
-            .withLeftColumnCaption("Available books")
-            .withRightColumnCaption("Added books")
+            .withAvailableGridCaption("Available books")
+            .withSelectionGridCaption("Added books")
             .withoutRemoveAllButton()
             .withSizeFull()
             .selectRowOnClick();
