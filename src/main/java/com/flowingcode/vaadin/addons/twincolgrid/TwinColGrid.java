@@ -696,7 +696,7 @@ public class TwinColGrid<T> extends VerticalLayout
 
   @Override
   public boolean isReadOnly() {
-    return isReadOnly();
+    return getAvailableGrid().getSelectionModel() == SelectionMode.NONE;
   }
 
   @Override
