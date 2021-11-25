@@ -67,6 +67,7 @@ import org.apache.commons.lang3.StringUtils;
 @SuppressWarnings("serial")
 @CssImport(value = "./styles/multiselect-cb-hide.css", themeFor = "vaadin-grid")
 @CssImport(value = "./styles/twin-col-grid-button.css")
+@CssImport(value = "./styles/twincol-grid.css")
 public class TwinColGrid<T> extends VerticalLayout
     implements HasValue<ValueChangeEvent<Set<T>>, Set<T>>, HasComponents, HasSize {
 
@@ -83,6 +84,12 @@ public class TwinColGrid<T> extends VerticalLayout
     final VerticalLayout layout = new VerticalLayout(columnLabel, grid);
     HeaderRow headerRow;
     boolean droppedInsideGrid = false;
+
+    TwinColModel(String className) {
+      layout.setClassName(className);
+      grid.setClassName("twincol-grid-items");
+      columnLabel.setClassName("twincol-grid-label");
+    }
 
     @SuppressWarnings("unchecked")
     ListDataProvider<T> getDataProvider() {
@@ -144,10 +151,13 @@ public class TwinColGrid<T> extends VerticalLayout
    * @param caption the component caption
    */
   public TwinColGrid(final ListDataProvider<T> dataProvider, String caption) {
-    left = new TwinColModel<>();
-    right = new TwinColModel<>();
+    left = new TwinColModel<>("twincol-grid-available");
+    right = new TwinColModel<>("twincol-grid-selection");
+
     leftGrid = left.grid;
     rightGrid = right.grid;
+
+    setClassName("twincol-grid");
 
     setMargin(false);
     setPadding(false);
