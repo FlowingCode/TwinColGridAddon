@@ -104,7 +104,9 @@ public class TwinColGrid<T> extends VerticalLayout
   /** enumeration of all available orientation for TwinGolGrid component */
   public enum Orientation {
     HORIZONTAL,
-    VERTICAL;
+    VERTICAL,
+    HORIZONTAL_REVERSE,
+    VERTICAL_REVERSE;
   }
 
   private final TwinColModel<T> available;
@@ -235,14 +237,43 @@ public class TwinColGrid<T> extends VerticalLayout
   }
 
   private Component createContainerLayout() {
-    return orientation == Orientation.VERTICAL
-        ? createVerticalContainer()
-        : createHorizontalContainer();
+    switch (orientation) {
+      case HORIZONTAL:
+        addButton.setIcon(VaadinIcon.ANGLE_RIGHT.create());
+        addAllButton.setIcon(VaadinIcon.ANGLE_DOUBLE_RIGHT.create());
+        removeButton.setIcon(VaadinIcon.ANGLE_LEFT.create());
+        removeAllButton.setIcon(VaadinIcon.ANGLE_DOUBLE_LEFT.create());
+        return createHorizontalContainer(false);
+      case HORIZONTAL_REVERSE:
+        addButton.setIcon(VaadinIcon.ANGLE_LEFT.create());
+        addAllButton.setIcon(VaadinIcon.ANGLE_DOUBLE_LEFT.create());
+        removeButton.setIcon(VaadinIcon.ANGLE_RIGHT.create());
+        removeAllButton.setIcon(VaadinIcon.ANGLE_DOUBLE_RIGHT.create());
+        return createHorizontalContainer(true);
+      case VERTICAL:
+        addButton.setIcon(VaadinIcon.ANGLE_DOWN.create());
+        addAllButton.setIcon(VaadinIcon.ANGLE_DOUBLE_DOWN.create());
+        removeButton.setIcon(VaadinIcon.ANGLE_UP.create());
+        removeAllButton.setIcon(VaadinIcon.ANGLE_DOUBLE_UP.create());
+        return createVerticalContainer(false);
+      case VERTICAL_REVERSE:
+        addButton.setIcon(VaadinIcon.ANGLE_UP.create());
+        addAllButton.setIcon(VaadinIcon.ANGLE_DOUBLE_UP.create());
+        removeButton.setIcon(VaadinIcon.ANGLE_DOWN.create());
+        removeAllButton.setIcon(VaadinIcon.ANGLE_DOUBLE_DOWN.create());
+        return createVerticalContainer(true);
+    }
+    throw new IllegalStateException();
   }
 
-  private HorizontalLayout createHorizontalContainer() {
+  private HorizontalLayout createHorizontalContainer(boolean reverse) {
     buttonContainer = getVerticalButtonContainer();
-    HorizontalLayout hl = new HorizontalLayout(available.layout, buttonContainer, selection.layout);
+    HorizontalLayout hl;
+    if (reverse) {
+      hl = new HorizontalLayout(selection.layout, buttonContainer, available.layout);
+    } else {
+      hl = new HorizontalLayout(available.layout, buttonContainer, selection.layout);
+    }
     hl.getElement().getStyle().set("min-height", "0px");
     hl.getElement().getStyle().set("flex", "1 1 0px");
     hl.setMargin(false);
@@ -250,9 +281,14 @@ public class TwinColGrid<T> extends VerticalLayout
     return hl;
   }
 
-  private VerticalLayout createVerticalContainer() {
+  private VerticalLayout createVerticalContainer(boolean reverse) {
     buttonContainer = getHorizontalButtonContainer();
-    VerticalLayout vl = new VerticalLayout(available.layout, buttonContainer, selection.layout);
+    VerticalLayout vl;
+    if (reverse) {
+      vl = new VerticalLayout(selection.layout, buttonContainer, available.layout);
+    } else {
+      vl = new VerticalLayout(available.layout, buttonContainer, selection.layout);
+    }
     vl.getElement().getStyle().set("min-width", "0px");
     vl.getElement().getStyle().set("flex", "1 1 0px");
     vl.setMargin(false);
@@ -262,11 +298,6 @@ public class TwinColGrid<T> extends VerticalLayout
   }
 
   private VerticalLayout getVerticalButtonContainer() {
-    addButton.setIcon(VaadinIcon.ANGLE_RIGHT.create());
-    addAllButton.setIcon(VaadinIcon.ANGLE_DOUBLE_RIGHT.create());
-    removeButton.setIcon(VaadinIcon.ANGLE_LEFT.create());
-    removeAllButton.setIcon(VaadinIcon.ANGLE_DOUBLE_LEFT.create());
-
     fakeButtonContainerLabel.getElement().setProperty("innerHTML", "&nbsp;");
     fakeButtonContainerLabel.setVisible(false);
 
@@ -280,11 +311,6 @@ public class TwinColGrid<T> extends VerticalLayout
   }
 
   private HorizontalLayout getHorizontalButtonContainer() {
-    addButton.setIcon(VaadinIcon.ANGLE_DOWN.create());
-    addAllButton.setIcon(VaadinIcon.ANGLE_DOUBLE_DOWN.create());
-    removeButton.setIcon(VaadinIcon.ANGLE_UP.create());
-    removeAllButton.setIcon(VaadinIcon.ANGLE_DOUBLE_UP.create());
-
     HorizontalLayout hButtonContainer =
         new HorizontalLayout(
             addAllButton, addButton, removeButton, removeAllButton);
