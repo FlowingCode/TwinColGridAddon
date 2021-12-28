@@ -51,6 +51,7 @@ public class DragAndDropDemo extends VerticalLayout {
             .withoutAddAllButton()
             .withSizeFull()
             .withDragAndDropSupport()
+            .withSelectionGridReordering()
             .selectRowOnClick();
     twinColGrid.setValue(selectedBooks);
 

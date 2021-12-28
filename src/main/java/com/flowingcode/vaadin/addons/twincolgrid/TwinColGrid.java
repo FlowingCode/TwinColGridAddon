@@ -34,6 +34,7 @@ import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.grid.Grid.SelectionMode;
 import com.vaadin.flow.component.grid.GridNoneSelectionModel;
 import com.vaadin.flow.component.grid.HeaderRow;
+import com.vaadin.flow.component.grid.dnd.GridDropLocation;
 import com.vaadin.flow.component.grid.dnd.GridDropMode;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -50,6 +51,7 @@ import com.vaadin.flow.function.SerializableComparator;
 import com.vaadin.flow.function.SerializableFunction;
 import com.vaadin.flow.shared.Registration;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -84,6 +86,7 @@ public class TwinColGrid<T> extends VerticalLayout
     final VerticalLayout layout = new VerticalLayout(columnLabel, grid);
     HeaderRow headerRow;
     boolean droppedInsideGrid = false;
+    boolean allowReordering = false;
 
     TwinColModel(String className) {
       layout.setClassName(className);
@@ -746,6 +749,8 @@ public class TwinColGrid<T> extends VerticalLayout
           if (!(sourceModel.grid.getSelectionModel() instanceof GridNoneSelectionModel)) {
             draggedItems.addAll(event.getDraggedItems());
           }
+
+          sourceModel.grid.setDropMode(sourceModel.allowReordering ? GridDropMode.BETWEEN : null);
           targetModel.grid.setDropMode(GridDropMode.ON_GRID);
         });
 
@@ -782,6 +787,53 @@ public class TwinColGrid<T> extends VerticalLayout
           dragGridTargetDataProvider.getItems().addAll(draggedItems);
           dragGridTargetDataProvider.refreshAll();
         });
+
+    sourceModel.grid.addDropListener(event -> {
+      event.getDropTargetItem().ifPresent(dropOverItem -> {
+        if (sourceModel.allowReordering
+            && event.getSource() == draggedGrid
+            && !draggedItems.contains(dropOverItem)
+            && !draggedItems.isEmpty()) {
+          sourceModel.getItems().removeAll(draggedItems);
+          addItems(sourceModel, draggedItems, dropOverItem, event.getDropLocation());
+          draggedItems.clear();
+          draggedGrid = null;
+        }
+      });
+    });
+
+  }
+
+  private void addItems(TwinColModel<T> model, Collection<T> draggedItems,
+      T dropOverItem, GridDropLocation dropLocation) {
+    if (dropOverItem != null) {
+      Collection<T> collection = model.getItems();
+      List<T> list = new ArrayList<>(collection);
+      int dropIndex = list.indexOf(dropOverItem) + (dropLocation == GridDropLocation.BELOW ? 1 : 0);
+      list.addAll(dropIndex, draggedItems);
+      model.getItems().clear();
+      model.getItems().addAll(list);
+      model.getDataProvider().refreshAll();
+    } else {
+      model.getItems().addAll(draggedItems);
+      model.getDataProvider().refreshAll();
+    }
+  }
+
+  /** Allow drag-and-drop within the selection grid. */
+  public TwinColGrid<T> withSelectionGridReordering() {
+    setSelectionGridReorderingAllowed(true);
+    return this;
+  }
+
+  /** Configure whether drag-and-drop within the selection grid is allowed. */
+  public void setSelectionGridReorderingAllowed(boolean value) {
+    selection.allowReordering = value;
+  }
+
+  /** Return whether drag-and-drop within the selection grid is allowed. */
+  public boolean isSelectionGridReorderingAllowed() {
+    return selection.allowReordering;
   }
 
   /** @deprecated Use {@code getAvailableGrid().addSelectionListener(listener);} */
