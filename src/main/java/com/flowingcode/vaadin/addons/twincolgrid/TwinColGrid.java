@@ -102,6 +102,10 @@ public class TwinColGrid<T> extends VerticalLayout
     Collection<T> getItems() {
       return getDataProvider().getItems();
     }
+
+    boolean isReorderingEnabled() {
+      return allowReordering && grid.getSortOrder().isEmpty();
+    }
   }
 
   /** enumeration of all available orientation for TwinGolGrid component */
@@ -750,8 +754,10 @@ public class TwinColGrid<T> extends VerticalLayout
             draggedItems.addAll(event.getDraggedItems());
           }
 
-          sourceModel.grid.setDropMode(sourceModel.allowReordering ? GridDropMode.BETWEEN : null);
-          targetModel.grid.setDropMode(targetModel.allowReordering ? GridDropMode.BETWEEN : GridDropMode.ON_GRID);
+          sourceModel.grid
+              .setDropMode(sourceModel.isReorderingEnabled() ? GridDropMode.BETWEEN : null);
+          targetModel.grid.setDropMode(
+              targetModel.isReorderingEnabled() ? GridDropMode.BETWEEN : GridDropMode.ON_GRID);
         });
 
     sourceModel.grid.addDragEndListener(
@@ -787,7 +793,7 @@ public class TwinColGrid<T> extends VerticalLayout
 
     sourceModel.grid.addDropListener(event -> {
       event.getDropTargetItem().ifPresent(dropOverItem -> {
-        if (sourceModel.allowReordering
+        if (sourceModel.isReorderingEnabled()
             && event.getSource() == draggedGrid
             && !draggedItems.contains(dropOverItem)
             && !draggedItems.isEmpty()) {
