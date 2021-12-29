@@ -744,24 +744,21 @@ public class TwinColGrid<T> extends VerticalLayout
     sourceModel.grid.setRowsDraggable(true);
     sourceModel.grid.addDragStartListener(
         event -> {
-          draggedGrid = null;
+          draggedGrid = sourceModel.grid;
 
           if (!(sourceModel.grid.getSelectionModel() instanceof GridNoneSelectionModel)) {
             draggedItems.addAll(event.getDraggedItems());
           }
 
           sourceModel.grid.setDropMode(sourceModel.allowReordering ? GridDropMode.BETWEEN : null);
-          targetModel.grid.setDropMode(GridDropMode.ON_GRID);
+          targetModel.grid.setDropMode(targetModel.allowReordering ? GridDropMode.BETWEEN : GridDropMode.ON_GRID);
         });
 
     sourceModel.grid.addDragEndListener(
         event -> {
-          if (targetModel.droppedInsideGrid && sourceModel.grid == draggedGrid) {
-
-            if (draggedGrid == null) {
-              draggedItems.clear();
-              return;
-            }
+          if (targetModel.droppedInsideGrid
+              && sourceModel.grid == draggedGrid
+              && !draggedItems.isEmpty()) {
 
             final ListDataProvider<T> dragGridSourceDataProvider = sourceModel.getDataProvider();
 
@@ -769,26 +766,23 @@ public class TwinColGrid<T> extends VerticalLayout
             dragGridSourceDataProvider.refreshAll();
 
             targetModel.droppedInsideGrid = false;
-            draggedGrid = null;
 
             draggedItems.clear();
             sourceModel.grid.deselectAll();
 
             sourceModel.grid.setDropMode(null);
             targetModel.grid.setDropMode(null);
-          } else {
-            draggedItems.clear();
           }
+          draggedItems.clear();
         });
 
     targetModel.grid.addDropListener(
         event -> {
-          draggedGrid = sourceModel.grid;
-
-          targetModel.droppedInsideGrid = true;
-          final ListDataProvider<T> dragGridTargetDataProvider = targetModel.getDataProvider();
-          dragGridTargetDataProvider.getItems().addAll(draggedItems);
-          dragGridTargetDataProvider.refreshAll();
+          if (!draggedItems.isEmpty()) {
+            targetModel.droppedInsideGrid = true;
+            T dropOverItem = event.getDropTargetItem().orElse(null);
+            addItems(targetModel, draggedItems, dropOverItem, event.getDropLocation());
+          }
         });
 
     sourceModel.grid.addDropListener(event -> {
