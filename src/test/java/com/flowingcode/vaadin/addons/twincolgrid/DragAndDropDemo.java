@@ -21,8 +21,12 @@
 package com.flowingcode.vaadin.addons.twincolgrid;
 
 import com.flowingcode.vaadin.addons.demo.DemoSource;
+import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.function.SerializableRunnable;
 import com.vaadin.flow.router.PageTitle;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -39,11 +43,12 @@ public class DragAndDropDemo extends VerticalLayout {
   private final Set<Book> selectedBooks = new HashSet<>();
   private final List<Book> availableBooks = new ArrayList<>();
 
+  private TwinColGrid<Book> twinColGrid;
+
   public DragAndDropDemo() {
     initializeData();
 
-    final TwinColGrid<Book> twinColGrid =
-        new TwinColGrid<>(availableBooks, "TwinColGrid demo with drag and drop support")
+    twinColGrid = new TwinColGrid<>(availableBooks, "TwinColGrid demo with drag and drop support")
             .addSortableColumn(Book::getIsbn, Comparator.comparing(Book::getIsbn), "ISBN")
             .addSortableColumn(Book::getTitle, Comparator.comparing(Book::getTitle), "Title")
             .withAvailableGridCaption("Available books")
@@ -53,6 +58,7 @@ public class DragAndDropDemo extends VerticalLayout {
             .withDragAndDropSupport()
             .withSelectionGridReordering()
             .selectRowOnClick();
+
     twinColGrid.setValue(selectedBooks);
 
     final Label countLabel = new Label("Selected items in left grid: 0");
@@ -61,6 +67,8 @@ public class DragAndDropDemo extends VerticalLayout {
     twinColGrid.addValueChangeListener(e -> countLabel.setText("Selected items in left grid: 0"));
 
     add(twinColGrid, countLabel);
+
+    addReorderingToggle();
     setSizeFull();
   }
 
@@ -78,5 +86,25 @@ public class DragAndDropDemo extends VerticalLayout {
     availableBooks.add(new Book("9789526800677", "Book of Vaadin: Volume 2 "));
     availableBooks.add(new Book("9529267533", "Book of Vaadin"));
     availableBooks.add(new Book("1782169776", "Learning Vaadin 7, Second Edition"));
+  }
+
+  private void addReorderingToggle() {
+    Checkbox checkbox = new Checkbox("Selection Grid reordering allowed", true);
+    Span description = new Span("(Reordering is disabled while the grid is sorted)");
+    description.setVisible(false);
+
+    SerializableRunnable refresh = () -> {
+      boolean sorted = !twinColGrid.getSelectionGrid().getSortOrder().isEmpty();
+      boolean allowed = twinColGrid.isSelectionGridReorderingAllowed();
+      description.setVisible(sorted && allowed);
+    };
+
+    checkbox.addValueChangeListener(ev -> {
+      twinColGrid.setSelectionGridReorderingAllowed(ev.getValue());
+      refresh.run();
+    });
+
+    twinColGrid.getSelectionGrid().addSortListener(ev -> refresh.run());
+    add(new Div(checkbox, description));
   }
 }
