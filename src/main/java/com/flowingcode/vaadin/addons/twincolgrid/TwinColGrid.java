@@ -60,6 +60,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -73,15 +74,8 @@ import org.apache.commons.lang3.StringUtils;
 public class TwinColGrid<T> extends VerticalLayout
     implements HasValue<ValueChangeEvent<Set<T>>, Set<T>>, HasComponents, HasSize {
 
-  private static final class GridEx<T> extends Grid<T> {
-    @Override
-    protected SerializableComparator<T> createSortingComparator() {
-      return super.createSortingComparator();
-    }
-  }
-
   private static final class TwinColModel<T> implements Serializable {
-    final GridEx<T> grid = new GridEx<>();
+    final Grid<T> grid = new Grid<>();
     final Label columnLabel = new Label();
     final VerticalLayout layout = new VerticalLayout(columnLabel, grid);
     HeaderRow headerRow;
@@ -680,12 +674,26 @@ public class TwinColGrid<T> extends VerticalLayout
    */
   <C> C collectValue(Collector<T, ?, C> collector) {
     Stream<T> stream = selection.getItems().stream();
-    SerializableComparator<T> comparator = selection.grid.createSortingComparator();
+    SerializableComparator<T> comparator = createSortingComparator(selection.grid);
     if (comparator != null) {
       return stream.sorted(comparator).collect(collector);
     } else {
       return stream.collect(collector);
     }
+  }
+
+  private static <T> SerializableComparator<T> createSortingComparator(Grid<T> grid) {
+    // protected method copied from Grid::createSortingComparator
+    BinaryOperator<SerializableComparator<T>> operator = (comparator1, comparator2) -> {
+      /*
+       * thenComparing is defined to return a serializable comparator as long as both original
+       * comparators are also serializable
+       */
+      return comparator1.thenComparing(comparator2)::compare;
+    };
+    return grid.getSortOrder().stream()
+        .map(order -> order.getSorted().getComparator(order.getDirection())).reduce(operator)
+        .orElse(null);
   }
 
   @Override
