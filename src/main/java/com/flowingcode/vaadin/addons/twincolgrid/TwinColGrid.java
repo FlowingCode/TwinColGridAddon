@@ -62,9 +62,11 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
 
 @SuppressWarnings("serial")
@@ -75,14 +77,17 @@ public class TwinColGrid<T> extends VerticalLayout
     implements HasValue<ValueChangeEvent<Set<T>>, Set<T>>, HasComponents, HasSize {
 
   private static final class TwinColModel<T> implements Serializable {
-    final Grid<T> grid = new Grid<>();
+    final Grid<T> grid;
     final Label columnLabel = new Label();
-    final VerticalLayout layout = new VerticalLayout(columnLabel, grid);
+    final VerticalLayout layout;
     HeaderRow headerRow;
     boolean droppedInsideGrid = false;
     boolean allowReordering = false;
 
-    TwinColModel(String className) {
+    TwinColModel(@NonNull Grid<T> grid, String className) {
+      this.grid = grid;
+      layout = new VerticalLayout(columnLabel, grid);
+
       layout.setClassName(className);
       grid.setClassName("twincol-grid-items");
       columnLabel.setClassName("twincol-grid-label");
@@ -148,7 +153,7 @@ public class TwinColGrid<T> extends VerticalLayout
 
   /** Constructs a new TwinColGrid with an empty {@link ListDataProvider}. */
   public TwinColGrid() {
-    this(emptyDataProvider(), null);
+    this(emptyDataProvider(), (String) null);
   }
 
   /**
@@ -158,8 +163,39 @@ public class TwinColGrid<T> extends VerticalLayout
    * @param caption the component caption
    */
   public TwinColGrid(final ListDataProvider<T> dataProvider, String caption) {
-    available = new TwinColModel<>("twincol-grid-available");
-    selection = new TwinColModel<>("twincol-grid-selection");
+    this(dataProvider, caption, Grid::new);
+  }
+
+  /**
+   * Constructs a new TwinColGrid with data provider for options, using the specified supplier for
+   * instantiating both grids.
+   *
+   * @param dataProvider the data provider, not {@code null}
+   * @param caption the component caption
+   * @param gridSupplier a supplier for instantiating both grids
+   */
+  public TwinColGrid(final ListDataProvider<T> dataProvider, String caption,
+      Supplier<Grid<T>> gridSupplier) {
+    this(dataProvider, caption, gridSupplier.get(), gridSupplier.get());
+  }
+
+  /**
+   * Constructs a new TwinColGrid with data provider for options, using the specified grids for each
+   * side.
+   *
+   * @param dataProvider the data provider, not {@code null}
+   * @param caption the component caption
+   * @param availableGrid the grid that contains the available items
+   * @param selectedGrid the grid that contains the selected items
+   */
+  public TwinColGrid(final ListDataProvider<T> dataProvider, String caption,
+      @NonNull Grid<T> availableGrid, @NonNull Grid<T> selectionGrid) {
+    if (availableGrid == selectionGrid) {
+      throw new IllegalArgumentException("Grids must be different");
+    }
+
+    available = new TwinColModel<>(availableGrid, "twincol-grid-available");
+    selection = new TwinColModel<>(selectionGrid, "twincol-grid-selection");
 
     leftGrid = available.grid;
     rightGrid = selection.grid;
@@ -172,10 +208,10 @@ public class TwinColGrid<T> extends VerticalLayout
       add(new Label(caption));
     }
 
-    setDataProvider(dataProvider);
-
     rightGridDataProvider = DataProvider.ofCollection(new LinkedHashSet<>());
     getSelectionGrid().setDataProvider(rightGridDataProvider);
+
+    setDataProvider(dataProvider);
 
     getAvailableGrid().setWidth("100%");
     getSelectionGrid().setWidth("100%");
