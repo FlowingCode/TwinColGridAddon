@@ -142,9 +142,13 @@ public class TwinColGrid<T> extends VerticalLayout
 
   private Orientation orientation = Orientation.HORIZONTAL;
 
+  private static <T> ListDataProvider<T> emptyDataProvider() {
+    return DataProvider.ofCollection(new LinkedHashSet<>());
+  }
+
   /** Constructs a new TwinColGrid with an empty {@link ListDataProvider}. */
   public TwinColGrid() {
-    this(DataProvider.ofCollection(new LinkedHashSet<>()), null);
+    this(emptyDataProvider(), null);
   }
 
   /**
