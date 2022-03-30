@@ -59,6 +59,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
@@ -913,11 +914,14 @@ public class TwinColGrid<T> extends VerticalLayout
       SerializableFunction<T, String> filterableValue,
       final String header,
       String filterPlaceholder,
-      boolean enableClearButton) {
+      boolean enableClearButton, String key) {
     forEachSide(
         side -> {
           Column<T> column =
               side.grid.addColumn(new TextRenderer<>(itemLabelGenerator)).setHeader(header);
+
+          Optional.ofNullable(key).ifPresent(column::setKey);
+
           TextField filterTF = new TextField();
           filterTF.setClearButtonVisible(enableClearButton);
 
@@ -947,8 +951,21 @@ public class TwinColGrid<T> extends VerticalLayout
       final String header,
       String filterPlaceholder,
       boolean enableClearButton) {
-    return addFilterableColumn(
-        itemLabelGenerator, itemLabelGenerator, header, filterPlaceholder, enableClearButton);
+    return addFilterableColumn(itemLabelGenerator, null, header, filterPlaceholder,
+        enableClearButton, null);
+  }
+
+  public TwinColGrid<T> addFilterableColumn(ItemLabelGenerator<T> itemLabelGenerator,
+      SerializableFunction<T, String> filterableValue, String header, String filterPlaceholder,
+      boolean enableClearButton) {
+    return addFilterableColumn(itemLabelGenerator, filterableValue, header, filterPlaceholder,
+        enableClearButton, null);
+  }
+
+  public TwinColGrid<T> addFilterableColumn(ItemLabelGenerator<T> itemLabelGenerator, String header,
+      String filterPlaceholder, boolean enableClearButton, String key) {
+    return addFilterableColumn(itemLabelGenerator, null, header, filterPlaceholder,
+        enableClearButton, key);
   }
 
   public TwinColGrid<T> selectRowOnClick() {
