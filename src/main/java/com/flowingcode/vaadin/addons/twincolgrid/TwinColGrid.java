@@ -405,6 +405,11 @@ public class TwinColGrid<T> extends VerticalLayout
     consumer.accept(selection);
   }
 
+  public final void forEachGrid(Consumer<Grid<T>> consumer) {
+    consumer.accept(available.grid);
+    consumer.accept(selection.grid);
+  }
+
   public void setItems(Collection<T> items) {
     setDataProvider(DataProvider.ofCollection(items));
   }
@@ -563,9 +568,7 @@ public class TwinColGrid<T> extends VerticalLayout
       final ItemLabelGenerator<T> itemLabelGenerator,
       Comparator<T> comparator,
       final String header) {
-    forEachSide(
-        side ->
-            side.grid
+    forEachGrid(grid -> grid
                 .addColumn(new TextRenderer<>(itemLabelGenerator))
                 .setHeader(header)
                 .setComparator(comparator)
@@ -589,9 +592,7 @@ public class TwinColGrid<T> extends VerticalLayout
       Comparator<T> comparator,
       final String header,
       final String key) {
-    forEachSide(
-        side ->
-            side.grid
+    forEachGrid(grid -> grid
                 .addColumn(new TextRenderer<>(itemLabelGenerator))
                 .setHeader(header)
                 .setComparator(comparator)
@@ -791,10 +792,9 @@ public class TwinColGrid<T> extends VerticalLayout
     selection.getItems().addAll(addedItems);
     selection.getItems().removeAll(removedItems);
 
-    forEachSide(
-        side -> {
-          side.getDataProvider().refreshAll();
-          side.grid.getSelectionModel().deselectAll();
+    forEachGrid(grid -> {
+      grid.getDataProvider().refreshAll();
+      grid.getSelectionModel().deselectAll();
         });
   }
 
@@ -969,16 +969,15 @@ public class TwinColGrid<T> extends VerticalLayout
   }
 
   public TwinColGrid<T> selectRowOnClick() {
-    forEachSide(
-        side -> {
-          side.grid.addClassName("hide-selector-col");
+    forEachGrid(grid -> {
+      grid.addClassName("hide-selector-col");
 
-          side.grid.addItemClickListener(
+      grid.addItemClickListener(
               c -> {
-                if (side.grid.getSelectedItems().contains(c.getItem())) {
-                  side.grid.deselect(c.getItem());
+            if (grid.getSelectedItems().contains(c.getItem())) {
+              grid.deselect(c.getItem());
                 } else {
-                  side.grid.select(c.getItem());
+              grid.select(c.getItem());
                 }
               });
         });
