@@ -951,7 +951,7 @@ public class TwinColGrid<T> extends VerticalLayout
       final String header,
       String filterPlaceholder,
       boolean enableClearButton) {
-    return addFilterableColumn(itemLabelGenerator, null, header, filterPlaceholder,
+    return addFilterableColumn(itemLabelGenerator, itemLabelGenerator, header, filterPlaceholder,
         enableClearButton, null);
   }
 
@@ -964,7 +964,7 @@ public class TwinColGrid<T> extends VerticalLayout
 
   public TwinColGrid<T> addFilterableColumn(ItemLabelGenerator<T> itemLabelGenerator, String header,
       String filterPlaceholder, boolean enableClearButton, String key) {
-    return addFilterableColumn(itemLabelGenerator, null, header, filterPlaceholder,
+    return addFilterableColumn(itemLabelGenerator, itemLabelGenerator, header, filterPlaceholder,
         enableClearButton, key);
   }
 
