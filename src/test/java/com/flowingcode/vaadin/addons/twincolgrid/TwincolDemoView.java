@@ -33,10 +33,10 @@ import com.vaadin.flow.router.Route;
 public class TwincolDemoView extends TabbedDemo {
 
   public TwincolDemoView() {
-    addDemo(new DragAndDropDemo());
-    addDemo(new FilterableDemo());
-    addDemo(new BoundDemo());
-    addDemo(new OrientationDemo());
+    addDemo(DragAndDropDemo.class);
+    addDemo(FilterableDemo.class);
+    addDemo(BoundDemo.class);
+    addDemo(OrientationDemo.class);
     setSizeFull();
   }
 }

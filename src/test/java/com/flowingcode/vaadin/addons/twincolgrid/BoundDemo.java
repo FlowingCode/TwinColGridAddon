@@ -27,14 +27,15 @@ import com.vaadin.flow.component.notification.Notification.Position;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.router.Route;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
 @SuppressWarnings("serial")
 @PageTitle("Bound")
-@DemoSource(
-    "https://github.com/FlowingCode/TwinColGridAddon/blob/master/src/test/java/com/flowingcode/vaadin/addons/twincolgrid/BoundDemo.java")
+@DemoSource
+@Route(value = "twincolgrid/bound", layout = TwincolDemoView.class)
 public class BoundDemo extends VerticalLayout {
 
   private final List<Book> selectedBooks = new ArrayList<>();

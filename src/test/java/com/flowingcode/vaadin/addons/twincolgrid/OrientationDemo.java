@@ -25,6 +25,7 @@ import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.router.Route;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -33,8 +34,8 @@ import java.util.Set;
 
 @SuppressWarnings("serial")
 @PageTitle("Orientation")
-@DemoSource(
-"https://github.com/FlowingCode/TwinColGridAddon/blob/master/src/test/java/com/flowingcode/vaadin/addons/twincolgrid/OrientationDemo.java")
+@DemoSource
+@Route(value = "twincolgrid/orientation", layout = TwincolDemoView.class)
 public class OrientationDemo extends VerticalLayout {
 
   private final Set<Book> selectedBooks = new HashSet<>();

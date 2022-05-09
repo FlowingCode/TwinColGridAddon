@@ -23,6 +23,7 @@ package com.flowingcode.vaadin.addons.twincolgrid;
 import com.flowingcode.vaadin.addons.demo.DemoSource;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.router.Route;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -30,8 +31,8 @@ import java.util.Set;
 
 @SuppressWarnings("serial")
 @PageTitle("Filterable")
-@DemoSource(
-    "https://github.com/FlowingCode/TwinColGridAddon/blob/master/src/test/java/com/flowingcode/vaadin/addons/twincolgrid/FilterableDemo.java")
+@DemoSource
+@Route(value = "twincolgrid/filterable", layout = TwincolDemoView.class)
 public class FilterableDemo extends VerticalLayout {
 
   private final Set<Book> selectedBooks = new HashSet<>();
