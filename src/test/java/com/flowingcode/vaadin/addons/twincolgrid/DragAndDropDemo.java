@@ -28,6 +28,7 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.function.SerializableRunnable;
 import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.router.Route;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -36,8 +37,8 @@ import java.util.Set;
 
 @SuppressWarnings("serial")
 @PageTitle("Drag and Drop")
-@DemoSource(
-    "https://github.com/FlowingCode/TwinColGridAddon/blob/master/src/test/java/com/flowingcode/vaadin/addons/twincolgrid/DragAndDropDemo.java")
+@DemoSource
+@Route(value = "twincolgrid/drag-and-drop", layout = TwincolDemoView.class)
 public class DragAndDropDemo extends VerticalLayout {
 
   private final Set<Book> selectedBooks = new HashSet<>();
