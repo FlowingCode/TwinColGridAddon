@@ -658,7 +658,9 @@ public class TwinColGrid<T> extends VerticalLayout
         value.stream()
             .map(Objects::requireNonNull)
             .collect(Collectors.toCollection(LinkedHashSet::new));
-    updateSelection(newValues, new LinkedHashSet<>(getAvailableGrid().getSelectedItems()));
+    final Set<T> oldValues = new LinkedHashSet<>(selection.getItems());
+    oldValues.removeAll(newValues);
+    updateSelection(newValues, oldValues);
   }
 
   /**
