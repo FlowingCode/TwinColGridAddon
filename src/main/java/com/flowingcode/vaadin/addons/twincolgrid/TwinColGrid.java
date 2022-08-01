@@ -21,12 +21,15 @@
 package com.flowingcode.vaadin.addons.twincolgrid;
 
 import com.vaadin.flow.component.AbstractField.ComponentValueChangeEvent;
+import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.DetachEvent;
 import com.vaadin.flow.component.HasComponents;
 import com.vaadin.flow.component.HasSize;
 import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.HasValue.ValueChangeEvent;
 import com.vaadin.flow.component.ItemLabelGenerator;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
@@ -40,6 +43,7 @@ import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.page.Page;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.provider.ListDataProvider;
@@ -76,7 +80,7 @@ import org.apache.commons.lang3.StringUtils;
 @CssImport(value = "./styles/twincol-grid.css")
 public class TwinColGrid<T> extends VerticalLayout
     implements HasValue<ValueChangeEvent<Set<T>>, Set<T>>, HasComponents, HasSize {
-
+  
   private static final class TwinColModel<T> implements Serializable {
     final Grid<T> grid;
     final Label columnLabel = new Label();
@@ -147,7 +151,11 @@ public class TwinColGrid<T> extends VerticalLayout
   private Label fakeButtonContainerLabel = new Label();
 
   private Orientation orientation = Orientation.HORIZONTAL;
+  
+  private Registration browserReziseRegistration;
 
+  private boolean autoResize = false; 
+  
   private static <T> ListDataProvider<T> emptyDataProvider() {
     return DataProvider.ofCollection(new LinkedHashSet<>());
   }
@@ -1000,5 +1008,61 @@ public class TwinColGrid<T> extends VerticalLayout
     button.addThemeName("twin-col-grid-button");
     return button;
   }
+  
+  /**
+   * Return whether autoResize is set or not.
+   */
+  public boolean isAutoResize() {
+    return autoResize;
+  }
 
+  /**
+   * Sets whether component should update orientation on browser window resize.
+   * 
+   * @param autoResize if true, component will update orientation on browser window resize
+   */
+  public void setAutoResize(boolean autoResize) {
+    if(autoResize != this.autoResize) {
+      if(autoResize) {
+        addBrowserResizeRegistration();
+      } else {
+        removeBrowserResizeRegistration();
+      }
+      this.autoResize = autoResize;
+    }    
+  }
+
+  @Override
+  protected void onAttach(AttachEvent attachEvent) {
+    super.onAttach(attachEvent);
+    if(autoResize) {
+      addBrowserResizeRegistration();
+    }
+  }
+   
+  @Override
+  protected void onDetach(DetachEvent detachEvent) {
+    super.onDetach(detachEvent);
+    removeBrowserResizeRegistration();
+  }  
+  
+  private void addBrowserResizeRegistration() {
+    Page page = UI.getCurrent().getPage();
+    browserReziseRegistration = page.addBrowserWindowResizeListener(event -> {
+      int width = event.getWidth();
+      int height = event.getHeight();
+      if (height > width) {
+        this.withOrientation(Orientation.VERTICAL);
+      } else {
+        this.withOrientation(Orientation.HORIZONTAL);
+      }
+    });
+  }
+  
+  private void removeBrowserResizeRegistration() {
+    if(browserReziseRegistration != null) {
+      browserReziseRegistration.remove();
+    }
+  }
+  
 }
