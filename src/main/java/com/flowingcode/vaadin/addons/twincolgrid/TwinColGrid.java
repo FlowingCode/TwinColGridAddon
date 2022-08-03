@@ -21,6 +21,7 @@
 package com.flowingcode.vaadin.addons.twincolgrid;
 
 import com.vaadin.flow.component.AbstractField.ComponentValueChangeEvent;
+import com.vaadin.flow.component.ClientCallable;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasComponents;
 import com.vaadin.flow.component.HasSize;
@@ -29,6 +30,7 @@ import com.vaadin.flow.component.HasValue.ValueChangeEvent;
 import com.vaadin.flow.component.ItemLabelGenerator;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.grid.Grid.SelectionMode;
@@ -71,6 +73,7 @@ import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
 
 @SuppressWarnings("serial")
+@JsModule(value = "./src/fc-twin-col-grid-auto-resize.js")
 @CssImport(value = "./styles/multiselect-cb-hide.css", themeFor = "vaadin-grid")
 @CssImport(value = "./styles/twin-col-grid-button.css")
 @CssImport(value = "./styles/twincol-grid.css")
@@ -147,6 +150,8 @@ public class TwinColGrid<T> extends VerticalLayout
   private Label fakeButtonContainerLabel = new Label();
 
   private Orientation orientation = Orientation.HORIZONTAL;
+  
+  private boolean autoResize = false; 
 
   private static <T> ListDataProvider<T> emptyDataProvider() {
     return DataProvider.ofCollection(new LinkedHashSet<>());
@@ -1000,5 +1005,37 @@ public class TwinColGrid<T> extends VerticalLayout
     button.addThemeName("twin-col-grid-button");
     return button;
   }
+  
+  /**
+   * Return whether autoResize is set or not.
+   */
+  public boolean isAutoResize() {
+    return autoResize;
+  }
 
+  /**
+   * Sets whether component should update orientation on resize.
+   * 
+   * @param autoResize if true, component will update orientation on resize
+   */
+  public void setAutoResize(boolean autoResize) {
+    if (autoResize != this.autoResize) {
+      if (autoResize) {
+        this.getElement().executeJs("fcTwinColGridAutoResize.observe($0)", this);
+      } else {
+        this.getElement().executeJs("fcTwinColGridAutoResize.unobserve($0)", this);
+      }
+      this.autoResize = autoResize;
+    }
+  }  
+
+  @ClientCallable
+  private void updateOrientationOnResize(int width, int height) {
+    if (height > width) {
+      this.withOrientation(Orientation.VERTICAL);
+    } else {
+      this.withOrientation(Orientation.HORIZONTAL);
+    }
+  }
+ 
 }
