@@ -189,7 +189,6 @@ public class TwinColGrid<T> extends VerticalLayout
   /**
    * Constructs a new empty TwinColGrid, using the specified supplier for instantiating both grids.
    *
-   * @param dataProvider the data provider, not {@code null}
    * @param caption the component caption
    * @param gridSupplier a supplier for instantiating both grids
    */
@@ -202,7 +201,7 @@ public class TwinColGrid<T> extends VerticalLayout
    *
    * @param caption the component caption
    * @param availableGrid the grid that contains the available items
-   * @param selectedGrid the grid that contains the selected items
+   * @param selectionGrid the grid that contains the selected items
    */
   public TwinColGrid(String caption, @NonNull Grid<T> availableGrid,
       @NonNull Grid<T> selectionGrid) {
@@ -498,7 +497,7 @@ public class TwinColGrid<T> extends VerticalLayout
   /**
    * Sets the text shown above the grid with the available items. {@code null} clears the caption.
    *
-   * @param rightColumnCaption The text to show, {@code null} to clear
+   * @param caption The text to show, {@code null} to clear
    * @return this instance
    */
   public TwinColGrid<T> withAvailableGridCaption(final String caption) {
@@ -524,7 +523,7 @@ public class TwinColGrid<T> extends VerticalLayout
   /**
    * Sets the text shown above the grid with the available items. {@code null} clears the caption.
    *
-   * @param rightColumnCaption The text to show, {@code null} to clear
+   * @param caption The text to show, {@code null} to clear
    * @return this instance
    * @deprecated Use {@link #withAvailableGridCaption(String)}
    */
