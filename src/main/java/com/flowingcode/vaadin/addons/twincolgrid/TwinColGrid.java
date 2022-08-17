@@ -151,7 +151,9 @@ public class TwinColGrid<T> extends VerticalLayout
 
   private Orientation orientation = Orientation.HORIZONTAL;
   
-  private boolean autoResize = false; 
+  private boolean autoResize = false;
+
+  private boolean isFromClient = false;
 
   private static <T> ListDataProvider<T> emptyDataProvider() {
     return DataProvider.ofCollection(new LinkedHashSet<>());
@@ -233,21 +235,21 @@ public class TwinColGrid<T> extends VerticalLayout
         e -> {
           List<T> filteredItems = available.getDataProvider().withConfigurableFilter()
               .fetch(new Query<>()).collect(Collectors.toList());
-          updateSelection(new LinkedHashSet<>(filteredItems), new HashSet<>());
+          updateSelection(new LinkedHashSet<>(filteredItems), new HashSet<>(), true);
         });
 
     addButton.addClickListener(
         e ->
             updateSelection(
-            new LinkedHashSet<>(getAvailableGrid().getSelectedItems()), new HashSet<>()));
+            new LinkedHashSet<>(getAvailableGrid().getSelectedItems()), new HashSet<>(), true));
 
     removeButton.addClickListener(
-        e -> updateSelection(new HashSet<>(), getSelectionGrid().getSelectedItems()));
+        e -> updateSelection(new HashSet<>(), getSelectionGrid().getSelectedItems(), true));
 
     removeAllButton.addClickListener(
         e -> {
           List<T> filteredItems= selection.getDataProvider().withConfigurableFilter().fetch(new Query<>()).collect(Collectors.toList());
-          updateSelection(new HashSet<>(), new HashSet<>(filteredItems));
+          updateSelection(new HashSet<>(), new HashSet<>(filteredItems), true);
         });
 
     getElement().getStyle().set("display", "flex");
@@ -460,7 +462,7 @@ public class TwinColGrid<T> extends VerticalLayout
   }
 
   public void clearAll() {
-    updateSelection(new HashSet<>(), new HashSet<>(selection.getItems()));
+    updateSelection(new HashSet<>(), new HashSet<>(selection.getItems()), false);
   }
 
   private void setDataProvider(ListDataProvider<T> dataProvider) {
@@ -710,7 +712,7 @@ public class TwinColGrid<T> extends VerticalLayout
             .collect(Collectors.toCollection(LinkedHashSet::new));
     final Set<T> oldValues = new LinkedHashSet<>(selection.getItems());
     oldValues.removeAll(newValues);
-    updateSelection(newValues, oldValues);
+    updateSelection(newValues, oldValues, false);
   }
 
   /**
@@ -762,7 +764,7 @@ public class TwinColGrid<T> extends VerticalLayout
         .addDataProviderListener(
             e -> {
               ComponentValueChangeEvent<TwinColGrid<T>, Set<T>> e2 =
-                  new ComponentValueChangeEvent<>(TwinColGrid.this, TwinColGrid.this, null, true);
+                  new ComponentValueChangeEvent<>(TwinColGrid.this, TwinColGrid.this, null, isFromClient);
               listener.valueChanged(e2);
             });
   }
@@ -792,7 +794,8 @@ public class TwinColGrid<T> extends VerticalLayout
     getElement().setAttribute("required", requiredIndicatorVisible);
   }
 
-  private void updateSelection(final Set<T> addedItems, final Set<T> removedItems) {
+  private void updateSelection(final Set<T> addedItems, final Set<T> removedItems, boolean isFromClient) {
+    this.isFromClient = isFromClient;
     available.getItems().addAll(removedItems);
     available.getItems().removeAll(addedItems);
 
@@ -850,6 +853,7 @@ public class TwinColGrid<T> extends VerticalLayout
     targetModel.grid.addDropListener(
         event -> {
           if (!draggedItems.isEmpty()) {
+            isFromClient = true;
             targetModel.droppedInsideGrid = true;
             T dropOverItem = event.getDropTargetItem().orElse(null);
             addItems(targetModel, draggedItems, dropOverItem, event.getDropLocation());
@@ -862,6 +866,7 @@ public class TwinColGrid<T> extends VerticalLayout
             && event.getSource() == draggedGrid
             && !draggedItems.contains(dropOverItem)
             && !draggedItems.isEmpty()) {
+          isFromClient = true;
           sourceModel.getItems().removeAll(draggedItems);
           addItems(sourceModel, draggedItems, dropOverItem, event.getDropLocation());
           draggedItems.clear();
