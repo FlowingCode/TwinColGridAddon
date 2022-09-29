@@ -163,16 +163,19 @@ public class TwinColGrid<T> extends VerticalLayout
 
   /** Constructs a new TwinColGrid with an empty {@link ListDataProvider}. */
   public TwinColGrid() {
-    this(null, Grid::new);
+    this(Grid::new);
   }
 
   /**
    * Constructs a new empty TwinColGrid with caption
    *
    * @param caption the component caption
+   * @deprecated Use {@link TwinColGrid#TwinColGrid()} and {{@link #setCaption(String)}
    */
+  @Deprecated
   public TwinColGrid(String caption) {
-    this(caption, Grid::new);
+    this(Grid::new);
+    setCaption(caption);
   }
 
   /**
@@ -180,12 +183,14 @@ public class TwinColGrid<T> extends VerticalLayout
    *
    * @param dataProvider the data provider, not {@code null}
    * @param caption the component caption
-   * @deprecated Use {@link #TwinColGrid(String)} and {@link #setDataProvider(ListDataProvider)}
+   * @deprecated Use {@link #TwinColGrid()} and {@link #setDataProvider(ListDataProvider)},
+   *             {@link #setCaption(String)}
    */
   @Deprecated
   public TwinColGrid(final ListDataProvider<T> dataProvider, String caption) {
-    this(caption, Grid::new);
+    this(Grid::new);
     setDataProvider(dataProvider);
+    setCaption(caption);
   }
 
   /**
@@ -193,9 +198,21 @@ public class TwinColGrid<T> extends VerticalLayout
    *
    * @param caption the component caption
    * @param gridSupplier a supplier for instantiating both grids
+   * @deprecated Use {@link TwinColGrid#TwinColGrid(Supplier)} and {@link #setCaption(String)}
    */
+  @Deprecated
   public TwinColGrid(String caption, Supplier<Grid<T>> gridSupplier) {
-    this(caption, gridSupplier.get(), gridSupplier.get());
+    this(gridSupplier.get(), gridSupplier.get());
+    setCaption(caption);
+  }
+
+  /**
+   * Constructs a new empty TwinColGrid, using the specified supplier for instantiating both grids.
+   *
+   * @param gridSupplier a supplier for instantiating both grids
+   */
+  public TwinColGrid(Supplier<Grid<T>> gridSupplier) {
+    this(gridSupplier.get(), gridSupplier.get());
   }
 
   /**
@@ -204,9 +221,24 @@ public class TwinColGrid<T> extends VerticalLayout
    * @param caption the component caption
    * @param availableGrid the grid that contains the available items
    * @param selectionGrid the grid that contains the selected items
+   *
+   * @deprecated Use {@link TwinColGrid#TwinColGrid(Grid, Grid)} and {@link #setCaption(String)}
    */
+  @Deprecated
   public TwinColGrid(String caption, @NonNull Grid<T> availableGrid,
       @NonNull Grid<T> selectionGrid) {
+    this(availableGrid, selectionGrid);
+    setCaption(caption);
+  }
+
+  /**
+   * Constructs a new empty TwinColGrid, using the specified grids for each side.
+   *
+   * @param availableGrid the grid that contains the available items
+   * @param selectionGrid the grid that contains the selected items
+   */
+  public TwinColGrid(@NonNull Grid<T> availableGrid, @NonNull Grid<T> selectionGrid) {
+
     if (availableGrid == selectionGrid) {
       throw new IllegalArgumentException("Grids must be different");
     }
@@ -221,9 +253,6 @@ public class TwinColGrid<T> extends VerticalLayout
 
     setMargin(false);
     setPadding(false);
-    if (caption != null) {
-      setCaption(caption);
-    }
 
     setDataProvider(emptyDataProvider());
     rightGridDataProvider = DataProvider.ofCollection(new LinkedHashSet<>());
@@ -511,7 +540,7 @@ public class TwinColGrid<T> extends VerticalLayout
    * @param options the options, cannot be {@code null}
    */
   public TwinColGrid(final Collection<T> options) {
-    this((String) null);
+    this();
     setDataProvider(DataProvider.ofCollection(new LinkedHashSet<>(options)));
   }
 
@@ -520,10 +549,13 @@ public class TwinColGrid<T> extends VerticalLayout
    *
    * @param caption the caption to set, can be {@code null}
    * @param options the options, cannot be {@code null}
+   *
+   * @deprecated Use {@link #TwinColGrid(Collection)} and {{@link #setCaption(String)}
    */
+  @Deprecated
   public TwinColGrid(final Collection<T> options, final String caption) {
-    this(caption);
-    setDataProvider(DataProvider.ofCollection(new LinkedHashSet<>(options)));
+    this(options);
+    setCaption(caption);
   }
 
   /**
