@@ -135,6 +135,8 @@ public class TwinColGrid<T> extends VerticalLayout
   /** @deprecated Use getSelectionGrid().getDataProvider() */
   @Deprecated protected ListDataProvider<T> rightGridDataProvider;
 
+  private Label captionLabel;
+
   private final Button addAllButton = createActionButton();
 
   private final Button addButton = createActionButton();
@@ -220,7 +222,7 @@ public class TwinColGrid<T> extends VerticalLayout
     setMargin(false);
     setPadding(false);
     if (caption != null) {
-      add(new Label(caption));
+      setCaption(caption);
     }
 
     setDataProvider(emptyDataProvider());
@@ -265,6 +267,36 @@ public class TwinColGrid<T> extends VerticalLayout
 
     add(createContainerLayout());
     setSizeUndefined();
+  }
+
+
+  /**
+   * Sets the component caption.
+   *
+   * @param captinText the component caption.
+   */
+  public void setCaption(String captionText) {
+    if (captionText != null) {
+      if (captionLabel == null) {
+        captionLabel = new Label();
+        addComponentAsFirst(captionLabel);
+      }
+      captionLabel.setText(captionText);
+    } else {
+      if (captionLabel != null) {
+        remove(captionLabel);
+        captionLabel = null;
+      }
+    }
+  }
+
+  /**
+   * Returns the component caption.
+   *
+   * @return the component caption.
+   */
+  public String getCaption() {
+    return Optional.ofNullable(captionLabel).map(Label::getText).orElse(null);
   }
 
   /**
