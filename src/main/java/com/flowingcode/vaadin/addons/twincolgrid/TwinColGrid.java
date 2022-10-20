@@ -192,22 +192,31 @@ public class TwinColGrid<T> extends VerticalLayout
 
     addAllButton.addClickListener(
         e -> {
-          List<T> filteredItems = available.getDataProvider().withConfigurableFilter()
-              .fetch(new Query<>()).collect(Collectors.toList());
+          List<T> filteredItems =
+              available
+                  .getDataProvider()
+                  .withConfigurableFilter()
+                  .fetch(new Query<>())
+                  .collect(Collectors.toList());
           updateSelection(new LinkedHashSet<>(filteredItems), new HashSet<>(), true);
         });
 
     addButton.addClickListener(
         e ->
             updateSelection(
-            new LinkedHashSet<>(getAvailableGrid().getSelectedItems()), new HashSet<>(), true));
+                new LinkedHashSet<>(getAvailableGrid().getSelectedItems()), new HashSet<>(), true));
 
     removeButton.addClickListener(
         e -> updateSelection(new HashSet<>(), getSelectionGrid().getSelectedItems(), true));
 
     removeAllButton.addClickListener(
         e -> {
-          List<T> filteredItems= selection.getDataProvider().withConfigurableFilter().fetch(new Query<>()).collect(Collectors.toList());
+          List<T> filteredItems =
+              selection
+                  .getDataProvider()
+                  .withConfigurableFilter()
+                  .fetch(new Query<>())
+                  .collect(Collectors.toList());
           updateSelection(new HashSet<>(), new HashSet<>(filteredItems), true);
         });
 
@@ -364,8 +373,7 @@ public class TwinColGrid<T> extends VerticalLayout
 
   private HorizontalLayout getHorizontalButtonContainer() {
     HorizontalLayout hButtonContainer =
-        new HorizontalLayout(
-            addAllButton, addButton, removeButton, removeAllButton);
+        new HorizontalLayout(addAllButton, addButton, removeButton, removeAllButton);
     hButtonContainer.setPadding(false);
     hButtonContainer.setSizeUndefined();
     return hButtonContainer;
@@ -477,8 +485,9 @@ public class TwinColGrid<T> extends VerticalLayout
       final ItemLabelGenerator<T> itemLabelGenerator,
       Comparator<T> comparator,
       final String header) {
-    forEachGrid(grid -> grid
-                .addColumn(new TextRenderer<>(itemLabelGenerator))
+    forEachGrid(
+        grid ->
+            grid.addColumn(new TextRenderer<>(itemLabelGenerator))
                 .setHeader(header)
                 .setComparator(comparator)
                 .setSortable(true));
@@ -501,8 +510,9 @@ public class TwinColGrid<T> extends VerticalLayout
       Comparator<T> comparator,
       final String header,
       final String key) {
-    forEachGrid(grid -> grid
-                .addColumn(new TextRenderer<>(itemLabelGenerator))
+    forEachGrid(
+        grid ->
+            grid.addColumn(new TextRenderer<>(itemLabelGenerator))
                 .setHeader(header)
                 .setComparator(comparator)
                 .setSortable(true)
@@ -603,8 +613,8 @@ public class TwinColGrid<T> extends VerticalLayout
    */
   @Override
   public Set<T> getValue() {
-    return Collections
-        .unmodifiableSet(collectValue(Collectors.<T, Set<T>>toCollection(LinkedHashSet::new)));
+    return Collections.unmodifiableSet(
+        collectValue(Collectors.<T, Set<T>>toCollection(LinkedHashSet::new)));
   }
 
   /**
@@ -624,15 +634,17 @@ public class TwinColGrid<T> extends VerticalLayout
 
   private static <T> SerializableComparator<T> createSortingComparator(Grid<T> grid) {
     // protected method copied from Grid::createSortingComparator
-    BinaryOperator<SerializableComparator<T>> operator = (comparator1, comparator2) -> {
-      /*
-       * thenComparing is defined to return a serializable comparator as long as both original
-       * comparators are also serializable
-       */
-      return comparator1.thenComparing(comparator2)::compare;
-    };
+    BinaryOperator<SerializableComparator<T>> operator =
+        (comparator1, comparator2) -> {
+          /*
+           * thenComparing is defined to return a serializable comparator as long as both original
+           * comparators are also serializable
+           */
+          return comparator1.thenComparing(comparator2)::compare;
+        };
     return grid.getSortOrder().stream()
-        .map(order -> order.getSorted().getComparator(order.getDirection())).reduce(operator)
+        .map(order -> order.getSorted().getComparator(order.getDirection()))
+        .reduce(operator)
         .orElse(null);
   }
 
@@ -644,7 +656,8 @@ public class TwinColGrid<T> extends VerticalLayout
         .addDataProviderListener(
             e -> {
               ComponentValueChangeEvent<TwinColGrid<T>, Set<T>> e2 =
-                  new ComponentValueChangeEvent<>(TwinColGrid.this, TwinColGrid.this, null, isFromClient);
+                  new ComponentValueChangeEvent<>(
+                      TwinColGrid.this, TwinColGrid.this, null, isFromClient);
               listener.valueChanged(e2);
             });
   }
@@ -674,7 +687,8 @@ public class TwinColGrid<T> extends VerticalLayout
     getElement().setAttribute("required", requiredIndicatorVisible);
   }
 
-  private void updateSelection(final Set<T> addedItems, final Set<T> removedItems, boolean isFromClient) {
+  private void updateSelection(
+      final Set<T> addedItems, final Set<T> removedItems, boolean isFromClient) {
     this.isFromClient = isFromClient;
     available.getItems().addAll(removedItems);
     available.getItems().removeAll(addedItems);
@@ -682,9 +696,10 @@ public class TwinColGrid<T> extends VerticalLayout
     selection.getItems().addAll(addedItems);
     selection.getItems().removeAll(removedItems);
 
-    forEachGrid(grid -> {
-      grid.getDataProvider().refreshAll();
-      grid.getSelectionModel().deselectAll();
+    forEachGrid(
+        grid -> {
+          grid.getDataProvider().refreshAll();
+          grid.getSelectionModel().deselectAll();
         });
   }
 
@@ -702,8 +717,8 @@ public class TwinColGrid<T> extends VerticalLayout
             draggedItems.addAll(event.getDraggedItems());
           }
 
-          sourceModel.grid
-              .setDropMode(sourceModel.isReorderingEnabled() ? GridDropMode.BETWEEN : null);
+          sourceModel.grid.setDropMode(
+              sourceModel.isReorderingEnabled() ? GridDropMode.BETWEEN : null);
           targetModel.grid.setDropMode(
               targetModel.isReorderingEnabled() ? GridDropMode.BETWEEN : GridDropMode.ON_GRID);
         });
@@ -740,25 +755,31 @@ public class TwinColGrid<T> extends VerticalLayout
           }
         });
 
-    sourceModel.grid.addDropListener(event -> {
-      event.getDropTargetItem().ifPresent(dropOverItem -> {
-        if (sourceModel.isReorderingEnabled()
-            && event.getSource() == draggedGrid
-            && !draggedItems.contains(dropOverItem)
-            && !draggedItems.isEmpty()) {
-          isFromClient = true;
-          sourceModel.getItems().removeAll(draggedItems);
-          addItems(sourceModel, draggedItems, dropOverItem, event.getDropLocation());
-          draggedItems.clear();
-          draggedGrid = null;
-        }
-      });
-    });
-
+    sourceModel.grid.addDropListener(
+        event -> {
+          event
+              .getDropTargetItem()
+              .ifPresent(
+                  dropOverItem -> {
+                    if (sourceModel.isReorderingEnabled()
+                        && event.getSource() == draggedGrid
+                        && !draggedItems.contains(dropOverItem)
+                        && !draggedItems.isEmpty()) {
+                      isFromClient = true;
+                      sourceModel.getItems().removeAll(draggedItems);
+                      addItems(sourceModel, draggedItems, dropOverItem, event.getDropLocation());
+                      draggedItems.clear();
+                      draggedGrid = null;
+                    }
+                  });
+        });
   }
 
-  private void addItems(TwinColModel<T> model, Collection<T> draggedItems,
-      T dropOverItem, GridDropLocation dropLocation) {
+  private void addItems(
+      TwinColModel<T> model,
+      Collection<T> draggedItems,
+      T dropOverItem,
+      GridDropLocation dropLocation) {
     if (dropOverItem != null) {
       Collection<T> collection = model.getItems();
       List<T> list = new ArrayList<>(collection);
@@ -794,7 +815,8 @@ public class TwinColGrid<T> extends VerticalLayout
       SerializableFunction<T, String> filterableValue,
       final String header,
       String filterPlaceholder,
-      boolean enableClearButton, String key) {
+      boolean enableClearButton,
+      String key) {
     forEachSide(
         side -> {
           Column<T> column =
@@ -831,33 +853,41 @@ public class TwinColGrid<T> extends VerticalLayout
       final String header,
       String filterPlaceholder,
       boolean enableClearButton) {
-    return addFilterableColumn(itemLabelGenerator, itemLabelGenerator, header, filterPlaceholder,
-        enableClearButton, null);
+    return addFilterableColumn(
+        itemLabelGenerator, itemLabelGenerator, header, filterPlaceholder, enableClearButton, null);
   }
 
-  public TwinColGrid<T> addFilterableColumn(ItemLabelGenerator<T> itemLabelGenerator,
-      SerializableFunction<T, String> filterableValue, String header, String filterPlaceholder,
+  public TwinColGrid<T> addFilterableColumn(
+      ItemLabelGenerator<T> itemLabelGenerator,
+      SerializableFunction<T, String> filterableValue,
+      String header,
+      String filterPlaceholder,
       boolean enableClearButton) {
-    return addFilterableColumn(itemLabelGenerator, filterableValue, header, filterPlaceholder,
-        enableClearButton, null);
+    return addFilterableColumn(
+        itemLabelGenerator, filterableValue, header, filterPlaceholder, enableClearButton, null);
   }
 
-  public TwinColGrid<T> addFilterableColumn(ItemLabelGenerator<T> itemLabelGenerator, String header,
-      String filterPlaceholder, boolean enableClearButton, String key) {
-    return addFilterableColumn(itemLabelGenerator, itemLabelGenerator, header, filterPlaceholder,
-        enableClearButton, key);
+  public TwinColGrid<T> addFilterableColumn(
+      ItemLabelGenerator<T> itemLabelGenerator,
+      String header,
+      String filterPlaceholder,
+      boolean enableClearButton,
+      String key) {
+    return addFilterableColumn(
+        itemLabelGenerator, itemLabelGenerator, header, filterPlaceholder, enableClearButton, key);
   }
 
   public TwinColGrid<T> selectRowOnClick() {
-    forEachGrid(grid -> {
-      grid.addClassName("hide-selector-col");
+    forEachGrid(
+        grid -> {
+          grid.addClassName("hide-selector-col");
 
-      grid.addItemClickListener(
+          grid.addItemClickListener(
               c -> {
-            if (grid.getSelectedItems().contains(c.getItem())) {
-              grid.deselect(c.getItem());
+                if (grid.getSelectedItems().contains(c.getItem())) {
+                  grid.deselect(c.getItem());
                 } else {
-              grid.select(c.getItem());
+                  grid.select(c.getItem());
                 }
               });
         });
@@ -879,9 +909,7 @@ public class TwinColGrid<T> extends VerticalLayout
     return button;
   }
 
-  /**
-   * Return whether autoResize is set or not.
-   */
+  /** Return whether autoResize is set or not. */
   public boolean isAutoResize() {
     return autoResize;
   }
@@ -908,23 +936,26 @@ public class TwinColGrid<T> extends VerticalLayout
    * @param value if true, a a doubleclick event will immediately move an item to the other grid
    */
   public void setMoveItemsByDoubleClick(boolean value) {
-    forEachSide(side -> {
-      if (value && side.moveItemsByDoubleClick == null) {
-        side.moveItemsByDoubleClick = side.grid.addItemDoubleClickListener(ev -> {
-          Set<T> item = Collections.singleton(ev.getItem());
-          if (side == available) {
-            updateSelection(item, Collections.emptySet(), true);
+    forEachSide(
+        side -> {
+          if (value && side.moveItemsByDoubleClick == null) {
+            side.moveItemsByDoubleClick =
+                side.grid.addItemDoubleClickListener(
+                    ev -> {
+                      Set<T> item = Collections.singleton(ev.getItem());
+                      if (side == available) {
+                        updateSelection(item, Collections.emptySet(), true);
+                      }
+                      if (side == selection) {
+                        updateSelection(Collections.emptySet(), item, true);
+                      }
+                    });
           }
-          if (side == selection) {
-            updateSelection(Collections.emptySet(), item, true);
+          if (!value && side.moveItemsByDoubleClick != null) {
+            side.moveItemsByDoubleClick.remove();
+            side.moveItemsByDoubleClick = null;
           }
         });
-      }
-      if (!value && side.moveItemsByDoubleClick != null) {
-        side.moveItemsByDoubleClick.remove();
-        side.moveItemsByDoubleClick = null;
-      }
-    });
   }
 
   @ClientCallable
@@ -935,5 +966,4 @@ public class TwinColGrid<T> extends VerticalLayout
       this.withOrientation(Orientation.HORIZONTAL);
     }
   }
-
 }

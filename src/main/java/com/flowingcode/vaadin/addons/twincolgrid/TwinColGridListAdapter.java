@@ -72,7 +72,6 @@ class TwinColGridListAdapter<T> implements HasValue<ValueChangeEvent<List<T>>, L
     public List<T> getOldValue() {
       return null;
     }
-
   }
 
   @NonNull
@@ -95,20 +94,26 @@ class TwinColGridListAdapter<T> implements HasValue<ValueChangeEvent<List<T>>, L
 
     List<Registration> registrations = new ArrayList<>();
 
-    registrations.add(delegate.addValueChangeListener(ev -> {
-      List<T> value = new ArrayList<>(ev.getValue());
-      ValueChangeEvent<List<T>> listEvent;
-      listEvent = new ValueChangeEventImpl(ev.isFromClient(), new ArrayList<>(value));
-      listener.valueChanged(listEvent);
-    }));
+    registrations.add(
+        delegate.addValueChangeListener(
+            ev -> {
+              List<T> value = new ArrayList<>(ev.getValue());
+              ValueChangeEvent<List<T>> listEvent;
+              listEvent = new ValueChangeEventImpl(ev.isFromClient(), new ArrayList<>(value));
+              listener.valueChanged(listEvent);
+            }));
 
     // sorting the grid changes its value under List::equals
-    registrations.add(delegate.getSelectionGrid().addSortListener(ev -> {
-      List<T> value = getValue();
-      ValueChangeEvent<List<T>> listEvent;
-      listEvent = new ValueChangeEventImpl(ev.isFromClient(), value);
-      listener.valueChanged(listEvent);
-    }));
+    registrations.add(
+        delegate
+            .getSelectionGrid()
+            .addSortListener(
+                ev -> {
+                  List<T> value = getValue();
+                  ValueChangeEvent<List<T>> listEvent;
+                  listEvent = new ValueChangeEventImpl(ev.isFromClient(), value);
+                  listener.valueChanged(listEvent);
+                }));
 
     return () -> registrations.forEach(Registration::remove);
   }
@@ -117,5 +122,4 @@ class TwinColGridListAdapter<T> implements HasValue<ValueChangeEvent<List<T>>, L
   public List<T> getEmptyValue() {
     return Collections.emptyList();
   }
-
 }
