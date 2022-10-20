@@ -87,6 +87,7 @@ public class TwinColGrid<T> extends VerticalLayout
     HeaderRow headerRow;
     boolean droppedInsideGrid = false;
     boolean allowReordering = false;
+    Registration moveItemsByDoubleClick;
 
     TwinColModel(@NonNull Grid<T> grid, String className) {
       this.grid = grid;
@@ -1096,6 +1097,31 @@ public class TwinColGrid<T> extends VerticalLayout
       this.autoResize = autoResize;
     }
   }  
+
+  /**
+   * Sets whether a doubleclick event immediately moves an item to the other grid
+   *
+   * @param value if true, a a doubleclick event will immediately move an item to the other grid
+   */
+  public void setMoveItemsByDoubleClick(boolean value) {
+    forEachSide(side -> {
+      if (value && side.moveItemsByDoubleClick == null) {
+        side.moveItemsByDoubleClick = side.grid.addItemDoubleClickListener(ev -> {
+          Set<T> item = Collections.singleton(ev.getItem());
+          if (side == available) {
+            updateSelection(item, Collections.emptySet(), true);
+          }
+          if (side == selection) {
+            updateSelection(Collections.emptySet(), item, true);
+          }
+        });
+      }
+      if (!value && side.moveItemsByDoubleClick != null) {
+        side.moveItemsByDoubleClick.remove();
+        side.moveItemsByDoubleClick = null;
+      }
+    });
+  }
 
   @ClientCallable
   private void updateOrientationOnResize(int width, int height) {
