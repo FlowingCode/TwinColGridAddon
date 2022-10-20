@@ -49,7 +49,7 @@ public class DragAndDropDemo extends VerticalLayout {
   public DragAndDropDemo() {
     initializeData();
 
-    twinColGrid = new TwinColGrid<>(availableBooks, "TwinColGrid demo with drag and drop support")
+    twinColGrid = new TwinColGrid<>(availableBooks)
             .addSortableColumn(Book::getIsbn, Comparator.comparing(Book::getIsbn), "ISBN")
             .addSortableColumn(Book::getTitle, Comparator.comparing(Book::getTitle), "Title")
             .withAvailableGridCaption("Available books")
@@ -60,6 +60,7 @@ public class DragAndDropDemo extends VerticalLayout {
             .withSelectionGridReordering()
             .selectRowOnClick();
 
+    twinColGrid.setCaption("TwinColGrid demo with drag and drop support");
     twinColGrid.setValue(selectedBooks);
 
     final Label countLabel = new Label("Selected items in left grid: 0");
