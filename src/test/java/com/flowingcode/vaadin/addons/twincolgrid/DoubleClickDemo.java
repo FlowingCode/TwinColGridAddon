@@ -51,7 +51,6 @@ public class DoubleClickDemo extends VerticalLayout {
             .withSizeFull()
             .selectRowOnClick();
     twinColGrid.setValue(selectedBooks);
-    twinColGrid.setMoveItemsByDoubleClick(true);
 
     add(new Span("Move items by double click"), twinColGrid);
     setSizeFull();
