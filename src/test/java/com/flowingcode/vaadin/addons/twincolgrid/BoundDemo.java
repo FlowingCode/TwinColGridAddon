@@ -63,14 +63,22 @@ public class BoundDemo extends VerticalLayout {
     binder.setBean(library);
 
     add(twinColGrid);
-    add(new Button("Get values", ev -> {
-      binder.getBean().getBooks()
-          .forEach(book -> Notification.show(book.getTitle(), 3000, Position.BOTTOM_START));
-    }));
+    add(
+        new Button(
+            "Get values",
+            ev -> {
+              binder
+                  .getBean()
+                  .getBooks()
+                  .forEach(book -> Notification.show(book.getTitle(), 3000, Position.BOTTOM_START));
+            }));
 
-    add(new Button("Clear TwinColGrid", ev -> {
-      twinColGrid.clear();
-    }));
+    add(
+        new Button(
+            "Clear TwinColGrid",
+            ev -> {
+              twinColGrid.clear();
+            }));
 
     setSizeFull();
   }
@@ -79,11 +87,10 @@ public class BoundDemo extends VerticalLayout {
     selectedBooks.add(new Book("1478375108", "Vaadin Recipes"));
     selectedBooks.add(new Book("9789526800677", "Book of Vaadin: Volume 2 "));
 
-
     availableBooks.add(new Book("1478375108", "Vaadin Recipes"));
     availableBooks.add(new Book("9781849515221", "Learning Vaadin"));
-    availableBooks
-        .add(new Book("9781782162261", "Vaadin 7 UI Design By Example: Beginner\u2019s Guide"));
+    availableBooks.add(
+        new Book("9781782162261", "Vaadin 7 UI Design By Example: Beginner\u2019s Guide"));
     availableBooks.add(new Book("9781849518802", "Vaadin 7 Cookbook"));
     availableBooks.add(new Book("9526800605", "Book of Vaadin: 7th Edition, 1st Revision"));
     availableBooks.add(new Book("9789526800677", "Book of Vaadin: Volume 2 "));
