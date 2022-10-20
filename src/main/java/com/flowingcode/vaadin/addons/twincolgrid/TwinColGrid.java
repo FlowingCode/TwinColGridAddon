@@ -485,7 +485,7 @@ public class TwinColGrid<T> extends VerticalLayout
     setDataProvider(DataProvider.fromStream(items));
   }
 
-  /** @deprecated Use {@code getAvailableGrid.getDataProvider()} */
+  /** @deprecated Use {@code getAvailableGrid().setClassName(classname)} */
   @Deprecated
   public void setLeftGridClassName(String classname) {
     getAvailableGrid().setClassName(classname);
