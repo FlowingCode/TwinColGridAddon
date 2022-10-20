@@ -223,10 +223,15 @@ public class TwinColGrid<T> extends VerticalLayout
           side.layout.setSpacing(false);
         });
 
+    initMoveItemsByDoubleClick();
     add(createContainerLayout());
     setSizeUndefined();
   }
 
+  @SuppressWarnings("deprecation")
+  private void initMoveItemsByDoubleClick() {
+    setMoveItemsByDoubleClick(!(this instanceof LegacyTwinColGrid));
+  }
 
   /**
    * Sets the component caption.
