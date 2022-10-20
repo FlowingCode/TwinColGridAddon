@@ -47,7 +47,6 @@ import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.provider.Query;
 import com.vaadin.flow.data.renderer.TextRenderer;
-import com.vaadin.flow.data.selection.SelectionListener;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.function.SerializableComparator;
 import com.vaadin.flow.function.SerializableFunction;
@@ -124,18 +123,6 @@ public class TwinColGrid<T> extends VerticalLayout
 
   private final TwinColModel<T> selection;
 
-  /** @deprecated Use getAvailableGrid() */
-  @Deprecated protected final Grid<T> leftGrid;
-
-  /** @deprecated Use getSelectionGrid() */
-  @Deprecated protected final Grid<T> rightGrid;
-
-  /** @deprecated Use getAvailableGrid().getDataProvider() */
-  @Deprecated protected ListDataProvider<T> leftGridDataProvider;
-
-  /** @deprecated Use getSelectionGrid().getDataProvider() */
-  @Deprecated protected ListDataProvider<T> rightGridDataProvider;
-
   private Label captionLabel;
 
   private final Button addAllButton = createActionButton();
@@ -168,68 +155,12 @@ public class TwinColGrid<T> extends VerticalLayout
   }
 
   /**
-   * Constructs a new empty TwinColGrid with caption
-   *
-   * @param caption the component caption
-   * @deprecated Use {@link TwinColGrid#TwinColGrid()} and {{@link #setCaption(String)}
-   */
-  @Deprecated
-  public TwinColGrid(String caption) {
-    this(Grid::new);
-    setCaption(caption);
-  }
-
-  /**
-   * Constructs a new TwinColGrid with data provider for options.
-   *
-   * @param dataProvider the data provider, not {@code null}
-   * @param caption the component caption
-   * @deprecated Use {@link #TwinColGrid()} and {@link #setDataProvider(ListDataProvider)},
-   *             {@link #setCaption(String)}
-   */
-  @Deprecated
-  public TwinColGrid(final ListDataProvider<T> dataProvider, String caption) {
-    this(Grid::new);
-    setDataProvider(dataProvider);
-    setCaption(caption);
-  }
-
-  /**
-   * Constructs a new empty TwinColGrid, using the specified supplier for instantiating both grids.
-   *
-   * @param caption the component caption
-   * @param gridSupplier a supplier for instantiating both grids
-   * @deprecated Use {@link TwinColGrid#TwinColGrid(Supplier)} and {@link #setCaption(String)}
-   */
-  @Deprecated
-  public TwinColGrid(String caption, Supplier<Grid<T>> gridSupplier) {
-    this(gridSupplier.get(), gridSupplier.get());
-    setCaption(caption);
-  }
-
-  /**
    * Constructs a new empty TwinColGrid, using the specified supplier for instantiating both grids.
    *
    * @param gridSupplier a supplier for instantiating both grids
    */
   public TwinColGrid(Supplier<Grid<T>> gridSupplier) {
     this(gridSupplier.get(), gridSupplier.get());
-  }
-
-  /**
-   * Constructs a new empty TwinColGrid, using the specified grids for each side.
-   *
-   * @param caption the component caption
-   * @param availableGrid the grid that contains the available items
-   * @param selectionGrid the grid that contains the selected items
-   *
-   * @deprecated Use {@link TwinColGrid#TwinColGrid(Grid, Grid)} and {@link #setCaption(String)}
-   */
-  @Deprecated
-  public TwinColGrid(String caption, @NonNull Grid<T> availableGrid,
-      @NonNull Grid<T> selectionGrid) {
-    this(availableGrid, selectionGrid);
-    setCaption(caption);
   }
 
   /**
@@ -247,16 +178,13 @@ public class TwinColGrid<T> extends VerticalLayout
     available = new TwinColModel<>(availableGrid, "twincol-grid-available");
     selection = new TwinColModel<>(selectionGrid, "twincol-grid-selection");
 
-    leftGrid = available.grid;
-    rightGrid = selection.grid;
-
     setClassName("twincol-grid");
 
     setMargin(false);
     setPadding(false);
 
     setDataProvider(emptyDataProvider());
-    rightGridDataProvider = DataProvider.ofCollection(new LinkedHashSet<>());
+    ListDataProvider<T> rightGridDataProvider = DataProvider.ofCollection(new LinkedHashSet<>());
     getSelectionGrid().setDataProvider(rightGridDataProvider);
 
     getAvailableGrid().setWidth("100%");
@@ -448,28 +376,6 @@ public class TwinColGrid<T> extends VerticalLayout
     return selection.grid;
   }
 
-  /**
-   * Return the left grid component.
-   *
-   * @deprecated Use {@link #getAvailableGrid()}. Depending on the orientation, the "left grid" may
-   *             not be located at the left side.
-   */
-  @Deprecated
-  public Grid<T> getLeftGrid() {
-    return leftGrid;
-  }
-
-  /**
-   * Return the right grid component.
-   *
-   * @deprecated Use {@link #getSelectionGrid()}. Depending on the orientation, the "right grid" may
-   *             not be located at the right side.
-   */
-  @Deprecated
-  public Grid<T> getRightGrid() {
-    return rightGrid;
-  }
-
   private void forEachSide(Consumer<TwinColModel<T>> consumer) {
     consumer.accept(available);
     consumer.accept(selection);
@@ -488,48 +394,11 @@ public class TwinColGrid<T> extends VerticalLayout
     setDataProvider(DataProvider.fromStream(items));
   }
 
-  /** @deprecated Use {@code getAvailableGrid().setClassName(classname)} */
-  @Deprecated
-  public void setLeftGridClassName(String classname) {
-    getAvailableGrid().setClassName(classname);
-  }
-
-  /** @deprecated Use {@code getAvailableGrid().addClassName(classname)} */
-  @Deprecated
-  public void addLeftGridClassName(String classname) {
-    getAvailableGrid().addClassName(classname);
-  }
-
-  /** @deprecated Use {@code getAvailableGrid().removeClassName(classname)} */
-  @Deprecated
-  public void removeLeftGridClassName(String classname) {
-    getAvailableGrid().removeClassName(classname);
-  }
-
-  /** @deprecated Use {@code getSelectionGrid().setClassName(classname)} */
-  @Deprecated
-  public void setRightGridClassName(String classname) {
-    getSelectionGrid().setClassName(classname);
-  }
-
-  /** @deprecated Use {@code getSelectionGrid().addClassName(classname)} */
-  @Deprecated
-  public void addRightGridClassName(String classname) {
-    getSelectionGrid().addClassName(classname);
-  }
-
-  /** @deprecated Use {@code getSelectionGrid().removeClassName(classname)} */
-  @Deprecated
-  public void removeRightGridClassName(String classname) {
-    getSelectionGrid().removeClassName(classname);
-  }
-
   public void clearAll() {
     updateSelection(new HashSet<>(), new HashSet<>(selection.getItems()), false);
   }
 
-  private void setDataProvider(ListDataProvider<T> dataProvider) {
-    leftGridDataProvider = dataProvider;
+  protected void setDataProvider(ListDataProvider<T> dataProvider) {
     getAvailableGrid().setDataProvider(dataProvider);
     if (selection.getDataProvider() != null) {
       selection.getItems().clear();
@@ -545,20 +414,6 @@ public class TwinColGrid<T> extends VerticalLayout
   public TwinColGrid(final Collection<T> options) {
     this();
     setDataProvider(DataProvider.ofCollection(new LinkedHashSet<>(options)));
-  }
-
-  /**
-   * Constructs a new TwinColGrid with caption and the given options.
-   *
-   * @param caption the caption to set, can be {@code null}
-   * @param options the options, cannot be {@code null}
-   *
-   * @deprecated Use {@link #TwinColGrid(Collection)} and {{@link #setCaption(String)}
-   */
-  @Deprecated
-  public TwinColGrid(final Collection<T> options, final String caption) {
-    this(options);
-    setCaption(caption);
   }
 
   /**
@@ -585,30 +440,6 @@ public class TwinColGrid<T> extends VerticalLayout
     selection.columnLabel.setVisible(true);
     fakeButtonContainerLabel.setVisible(true);
     return this;
-  }
-
-  /**
-   * Sets the text shown above the grid with the available items. {@code null} clears the caption.
-   *
-   * @param caption The text to show, {@code null} to clear
-   * @return this instance
-   * @deprecated Use {@link #withAvailableGridCaption(String)}
-   */
-  @Deprecated
-  public TwinColGrid<T> withRightColumnCaption(final String caption) {
-    return withSelectionGridCaption(caption);
-  }
-
-  /**
-   * Sets the text shown above the grid with the available items. {@code null} clears the caption.
-   *
-   * @param caption The text to show, {@code null} to clear
-   * @return this instance
-   * @deprecated Use {@link #withSelectionGridCaption(String)}
-   */
-  @Deprecated
-  public TwinColGrid<T> withLeftColumnCaption(final String caption) {
-    return withAvailableGridCaption(caption);
   }
 
   /**
@@ -740,28 +571,6 @@ public class TwinColGrid<T> extends VerticalLayout
    */
   public String getSelectionGridCaption() {
     return selection.columnLabel.getText();
-  }
-
-  /**
-   * Returns the text shown above the right column.
-   *
-   * @return The text shown or {@code null} if not set.
-   * @deprecated Use {@link #getSelectionGridCaption()}
-   */
-  @Deprecated
-  public String getRightColumnCaption() {
-    return getSelectionGridCaption();
-  }
-
-  /**
-   * Returns the text shown above the left column.
-   *
-   * @return The text shown or {@code null} if not set.
-   * @deprecated Use {@link #getAvailableGridCaption()}
-   */
-  @Deprecated
-  public String getLeftColumnCaption() {
-    return getAvailableGridCaption();
   }
 
   /**
@@ -973,18 +782,6 @@ public class TwinColGrid<T> extends VerticalLayout
   /** Return whether drag-and-drop within the selection grid is allowed. */
   public boolean isSelectionGridReorderingAllowed() {
     return selection.allowReordering;
-  }
-
-  /** @deprecated Use {@code getAvailableGrid().addSelectionListener(listener);} */
-  @Deprecated
-  public void addLeftGridSelectionListener(SelectionListener<Grid<T>, T> listener) {
-    getAvailableGrid().addSelectionListener(listener);
-  }
-
-  /** @deprecated Use {@code getSelectionGrid().addSelectionListener(listener);} */
-  @Deprecated
-  public void addRightGridSelectionListener(SelectionListener<Grid<T>, T> listener) {
-    getSelectionGrid().addSelectionListener(listener);
   }
 
   public TwinColGrid<T> addFilterableColumn(
