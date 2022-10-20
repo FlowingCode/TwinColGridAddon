@@ -49,7 +49,8 @@ public class DragAndDropDemo extends VerticalLayout {
   public DragAndDropDemo() {
     initializeData();
 
-    twinColGrid = new TwinColGrid<>(availableBooks)
+    twinColGrid =
+        new TwinColGrid<>(availableBooks)
             .addSortableColumn(Book::getIsbn, Comparator.comparing(Book::getIsbn), "ISBN")
             .addSortableColumn(Book::getTitle, Comparator.comparing(Book::getTitle), "Title")
             .withAvailableGridCaption("Available books")
@@ -64,8 +65,12 @@ public class DragAndDropDemo extends VerticalLayout {
     twinColGrid.setValue(selectedBooks);
 
     final Label countLabel = new Label("Selected items in left grid: 0");
-    twinColGrid.getAvailableGrid().addSelectionListener(
-        e -> countLabel.setText("Selected items in left grid: " + e.getAllSelectedItems().size()));
+    twinColGrid
+        .getAvailableGrid()
+        .addSelectionListener(
+            e ->
+                countLabel.setText(
+                    "Selected items in left grid: " + e.getAllSelectedItems().size()));
     twinColGrid.addValueChangeListener(e -> countLabel.setText("Selected items in left grid: 0"));
 
     add(twinColGrid, countLabel);
@@ -78,11 +83,10 @@ public class DragAndDropDemo extends VerticalLayout {
     selectedBooks.add(new Book("1478375108", "Vaadin Recipes"));
     selectedBooks.add(new Book("9789526800677", "Book of Vaadin: Volume 2 "));
 
-
     availableBooks.add(new Book("1478375108", "Vaadin Recipes"));
     availableBooks.add(new Book("9781849515221", "Learning Vaadin"));
-    availableBooks
-        .add(new Book("9781782162261", "Vaadin 7 UI Design By Example: Beginner\u2019s Guide"));
+    availableBooks.add(
+        new Book("9781782162261", "Vaadin 7 UI Design By Example: Beginner\u2019s Guide"));
     availableBooks.add(new Book("9781849518802", "Vaadin 7 Cookbook"));
     availableBooks.add(new Book("9526800605", "Book of Vaadin: 7th Edition, 1st Revision"));
     availableBooks.add(new Book("9789526800677", "Book of Vaadin: Volume 2 "));
@@ -95,16 +99,18 @@ public class DragAndDropDemo extends VerticalLayout {
     Span description = new Span("(Reordering is disabled while the grid is sorted)");
     description.setVisible(false);
 
-    SerializableRunnable refresh = () -> {
-      boolean sorted = !twinColGrid.getSelectionGrid().getSortOrder().isEmpty();
-      boolean allowed = twinColGrid.isSelectionGridReorderingAllowed();
-      description.setVisible(sorted && allowed);
-    };
+    SerializableRunnable refresh =
+        () -> {
+          boolean sorted = !twinColGrid.getSelectionGrid().getSortOrder().isEmpty();
+          boolean allowed = twinColGrid.isSelectionGridReorderingAllowed();
+          description.setVisible(sorted && allowed);
+        };
 
-    checkbox.addValueChangeListener(ev -> {
-      twinColGrid.setSelectionGridReorderingAllowed(ev.getValue());
-      refresh.run();
-    });
+    checkbox.addValueChangeListener(
+        ev -> {
+          twinColGrid.setSelectionGridReorderingAllowed(ev.getValue());
+          refresh.run();
+        });
 
     twinColGrid.getSelectionGrid().addSortListener(ev -> refresh.run());
     add(new Div(checkbox, description));
