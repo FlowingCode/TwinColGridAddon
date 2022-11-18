@@ -24,10 +24,12 @@ import com.flowingcode.vaadin.addons.DemoLayout;
 import com.flowingcode.vaadin.addons.GithubLink;
 import com.flowingcode.vaadin.addons.demo.TabbedDemo;
 import com.vaadin.flow.component.dependency.StyleSheet;
+import com.vaadin.flow.router.ParentLayout;
 import com.vaadin.flow.router.Route;
 
 @SuppressWarnings("serial")
-@Route(value = "twincolgrid", layout = DemoLayout.class)
+@ParentLayout(DemoLayout.class)
+@Route("twincolgrid")
 @StyleSheet("context://frontend/styles/demo-styles.css")
 @GithubLink("https://github.com/FlowingCode/TwinColGridAddon")
 public class TwincolDemoView extends TabbedDemo {
