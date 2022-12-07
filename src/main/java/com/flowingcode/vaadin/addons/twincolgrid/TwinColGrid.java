@@ -339,6 +339,8 @@ public class TwinColGrid<T> extends VerticalLayout
     if (this.orientation != orientation) {
       this.orientation = orientation;
       updateContainerLayout();
+      available.grid.getDataProvider().refreshAll();
+      selection.grid.getDataProvider().refreshAll();
     }
     return this;
   }
