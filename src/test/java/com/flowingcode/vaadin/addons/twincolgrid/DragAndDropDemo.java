@@ -30,7 +30,6 @@ import com.vaadin.flow.function.SerializableRunnable;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -51,8 +50,6 @@ public class DragAndDropDemo extends VerticalLayout {
 
     twinColGrid =
         new TwinColGrid<>(availableBooks)
-            .addSortableColumn(Book::getIsbn, Comparator.comparing(Book::getIsbn), "ISBN")
-            .addSortableColumn(Book::getTitle, Comparator.comparing(Book::getTitle), "Title")
             .withAvailableGridCaption("Available books")
             .withSelectionGridCaption("Added books")
             .withoutAddAllButton()
@@ -60,6 +57,9 @@ public class DragAndDropDemo extends VerticalLayout {
             .withDragAndDropSupport()
             .withSelectionGridReordering()
             .selectRowOnClick();
+
+    twinColGrid.addColumn(Book::getIsbn).setComparator(Book::getIsbn).setHeader("ISBN");
+    twinColGrid.addColumn(Book::getTitle).setComparator(Book::getTitle).setHeader("Title");
 
     twinColGrid.setCaption("TwinColGrid demo with drag and drop support");
     twinColGrid.setValue(selectedBooks);

@@ -6,6 +6,7 @@ import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.renderer.TextRenderer;
 import com.vaadin.flow.data.selection.SelectionListener;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.function.Supplier;
 import lombok.NonNull;
 
@@ -300,4 +301,56 @@ public class LegacyTwinColGrid<T> extends TwinColGrid<T> {
     return this;
   }
 
+  /**
+   * Adds a new sortable text column to this {@link Grid} with a value provider. The column will use
+   * a {@link TextRenderer}. The value is converted to a String using the provided {@code
+   * itemLabelGenerator}.
+   *
+   * @deprecated Use
+   *             {@link #addColumn(ItemLabelGenerator)}{@code .setHeader(header).setComparator(comparator)}
+   *
+   * @param itemLabelGenerator the value provider
+   * @param comparator the in-memory comparator
+   * @param header the column header
+   * @return this instance
+   */
+  @Deprecated
+  public LegacyTwinColGrid<T> addSortableColumn(
+      final ItemLabelGenerator<T> itemLabelGenerator,
+      Comparator<T> comparator,
+      final String header) {
+    addColumn(itemLabelGenerator)
+    .setHeader(header)
+    .setComparator(comparator)
+    .setSortable(true);
+    return this;
+  }
+
+  /**
+   * Adds a new sortable text column to this {@link Grid} with a value provider. The column will use
+   * a {@link TextRenderer}. The value is converted to a String using the provided {@code
+   * itemLabelGenerator}.
+   *
+   * @deprecated Use
+   *             {@link #addColumn(ItemLabelGenerator)}{@code .setHeader(header).setComparator(comparator).setKey(key)}
+   *
+   * @param itemLabelGenerator the value provider
+   * @param comparator the in-memory comparator
+   * @param header the column header
+   * @param header the column key
+   * @return this instance
+   */
+  @Deprecated
+  public LegacyTwinColGrid<T> addSortableColumn(
+      final ItemLabelGenerator<T> itemLabelGenerator,
+      Comparator<T> comparator,
+      final String header,
+      final String key) {
+    addColumn(itemLabelGenerator)
+    .setHeader(header)
+    .setComparator(comparator)
+    .setSortable(true)
+    .setKey(key);
+    return this;
+  }
 }
