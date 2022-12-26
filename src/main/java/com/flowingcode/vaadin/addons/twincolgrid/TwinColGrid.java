@@ -153,7 +153,7 @@ public class TwinColGrid<T> extends VerticalLayout
   private Label fakeButtonContainerLabel = new Label();
 
   private Orientation orientation = Orientation.HORIZONTAL;
-  
+
   private boolean autoResize = false;
 
   private boolean isFromClient = false;
@@ -837,7 +837,7 @@ public class TwinColGrid<T> extends VerticalLayout
 
   @Override
   public boolean isReadOnly() {
-    return getAvailableGrid().getSelectionModel() == SelectionMode.NONE;
+    return getAvailableGrid().getSelectionModel() instanceof GridNoneSelectionModel;
   }
 
   @Override
@@ -1076,7 +1076,7 @@ public class TwinColGrid<T> extends VerticalLayout
     button.addThemeName("twin-col-grid-button");
     return button;
   }
-  
+
   /**
    * Return whether autoResize is set or not.
    */
@@ -1086,19 +1086,19 @@ public class TwinColGrid<T> extends VerticalLayout
 
   /**
    * Sets whether component should update orientation on resize.
-   * 
+   *
    * @param autoResize if true, component will update orientation on resize
    */
   public void setAutoResize(boolean autoResize) {
     if (autoResize != this.autoResize) {
       if (autoResize) {
-        this.getElement().executeJs("fcTwinColGridAutoResize.observe($0)", this);
+        getElement().executeJs("fcTwinColGridAutoResize.observe($0)", this);
       } else {
-        this.getElement().executeJs("fcTwinColGridAutoResize.unobserve($0)", this);
+        getElement().executeJs("fcTwinColGridAutoResize.unobserve($0)", this);
       }
       this.autoResize = autoResize;
     }
-  }  
+  }
 
   /**
    * Sets whether a doubleclick event immediately moves an item to the other grid
@@ -1133,5 +1133,5 @@ public class TwinColGrid<T> extends VerticalLayout
       this.withOrientation(Orientation.HORIZONTAL);
     }
   }
- 
+
 }
