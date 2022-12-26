@@ -45,7 +45,7 @@ public class OrientationDemo extends VerticalLayout {
     initializeData();
 
     final TwinColGrid<Book> twinColGrid =
-        new TwinColGrid<>(availableBooks, null)
+        new TwinColGrid<>(availableBooks)
             .addSortableColumn(Book::getIsbn, Comparator.comparing(Book::getIsbn), "ISBN")
             .addSortableColumn(Book::getTitle, Comparator.comparing(Book::getTitle), "Title")
             .withAvailableGridCaption("Available books")
