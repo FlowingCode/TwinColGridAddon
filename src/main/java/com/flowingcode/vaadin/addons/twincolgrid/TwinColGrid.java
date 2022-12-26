@@ -456,6 +456,21 @@ public class TwinColGrid<T> extends VerticalLayout
   }
 
   /**
+   * Adds a column to each grids. Both columns will use a {@link TextRenderer} and the value
+   * will be converted to a String by using the provided {@code itemLabelGenerator}.
+   *
+   * @param itemLabelGenerator the value provider
+   * @return the pair of columns
+   */
+  public TwinColumn<T> addColumn(ItemLabelGenerator<T> itemLabelGenerator) {
+    Column<T> availableColumn =
+        getAvailableGrid().addColumn(new TextRenderer<>(itemLabelGenerator));
+    Column<T> selectionColumn =
+        getSelectionGrid().addColumn(new TextRenderer<>(itemLabelGenerator));
+    return new TwinColumn<>(availableColumn, selectionColumn);
+  }
+
+  /**
    * Adds a new text column to this {@link Grid} with a value provider. The column will use a {@link
    * TextRenderer}. The value is converted to a String using the provided {@code
    * itemLabelGenerator}.
