@@ -103,7 +103,7 @@
         <dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>1.18.12</version>
+			<version>1.18.24</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -306,6 +306,38 @@
 					</plugin>
 				</plugins>
 			</build>
+		</profile>
+		
+		<profile>
+			<id>v24</id>
+			<properties>
+				<maven.compiler.source>17</maven.compiler.source>
+				<maven.compiler.target>17</maven.compiler.target>
+				<vaadin.version>24.0.0.alpha6</vaadin.version>
+				<jetty.version>11.0.12</jetty.version>
+			</properties>
+			<repositories>
+				<repository>
+					<id>vaadin-prerelease</id>
+					<url>https://maven.vaadin.com/vaadin-prereleases</url>
+				</repository>
+			</repositories>
+			<pluginRepositories>
+				<pluginRepository>
+					<id>vaadin-prerelease</id>
+					<url>https://maven.vaadin.com/vaadin-prereleases</url>
+				</pluginRepository>
+			</pluginRepositories>
+
+			<dependencies>
+				<dependency>
+					<groupId>jakarta.servlet</groupId>
+					<artifactId>jakarta.servlet-api</artifactId>
+					<version>6.0.0</version>
+					<scope>provided</scope>
+				</dependency>
+			</dependencies>
+			
 		</profile>
 		
     </profiles>
