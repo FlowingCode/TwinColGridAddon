@@ -103,7 +103,7 @@ class TwinColGridListAdapter<T> implements HasValue<ValueChangeEvent<List<T>>, L
     }));
 
     // sorting the grid changes its value under List::equals
-    registrations.add(delegate.getRightGrid().addSortListener(ev -> {
+    registrations.add(delegate.getSelectionGrid().addSortListener(ev -> {
       List<T> value = getValue();
       ValueChangeEvent<List<T>> listEvent;
       listEvent = new ValueChangeEventImpl(ev.isFromClient(), value);
