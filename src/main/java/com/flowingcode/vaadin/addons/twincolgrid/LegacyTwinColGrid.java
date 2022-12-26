@@ -1,7 +1,9 @@
 package com.flowingcode.vaadin.addons.twincolgrid;
 
+import com.vaadin.flow.component.ItemLabelGenerator;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.data.provider.ListDataProvider;
+import com.vaadin.flow.data.renderer.TextRenderer;
 import com.vaadin.flow.data.selection.SelectionListener;
 import java.util.Collection;
 import java.util.function.Supplier;
@@ -278,6 +280,24 @@ public class LegacyTwinColGrid<T> extends TwinColGrid<T> {
   protected void setDataProvider(ListDataProvider<T> dataProvider) {
     leftGridDataProvider = dataProvider;
     super.setDataProvider(dataProvider);
+  }
+
+  /**
+   * Adds a new text column to this {@link Grid} with a value provider. The column will use a
+   * {@link TextRenderer}. The value is converted to a String using the provided {@code
+   * itemLabelGenerator}.
+   *
+   * @deprecated Use {@link #addColumn(ItemLabelGenerator)}{@code .setHeader(header)}
+   *
+   * @param itemLabelGenerator the value provider
+   * @param header the column header
+   * @return this instance
+   */
+  @Deprecated
+  public LegacyTwinColGrid<T> addColumn(
+      final ItemLabelGenerator<T> itemLabelGenerator, final String header) {
+    addColumn(itemLabelGenerator).setHeader(header);
+    return this;
   }
 
 }
