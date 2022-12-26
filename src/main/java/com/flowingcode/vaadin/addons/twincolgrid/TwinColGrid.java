@@ -23,6 +23,7 @@ package com.flowingcode.vaadin.addons.twincolgrid;
 import com.vaadin.flow.component.AbstractField.ComponentValueChangeEvent;
 import com.vaadin.flow.component.ClientCallable;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.ComponentUtil;
 import com.vaadin.flow.component.HasComponents;
 import com.vaadin.flow.component.HasSize;
 import com.vaadin.flow.component.HasValue;
@@ -759,71 +760,50 @@ public class TwinColGrid<T> extends VerticalLayout
     return selection.allowReordering;
   }
 
-  public TwinColGrid<T> addFilterableColumn(
-      final ItemLabelGenerator<T> itemLabelGenerator,
-      SerializableFunction<T, String> filterableValue,
-      final String header,
-      String filterPlaceholder,
-      boolean enableClearButton,
-      String key) {
-    forEachSide(
-        side -> {
-          Column<T> column =
-              side.grid.addColumn(new TextRenderer<>(itemLabelGenerator)).setHeader(header);
+  private static final String COMPONENT_DATA_FILTER = "TwinColGrid#filterTF";
 
-          Optional.ofNullable(key).ifPresent(column::setKey);
-
-          TextField filterTF = new TextField();
-          filterTF.setClearButtonVisible(enableClearButton);
-
-          filterTF.addValueChangeListener(
-              event ->
-                  side.getDataProvider()
-                      .addFilter(
-                          filterableEntity ->
-                              StringUtils.containsIgnoreCase(
-                                  filterableValue.apply(filterableEntity), filterTF.getValue())));
-
-          if (side.headerRow == null) {
-            side.headerRow = side.grid.appendHeaderRow();
-          }
-
-          side.headerRow.getCell(column).setComponent(filterTF);
-          filterTF.setValueChangeMode(ValueChangeMode.EAGER);
-          filterTF.setSizeFull();
-          filterTF.setPlaceholder(filterPlaceholder);
-        });
-
-    return this;
-  }
-
-  public TwinColGrid<T> addFilterableColumn(
-      final ItemLabelGenerator<T> itemLabelGenerator,
-      final String header,
-      String filterPlaceholder,
-      boolean enableClearButton) {
-    return addFilterableColumn(
-        itemLabelGenerator, itemLabelGenerator, header, filterPlaceholder, enableClearButton, null);
-  }
-
-  public TwinColGrid<T> addFilterableColumn(
+  private Column<T> createFilterableColumn(TwinColModel<T> side,
       ItemLabelGenerator<T> itemLabelGenerator,
-      SerializableFunction<T, String> filterableValue,
-      String header,
-      String filterPlaceholder,
-      boolean enableClearButton) {
-    return addFilterableColumn(
-        itemLabelGenerator, filterableValue, header, filterPlaceholder, enableClearButton, null);
+      SerializableFunction<T, String> filterableValue) {
+    Column<T> column = side.grid.addColumn(new TextRenderer<>(itemLabelGenerator));
+    TextField filterTF = new TextField();
+
+    filterTF.addValueChangeListener(
+        event ->
+            side.getDataProvider()
+                .addFilter(
+                    filterableEntity ->
+                        StringUtils.containsIgnoreCase(
+                            filterableValue.apply(filterableEntity), filterTF.getValue())));
+
+    if (side.headerRow == null) {
+      side.headerRow = side.grid.appendHeaderRow();
+    }
+
+    side.headerRow.getCell(column).setComponent(filterTF);
+
+    filterTF.setValueChangeMode(ValueChangeMode.EAGER);
+    filterTF.setSizeFull();
+
+    ComponentUtil.setData(column, COMPONENT_DATA_FILTER, filterTF);
+    return column;
   }
 
-  public TwinColGrid<T> addFilterableColumn(
-      ItemLabelGenerator<T> itemLabelGenerator,
-      String header,
-      String filterPlaceholder,
-      boolean enableClearButton,
-      String key) {
-    return addFilterableColumn(
-        itemLabelGenerator, itemLabelGenerator, header, filterPlaceholder, enableClearButton, key);
+  static TextField getFilterTextField(Column<?> column) {
+    return (TextField) ComponentUtil.getData(column, COMPONENT_DATA_FILTER);
+  }
+
+  public FilterableTwinColumn<T> addFilterableColumn(ItemLabelGenerator<T> itemLabelGenerator) {
+    return addFilterableColumn(itemLabelGenerator, itemLabelGenerator);
+  }
+
+  public FilterableTwinColumn<T> addFilterableColumn(ItemLabelGenerator<T> itemLabelGenerator,
+      SerializableFunction<T, String> filterableValue) {
+
+    Column<T> availableColumn = createFilterableColumn(available, itemLabelGenerator, filterableValue);
+    Column<T> selectionColumn = createFilterableColumn(selection, itemLabelGenerator, filterableValue);
+
+    return new FilterableTwinColumn<>(availableColumn, selectionColumn);
   }
 
   public TwinColGrid<T> selectRowOnClick() {
