@@ -27,7 +27,6 @@ import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -48,13 +47,14 @@ public class OrientationDemo extends VerticalLayout {
 
     final TwinColGrid<Book> twinColGrid =
         new TwinColGrid<>(availableBooks)
-            .addSortableColumn(Book::getIsbn, Comparator.comparing(Book::getIsbn), "ISBN")
-            .addSortableColumn(Book::getTitle, Comparator.comparing(Book::getTitle), "Title")
             .withAvailableGridCaption("Available books")
             .withSelectionGridCaption("Added books")
             .withSizeFull()
             .selectRowOnClick()
             .withOrientation(Orientation.VERTICAL);
+
+    twinColGrid.addColumn(Book::getIsbn).setComparator(Book::getIsbn).setHeader("ISBN");
+    twinColGrid.addColumn(Book::getTitle).setComparator(Book::getTitle).setHeader("Title");
     twinColGrid.setValue(selectedBooks);
 
     FormLayout formLayout = new FormLayout();
