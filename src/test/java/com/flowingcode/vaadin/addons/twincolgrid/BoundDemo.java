@@ -29,7 +29,6 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 @SuppressWarnings("serial")
@@ -48,14 +47,14 @@ public class BoundDemo extends VerticalLayout {
     // Binded
     final TwinColGrid<Book> twinColGrid =
         new TwinColGrid<>(availableBooks)
-            .addSortableColumn(Book::getIsbn, Comparator.comparing(Book::getIsbn), "ISBN")
-            .addSortableColumn(Book::getTitle, Comparator.comparing(Book::getTitle), "Title")
             .withAvailableGridCaption("Available books")
             .withSelectionGridCaption("Added books")
             .withoutRemoveAllButton()
             .withSizeFull()
             .selectRowOnClick();
 
+    twinColGrid.addColumn(Book::getIsbn).setComparator(Book::getIsbn).setHeader("ISBN");
+    twinColGrid.addColumn(Book::getTitle).setComparator(Book::getTitle).setHeader("Title");
     twinColGrid.setCaption("TwinColGrid demo with Binder and row select without checkbox");
 
     final Binder<Library> binder = new Binder<>();

@@ -55,7 +55,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -468,56 +467,6 @@ public class TwinColGrid<T> extends VerticalLayout
     Column<T> selectionColumn =
         getSelectionGrid().addColumn(new TextRenderer<>(itemLabelGenerator));
     return new TwinColumn<>(availableColumn, selectionColumn);
-  }
-
-
-  /**
-   * Adds a new sortable text column to this {@link Grid} with a value provider. The column will use
-   * a {@link TextRenderer}. The value is converted to a String using the provided {@code
-   * itemLabelGenerator}.
-   *
-   * @param itemLabelGenerator the value provider
-   * @param comparator the in-memory comparator
-   * @param header the column header
-   * @return this instance
-   */
-  public TwinColGrid<T> addSortableColumn(
-      final ItemLabelGenerator<T> itemLabelGenerator,
-      Comparator<T> comparator,
-      final String header) {
-    forEachGrid(
-        grid ->
-            grid.addColumn(new TextRenderer<>(itemLabelGenerator))
-                .setHeader(header)
-                .setComparator(comparator)
-                .setSortable(true));
-    return this;
-  }
-
-  /**
-   * Adds a new sortable text column to this {@link Grid} with a value provider. The column will use
-   * a {@link TextRenderer}. The value is converted to a String using the provided {@code
-   * itemLabelGenerator}.
-   *
-   * @param itemLabelGenerator the value provider
-   * @param comparator the in-memory comparator
-   * @param header the column header
-   * @param header the column key
-   * @return this instance
-   */
-  public TwinColGrid<T> addSortableColumn(
-      final ItemLabelGenerator<T> itemLabelGenerator,
-      Comparator<T> comparator,
-      final String header,
-      final String key) {
-    forEachGrid(
-        grid ->
-            grid.addColumn(new TextRenderer<>(itemLabelGenerator))
-                .setHeader(header)
-                .setComparator(comparator)
-                .setSortable(true)
-                .setKey(key));
-    return this;
   }
 
   public TwinColGrid<T> withoutAddAllButton() {
