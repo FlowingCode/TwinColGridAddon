@@ -47,8 +47,7 @@ public class BoundDemo extends VerticalLayout {
 
     // Binded
     final TwinColGrid<Book> twinColGrid =
-        new TwinColGrid<>(
-                availableBooks, "TwinColGrid demo with Binder and row select without checkbox")
+        new TwinColGrid<>(availableBooks)
             .addSortableColumn(Book::getIsbn, Comparator.comparing(Book::getIsbn), "ISBN")
             .addSortableColumn(Book::getTitle, Comparator.comparing(Book::getTitle), "Title")
             .withAvailableGridCaption("Available books")
@@ -56,6 +55,8 @@ public class BoundDemo extends VerticalLayout {
             .withoutRemoveAllButton()
             .withSizeFull()
             .selectRowOnClick();
+
+    twinColGrid.setCaption("TwinColGrid demo with Binder and row select without checkbox");
 
     final Binder<Library> binder = new Binder<>();
     binder.forField(twinColGrid.asList()).asRequired().bind(Library::getBooks, Library::setBooks);
