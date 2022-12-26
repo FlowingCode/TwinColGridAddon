@@ -5,6 +5,7 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.renderer.TextRenderer;
 import com.vaadin.flow.data.selection.SelectionListener;
+import com.vaadin.flow.function.SerializableFunction;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.function.Supplier;
@@ -352,5 +353,72 @@ public class LegacyTwinColGrid<T> extends TwinColGrid<T> {
     .setSortable(true)
     .setKey(key);
     return this;
+  }
+
+  /**
+   * Adds a new filterable text column to this {@link TwinColGrid}, with a key. The value is
+   * converted to a String using the provided {@code itemLabelGenerator} and matches are computed
+   * against the result of {@code filterableValue}.
+   *
+   * @deprecated Use {@code addFilterableColumn(itemLabelGenerator, filterableValue)} and configure
+   *             the other properties on the returned {@link TwinColumn}.
+   */
+  @Deprecated
+  public LegacyTwinColGrid<T> addFilterableColumn(final ItemLabelGenerator<T> itemLabelGenerator,
+      SerializableFunction<T, String> filterableValue, final String header,
+      String filterPlaceholder, boolean enableClearButton, String key) {
+    TwinColumn<?> column =
+        addFilterableColumn(itemLabelGenerator, filterableValue).setHeader(header)
+        .setFilterPlaceholder(filterPlaceholder).setClearButtonVisible(enableClearButton);
+    if (key != null) {
+      column.setKey(key);
+    }
+    return this;
+  }
+
+  /**
+   * Adds a new filterable text column to this {@link TwinColGrid}, with no key. The value is
+   * converted to a String using the provided {@code itemLabelGenerator} and matches are computed
+   * against the result of the same {@code itemLabelGenerator}.
+   *
+   * @deprecated Use {@code addFilterableColumn(itemLabelGenerator)} and configure the other
+   *             properties on the returned {@link TwinColumn}.
+   */
+  @Deprecated
+  public LegacyTwinColGrid<T> addFilterableColumn(final ItemLabelGenerator<T> itemLabelGenerator,
+      final String header, String filterPlaceholder, boolean enableClearButton) {
+    return addFilterableColumn(itemLabelGenerator, itemLabelGenerator, header, filterPlaceholder,
+        enableClearButton, null);
+  }
+
+  /**
+   * Adds a new filterable text column to this {@link TwinColGrid}, with no key. The value is
+   * converted to a String using the provided {@code itemLabelGenerator} and matches are computed
+   * against the result of {@code filterableValue}.
+   *
+   * @deprecated Use {@code addFilterableColumn(itemLabelGenerator, filterableValue)} and configure
+   *             the other properties on the returned {@link TwinColumn}.
+   */
+  @Deprecated
+  public LegacyTwinColGrid<T> addFilterableColumn(ItemLabelGenerator<T> itemLabelGenerator,
+      SerializableFunction<T, String> filterableValue, String header, String filterPlaceholder,
+      boolean enableClearButton) {
+    return addFilterableColumn(itemLabelGenerator, filterableValue, header, filterPlaceholder,
+        enableClearButton, null);
+  }
+
+  /**
+   * Adds a new filterable text column to this {@link TwinColGrid}, with a key. The value is
+   * converted to a String using the provided {@code itemLabelGenerator} and matches are computed
+   * against the result of the same {@code itemLabelGenerator}.
+   *
+   * @deprecated Use {@code addFilterableColumn(itemLabelGenerator)} and configure the other
+   *             properties on the returned {@link TwinColumn}.
+   */
+  @Deprecated
+  public LegacyTwinColGrid<T> addFilterableColumn(ItemLabelGenerator<T> itemLabelGenerator,
+      String header, String filterPlaceholder, boolean enableClearButton, String key) {
+    return addFilterableColumn(itemLabelGenerator, itemLabelGenerator, header, filterPlaceholder,
+        enableClearButton, key);
   }
 }
