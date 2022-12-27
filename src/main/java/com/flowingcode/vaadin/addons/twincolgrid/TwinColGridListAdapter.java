@@ -98,8 +98,8 @@ class TwinColGridListAdapter<T> implements HasValue<ValueChangeEvent<List<T>>, L
         delegate.addValueChangeListener(
             ev -> {
               List<T> value = new ArrayList<>(ev.getValue());
-              ValueChangeEvent<List<T>> listEvent;
-              listEvent = new ValueChangeEventImpl(ev.isFromClient(), new ArrayList<>(value));
+              ValueChangeEvent<List<T>> listEvent =
+                  new ValueChangeEventImpl(ev.isFromClient(), new ArrayList<>(value));
               listener.valueChanged(listEvent);
             }));
 
@@ -110,8 +110,8 @@ class TwinColGridListAdapter<T> implements HasValue<ValueChangeEvent<List<T>>, L
             .addSortListener(
                 ev -> {
                   List<T> value = getValue();
-                  ValueChangeEvent<List<T>> listEvent;
-                  listEvent = new ValueChangeEventImpl(ev.isFromClient(), value);
+                  ValueChangeEvent<List<T>> listEvent =
+                      new ValueChangeEventImpl(ev.isFromClient(), value);
                   listener.valueChanged(listEvent);
                 }));
 
