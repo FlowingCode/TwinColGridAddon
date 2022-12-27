@@ -145,6 +145,8 @@ public class TwinColGrid<T> extends VerticalLayout
 
   private boolean isFromClient = false;
 
+  private boolean explicitHeaderRow = true;
+
   private static <T> ListDataProvider<T> emptyDataProvider() {
     return DataProvider.ofCollection(new LinkedHashSet<>());
   }
@@ -456,6 +458,39 @@ public class TwinColGrid<T> extends VerticalLayout
   }
 
   /**
+   * Configure this component to create the first header row (for column header labels). If no
+   * column will have a header, this property must be set to {@code false}.
+   *
+   * <p>
+   * When this property is {@code true} (default), the first column added through this component
+   * will {@linkplain Grid#appendHeaderRow() append} a header row, which will be the "default header
+   * row" (used by {@code Column.setHeader}). If no headers are set, then the default header row
+   * will be empty.
+   *
+   * <p>
+   * When this property is {@code false}, then {@code Column.setHeader} will allocate a header row
+   * when called (which prevents an empty row if no headers are set, but also replaces the filter
+   * componentes).
+   *
+   * @param value whether the first header row will be created when a column is added.
+   * @return this instance
+   */
+  public TwinColGrid<T> createFirstHeaderRow(boolean value) {
+    explicitHeaderRow = value;
+    return this;
+  }
+
+  private void createFirstHeaderRowIfNeeded() {
+    if (explicitHeaderRow) {
+      forEachGrid(grid -> {
+        if (grid.getColumns().isEmpty() && grid.getHeaderRows().isEmpty()) {
+          grid.appendHeaderRow();
+        }
+      });
+    }
+  }
+
+  /**
    * Adds a column to each grids. Both columns will use a {@link TextRenderer} and the value
    * will be converted to a String by using the provided {@code itemLabelGenerator}.
    *
@@ -463,6 +498,7 @@ public class TwinColGrid<T> extends VerticalLayout
    * @return the pair of columns
    */
   public TwinColumn<T> addColumn(ItemLabelGenerator<T> itemLabelGenerator) {
+    createFirstHeaderRowIfNeeded();
     Column<T> availableColumn =
         getAvailableGrid().addColumn(new TextRenderer<>(itemLabelGenerator));
     Column<T> selectionColumn =
@@ -799,6 +835,8 @@ public class TwinColGrid<T> extends VerticalLayout
 
   public FilterableTwinColumn<T> addFilterableColumn(ItemLabelGenerator<T> itemLabelGenerator,
       SerializableFunction<T, String> filterableValue) {
+
+    createFirstHeaderRowIfNeeded();
 
     Column<T> availableColumn = createFilterableColumn(available, itemLabelGenerator, filterableValue);
     Column<T> selectionColumn = createFilterableColumn(selection, itemLabelGenerator, filterableValue);
