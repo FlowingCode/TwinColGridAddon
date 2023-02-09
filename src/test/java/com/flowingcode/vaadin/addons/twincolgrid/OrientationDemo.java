@@ -56,7 +56,8 @@ public class OrientationDemo extends VerticalLayout {
     twinColGrid.setValue(selectedBooks);
 
     FormLayout formLayout = new FormLayout();
-    Select<TwinColGrid.Orientation> orientationField = new Select<>(Orientation.values());
+    Select<TwinColGrid.Orientation> orientationField = new Select<>();
+    orientationField.setItems(Orientation.values());
     orientationField.addValueChangeListener(ev -> twinColGrid.withOrientation(ev.getValue()));
     orientationField.setValue(twinColGrid.getOrientation());
     orientationField.setWidth("225px");
