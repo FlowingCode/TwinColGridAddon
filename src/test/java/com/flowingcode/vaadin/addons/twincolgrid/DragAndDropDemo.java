@@ -30,7 +30,6 @@ import com.vaadin.flow.function.SerializableRunnable;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -50,16 +49,16 @@ public class DragAndDropDemo extends VerticalLayout {
     initializeData();
 
     twinColGrid = new TwinColGrid<>(availableBooks)
-            .addSortableColumn(Book::getIsbn, Comparator.comparing(Book::getIsbn), "ISBN")
-            .addSortableColumn(Book::getTitle, Comparator.comparing(Book::getTitle), "Title")
-            .withAvailableGridCaption("Available books")
-            .withSelectionGridCaption("Added books")
-            .withoutAddAllButton()
-            .withSizeFull()
-            .withDragAndDropSupport()
-            .withSelectionGridReordering()
-            .selectRowOnClick();
+        .withAvailableGridCaption("Available books")
+        .withSelectionGridCaption("Added books")
+        .withoutAddAllButton()
+        .withSizeFull()
+        .withDragAndDropSupport()
+        .withSelectionGridReordering()
+        .selectRowOnClick();
 
+    twinColGrid.addColumn(Book::getIsbn).setHeader("ISBN").setSortable(true);
+    twinColGrid.addColumn(Book::getTitle).setHeader("Title").setSortable(true);
     twinColGrid.setCaption("TwinColGrid demo with drag and drop support");
     twinColGrid.setValue(selectedBooks);
 
@@ -75,19 +74,20 @@ public class DragAndDropDemo extends VerticalLayout {
   }
 
   private void initializeData() {
-    selectedBooks.add(new Book("1478375108", "Vaadin Recipes"));
-    selectedBooks.add(new Book("9789526800677", "Book of Vaadin: Volume 2 "));
+    selectedBooks.add(new Book("1478375108", "Vaadin Recipes", 222));
+    selectedBooks.add(new Book("9789526800677", "Book of Vaadin: Volume 2 ", 121));
 
 
-    availableBooks.add(new Book("1478375108", "Vaadin Recipes"));
-    availableBooks.add(new Book("9781849515221", "Learning Vaadin"));
+    availableBooks.add(new Book("1478375108", "Vaadin Recipes", 232));
+    availableBooks.add(new Book("9781849515221", "Learning Vaadin", 333));
     availableBooks
-        .add(new Book("9781782162261", "Vaadin 7 UI Design By Example: Beginner\u2019s Guide"));
-    availableBooks.add(new Book("9781849518802", "Vaadin 7 Cookbook"));
-    availableBooks.add(new Book("9526800605", "Book of Vaadin: 7th Edition, 1st Revision"));
-    availableBooks.add(new Book("9789526800677", "Book of Vaadin: Volume 2 "));
-    availableBooks.add(new Book("9529267533", "Book of Vaadin"));
-    availableBooks.add(new Book("1782169776", "Learning Vaadin 7, Second Edition"));
+        .add(
+            new Book("9781782162261", "Vaadin 7 UI Design By Example: Beginner\u2019s Guide", 991));
+    availableBooks.add(new Book("9781849518802", "Vaadin 7 Cookbook", 121));
+    availableBooks.add(new Book("9526800605", "Book of Vaadin: 7th Edition, 1st Revision", 244));
+    availableBooks.add(new Book("9789526800677", "Book of Vaadin: Volume 2 ", 555));
+    availableBooks.add(new Book("9529267533", "Book of Vaadin", 666));
+    availableBooks.add(new Book("1782169776", "Learning Vaadin 7, Second Edition", 423));
   }
 
   private void addReorderingToggle() {

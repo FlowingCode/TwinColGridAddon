@@ -37,6 +37,7 @@ public class TwincolDemoView extends TabbedDemo {
   public TwincolDemoView() {
     addDemo(DragAndDropDemo.class);
     addDemo(FilterableDemo.class);
+    addDemo(LazyFilterableDemo.class);
     addDemo(BoundDemo.class);
     addDemo(OrientationDemo.class);
     addDemo(DoubleClickDemo.class);

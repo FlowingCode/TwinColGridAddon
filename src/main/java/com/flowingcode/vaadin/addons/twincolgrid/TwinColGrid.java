@@ -20,6 +20,7 @@
 
 package com.flowingcode.vaadin.addons.twincolgrid;
 
+import com.flowingcode.vaadin.addons.twincolgrid.TwinColModel.TwinColModelMode;
 import com.vaadin.flow.component.AbstractField.ComponentValueChangeEvent;
 import com.vaadin.flow.component.ClientCallable;
 import com.vaadin.flow.component.Component;
@@ -27,7 +28,6 @@ import com.vaadin.flow.component.HasComponents;
 import com.vaadin.flow.component.HasSize;
 import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.HasValue.ValueChangeEvent;
-import com.vaadin.flow.component.ItemLabelGenerator;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.JsModule;
@@ -35,28 +35,21 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.grid.Grid.SelectionMode;
 import com.vaadin.flow.component.grid.GridNoneSelectionModel;
-import com.vaadin.flow.component.grid.HeaderRow;
-import com.vaadin.flow.component.grid.dnd.GridDropLocation;
 import com.vaadin.flow.component.grid.dnd.GridDropMode;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.DataProvider;
+import com.vaadin.flow.data.provider.InMemoryDataProvider;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.provider.Query;
 import com.vaadin.flow.data.renderer.TextRenderer;
-import com.vaadin.flow.data.selection.SelectionListener;
-import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.function.SerializableComparator;
-import com.vaadin.flow.function.SerializableFunction;
+import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.shared.Registration;
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -70,7 +63,6 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.NonNull;
-import org.apache.commons.lang3.StringUtils;
 
 @SuppressWarnings("serial")
 @JsModule(value = "./src/fc-twin-col-grid-auto-resize.js")
@@ -80,61 +72,14 @@ import org.apache.commons.lang3.StringUtils;
 public class TwinColGrid<T> extends VerticalLayout
     implements HasValue<ValueChangeEvent<Set<T>>, Set<T>>, HasComponents, HasSize {
 
-  private static final class TwinColModel<T> implements Serializable {
-    final Grid<T> grid;
-    final Label columnLabel = new Label();
-    final VerticalLayout layout;
-    HeaderRow headerRow;
-    boolean droppedInsideGrid = false;
-    boolean allowReordering = false;
-    Registration moveItemsByDoubleClick;
-
-    TwinColModel(@NonNull Grid<T> grid, String className) {
-      this.grid = grid;
-      layout = new VerticalLayout(columnLabel, grid);
-
-      layout.setClassName(className);
-      grid.setClassName("twincol-grid-items");
-      columnLabel.setClassName("twincol-grid-label");
-    }
-
-    @SuppressWarnings("unchecked")
-    ListDataProvider<T> getDataProvider() {
-      return (ListDataProvider<T>) grid.getDataProvider();
-    }
-
-    Collection<T> getItems() {
-      return getDataProvider().getItems();
-    }
-
-    boolean isReorderingEnabled() {
-      return allowReordering && grid.getSortOrder().isEmpty();
-    }
-  }
-
   /** enumeration of all available orientation for TwinGolGrid component */
   public enum Orientation {
-    HORIZONTAL,
-    VERTICAL,
-    HORIZONTAL_REVERSE,
-    VERTICAL_REVERSE;
+    HORIZONTAL, VERTICAL, HORIZONTAL_REVERSE, VERTICAL_REVERSE;
   }
 
-  private final TwinColModel<T> available;
+  private final TwinColModel<T, ?> available;
 
-  private final TwinColModel<T> selection;
-
-  /** @deprecated Use getAvailableGrid() */
-  @Deprecated protected final Grid<T> leftGrid;
-
-  /** @deprecated Use getSelectionGrid() */
-  @Deprecated protected final Grid<T> rightGrid;
-
-  /** @deprecated Use getAvailableGrid().getDataProvider() */
-  @Deprecated protected ListDataProvider<T> leftGridDataProvider;
-
-  /** @deprecated Use getSelectionGrid().getDataProvider() */
-  @Deprecated protected ListDataProvider<T> rightGridDataProvider;
+  private final EagerTwinColModel<T> selection;
 
   private Label captionLabel;
 
@@ -148,8 +93,6 @@ public class TwinColGrid<T> extends VerticalLayout
 
   private Component buttonContainer;
 
-  private Grid<T> draggedGrid;
-
   private Label fakeButtonContainerLabel = new Label();
 
   private Orientation orientation = Orientation.HORIZONTAL;
@@ -157,10 +100,6 @@ public class TwinColGrid<T> extends VerticalLayout
   private boolean autoResize = false;
 
   private boolean isFromClient = false;
-
-  private static <T> ListDataProvider<T> emptyDataProvider() {
-    return DataProvider.ofCollection(new LinkedHashSet<>());
-  }
 
   /** Constructs a new TwinColGrid with an empty {@link ListDataProvider}. */
   public TwinColGrid() {
@@ -171,65 +110,11 @@ public class TwinColGrid<T> extends VerticalLayout
    * Constructs a new empty TwinColGrid with caption
    *
    * @param caption the component caption
-   * @deprecated Use {@link TwinColGrid#TwinColGrid()} and {{@link #setCaption(String)}
-   */
-  @Deprecated
-  public TwinColGrid(String caption) {
-    this(Grid::new);
-    setCaption(caption);
-  }
-
-  /**
-   * Constructs a new TwinColGrid with data provider for options.
-   *
-   * @param dataProvider the data provider, not {@code null}
-   * @param caption the component caption
-   * @deprecated Use {@link #TwinColGrid()} and {@link #setDataProvider(ListDataProvider)},
-   *             {@link #setCaption(String)}
-   */
-  @Deprecated
-  public TwinColGrid(final ListDataProvider<T> dataProvider, String caption) {
-    this(Grid::new);
-    setDataProvider(dataProvider);
-    setCaption(caption);
-  }
-
-  /**
-   * Constructs a new empty TwinColGrid, using the specified supplier for instantiating both grids.
-   *
-   * @param caption the component caption
-   * @param gridSupplier a supplier for instantiating both grids
-   * @deprecated Use {@link TwinColGrid#TwinColGrid(Supplier)} and {@link #setCaption(String)}
-   */
-  @Deprecated
-  public TwinColGrid(String caption, Supplier<Grid<T>> gridSupplier) {
-    this(gridSupplier.get(), gridSupplier.get());
-    setCaption(caption);
-  }
-
-  /**
-   * Constructs a new empty TwinColGrid, using the specified supplier for instantiating both grids.
    *
    * @param gridSupplier a supplier for instantiating both grids
    */
   public TwinColGrid(Supplier<Grid<T>> gridSupplier) {
     this(gridSupplier.get(), gridSupplier.get());
-  }
-
-  /**
-   * Constructs a new empty TwinColGrid, using the specified grids for each side.
-   *
-   * @param caption the component caption
-   * @param availableGrid the grid that contains the available items
-   * @param selectionGrid the grid that contains the selected items
-   *
-   * @deprecated Use {@link TwinColGrid#TwinColGrid(Grid, Grid)} and {@link #setCaption(String)}
-   */
-  @Deprecated
-  public TwinColGrid(String caption, @NonNull Grid<T> availableGrid,
-      @NonNull Grid<T> selectionGrid) {
-    this(availableGrid, selectionGrid);
-    setCaption(caption);
   }
 
   /**
@@ -244,24 +129,23 @@ public class TwinColGrid<T> extends VerticalLayout
       throw new IllegalArgumentException("Grids must be different");
     }
 
-    available = new TwinColModel<>(availableGrid, "twincol-grid-available");
-    selection = new TwinColModel<>(selectionGrid, "twincol-grid-selection");
+    if (!(selectionGrid.getDataProvider() instanceof InMemoryDataProvider)) {
+      throw new IllegalArgumentException("Selection Grid only supports InMemoryDataProvider");
+    }
 
-    leftGrid = available.grid;
-    rightGrid = selection.grid;
+    available = createModel(availableGrid, "");
+    selection = new EagerTwinColModel<>(selectionGrid, "twincol-grid-selection");
 
     setClassName("twincol-grid");
 
     setMargin(false);
     setPadding(false);
 
-    setDataProvider(emptyDataProvider());
-    rightGridDataProvider = DataProvider.ofCollection(new LinkedHashSet<>());
-    getSelectionGrid().setDataProvider(rightGridDataProvider);
-
     getAvailableGrid().setWidth("100%");
     getSelectionGrid().setWidth("100%");
 
+    addAllButton
+        .setVisible(addAllButton.isVisible() && available.supportsAddAll());
     addAllButton.addClickListener(
         e -> {
           List<T> filteredItems = available.getDataProvider().withConfigurableFilter()
@@ -270,8 +154,7 @@ public class TwinColGrid<T> extends VerticalLayout
         });
 
     addButton.addClickListener(
-        e ->
-            updateSelection(
+        e -> updateSelection(
             new LinkedHashSet<>(getAvailableGrid().getSelectedItems()), new HashSet<>(), true));
 
     removeButton.addClickListener(
@@ -279,26 +162,33 @@ public class TwinColGrid<T> extends VerticalLayout
 
     removeAllButton.addClickListener(
         e -> {
-          List<T> filteredItems= selection.getDataProvider().withConfigurableFilter().fetch(new Query<>()).collect(Collectors.toList());
+          List<T> filteredItems = selection.getDataProvider().withConfigurableFilter()
+              .fetch(new Query<>()).collect(Collectors.toList());
           updateSelection(new HashSet<>(), new HashSet<>(filteredItems), true);
         });
 
     getElement().getStyle().set("display", "flex");
 
-    forEachSide(
-        side -> {
-          side.grid.setSelectionMode(SelectionMode.MULTI);
-          side.columnLabel.setVisible(false);
-          side.layout.setSizeFull();
-          side.layout.setMargin(false);
-          side.layout.setPadding(false);
-          side.layout.setSpacing(false);
-        });
+    forEachSide(TwinColModel::init);
 
     add(createContainerLayout());
     setSizeUndefined();
   }
 
+  /**
+   * Constructs a new TwinColGrid with the given options.
+   *
+   * @param options the options, cannot be {@code null}
+   */
+  public TwinColGrid(final Collection<T> options) {
+    this();
+    setDataProvider(DataProvider.ofCollection(new LinkedHashSet<>(options)));
+  }
+
+  private TwinColModel<T, ?> createModel(@NonNull Grid<T> grid, String className) {
+    return grid.getDataProvider().isInMemory() ? new EagerTwinColModel<>(grid, className)
+        : new LazyTwinColModel<>(grid, className);
+  }
 
   /**
    * Sets the component caption.
@@ -339,8 +229,8 @@ public class TwinColGrid<T> extends VerticalLayout
     if (this.orientation != orientation) {
       this.orientation = orientation;
       updateContainerLayout();
-      available.grid.getDataProvider().refreshAll();
-      selection.grid.getDataProvider().refreshAll();
+      available.getGrid().getDataProvider().refreshAll();
+      selection.getGrid().getDataProvider().refreshAll();
     }
     return this;
   }
@@ -350,7 +240,7 @@ public class TwinColGrid<T> extends VerticalLayout
   }
 
   private void updateContainerLayout() {
-    Component oldContainerComponent = available.layout.getParent().get();
+    Component oldContainerComponent = available.getLayout().getParent().get();
     Component newContainerComponent = createContainerLayout();
     replace(oldContainerComponent, newContainerComponent);
   }
@@ -389,9 +279,9 @@ public class TwinColGrid<T> extends VerticalLayout
     buttonContainer = getVerticalButtonContainer();
     HorizontalLayout hl;
     if (reverse) {
-      hl = new HorizontalLayout(selection.layout, buttonContainer, available.layout);
+      hl = new HorizontalLayout(selection.getLayout(), buttonContainer, available.getLayout());
     } else {
-      hl = new HorizontalLayout(available.layout, buttonContainer, selection.layout);
+      hl = new HorizontalLayout(available.getLayout(), buttonContainer, selection.getLayout());
     }
     hl.getElement().getStyle().set("min-height", "0px");
     hl.getElement().getStyle().set("flex", "1 1 0px");
@@ -404,9 +294,9 @@ public class TwinColGrid<T> extends VerticalLayout
     buttonContainer = getHorizontalButtonContainer();
     VerticalLayout vl;
     if (reverse) {
-      vl = new VerticalLayout(selection.layout, buttonContainer, available.layout);
+      vl = new VerticalLayout(selection.getLayout(), buttonContainer, available.getLayout());
     } else {
-      vl = new VerticalLayout(available.layout, buttonContainer, selection.layout);
+      vl = new VerticalLayout(available.getLayout(), buttonContainer, selection.getLayout());
     }
     vl.getElement().getStyle().set("min-width", "0px");
     vl.getElement().getStyle().set("flex", "1 1 0px");
@@ -440,125 +330,29 @@ public class TwinColGrid<T> extends VerticalLayout
 
   /** Return the grid that contains the available items. */
   public Grid<T> getAvailableGrid() {
-    return available.grid;
+    return available.getGrid();
   }
 
   /** Return the grid that contains the selected items. */
   public Grid<T> getSelectionGrid() {
-    return selection.grid;
+    return selection.getGrid();
   }
 
-  /**
-   * Return the left grid component.
-   *
-   * @deprecated Use {@link #getAvailableGrid()}. Depending on the orientation, the "left grid" may
-   *             not be located at the left side.
-   */
-  @Deprecated
-  public Grid<T> getLeftGrid() {
-    return leftGrid;
-  }
-
-  /**
-   * Return the right grid component.
-   *
-   * @deprecated Use {@link #getSelectionGrid()}. Depending on the orientation, the "right grid" may
-   *             not be located at the right side.
-   */
-  @Deprecated
-  public Grid<T> getRightGrid() {
-    return rightGrid;
-  }
-
-  private void forEachSide(Consumer<TwinColModel<T>> consumer) {
+  private void forEachSide(Consumer<TwinColModel<T, ?>> consumer) {
     consumer.accept(available);
     consumer.accept(selection);
   }
 
   public final void forEachGrid(Consumer<Grid<T>> consumer) {
-    consumer.accept(available.grid);
-    consumer.accept(selection.grid);
-  }
-
-  public void setItems(Collection<T> items) {
-    setDataProvider(DataProvider.ofCollection(items));
-  }
-
-  public void setItems(Stream<T> items) {
-    setDataProvider(DataProvider.fromStream(items));
-  }
-
-  /** @deprecated Use {@code getAvailableGrid().setClassName(classname)} */
-  @Deprecated
-  public void setLeftGridClassName(String classname) {
-    getAvailableGrid().setClassName(classname);
-  }
-
-  /** @deprecated Use {@code getAvailableGrid().addClassName(classname)} */
-  @Deprecated
-  public void addLeftGridClassName(String classname) {
-    getAvailableGrid().addClassName(classname);
-  }
-
-  /** @deprecated Use {@code getAvailableGrid().removeClassName(classname)} */
-  @Deprecated
-  public void removeLeftGridClassName(String classname) {
-    getAvailableGrid().removeClassName(classname);
-  }
-
-  /** @deprecated Use {@code getSelectionGrid().setClassName(classname)} */
-  @Deprecated
-  public void setRightGridClassName(String classname) {
-    getSelectionGrid().setClassName(classname);
-  }
-
-  /** @deprecated Use {@code getSelectionGrid().addClassName(classname)} */
-  @Deprecated
-  public void addRightGridClassName(String classname) {
-    getSelectionGrid().addClassName(classname);
-  }
-
-  /** @deprecated Use {@code getSelectionGrid().removeClassName(classname)} */
-  @Deprecated
-  public void removeRightGridClassName(String classname) {
-    getSelectionGrid().removeClassName(classname);
-  }
-
-  public void clearAll() {
-    updateSelection(new HashSet<>(), new HashSet<>(selection.getItems()), false);
+    consumer.accept(available.getGrid());
+    consumer.accept(selection.getGrid());
   }
 
   private void setDataProvider(ListDataProvider<T> dataProvider) {
-    leftGridDataProvider = dataProvider;
     getAvailableGrid().setDataProvider(dataProvider);
     if (selection.getDataProvider() != null) {
-      selection.getItems().clear();
-      selection.getDataProvider().refreshAll();
+      selection.clear();
     }
-  }
-
-  /**
-   * Constructs a new TwinColGrid with the given options.
-   *
-   * @param options the options, cannot be {@code null}
-   */
-  public TwinColGrid(final Collection<T> options) {
-    this();
-    setDataProvider(DataProvider.ofCollection(new LinkedHashSet<>(options)));
-  }
-
-  /**
-   * Constructs a new TwinColGrid with caption and the given options.
-   *
-   * @param caption the caption to set, can be {@code null}
-   * @param options the options, cannot be {@code null}
-   *
-   * @deprecated Use {@link #TwinColGrid(Collection)} and {{@link #setCaption(String)}
-   */
-  @Deprecated
-  public TwinColGrid(final Collection<T> options, final String caption) {
-    this(options);
-    setCaption(caption);
   }
 
   /**
@@ -568,8 +362,8 @@ public class TwinColGrid<T> extends VerticalLayout
    * @return this instance
    */
   public TwinColGrid<T> withAvailableGridCaption(final String caption) {
-    available.columnLabel.setText(caption);
-    available.columnLabel.setVisible(true);
+    available.getColumnLabel().setText(caption);
+    available.getColumnLabel().setVisible(true);
     fakeButtonContainerLabel.setVisible(true);
     return this;
   }
@@ -581,97 +375,25 @@ public class TwinColGrid<T> extends VerticalLayout
    * @return this instance
    */
   public TwinColGrid<T> withSelectionGridCaption(final String caption) {
-    selection.columnLabel.setText(caption);
-    selection.columnLabel.setVisible(true);
+    selection.getColumnLabel().setText(caption);
+    selection.getColumnLabel().setVisible(true);
     fakeButtonContainerLabel.setVisible(true);
     return this;
   }
 
   /**
-   * Sets the text shown above the grid with the available items. {@code null} clears the caption.
+   * Adds a column to each grids. Both columns will use a {@link TextRenderer} and the value will be
+   * converted to a String by using the provided {@code itemLabelGenerator}.
    *
-   * @param caption The text to show, {@code null} to clear
-   * @return this instance
-   * @deprecated Use {@link #withAvailableGridCaption(String)}
+   * @param valueProvider the value provider
+   * @return the pair of columns
    */
-  @Deprecated
-  public TwinColGrid<T> withRightColumnCaption(final String caption) {
-    return withSelectionGridCaption(caption);
-  }
-
-  /**
-   * Sets the text shown above the grid with the available items. {@code null} clears the caption.
-   *
-   * @param caption The text to show, {@code null} to clear
-   * @return this instance
-   * @deprecated Use {@link #withSelectionGridCaption(String)}
-   */
-  @Deprecated
-  public TwinColGrid<T> withLeftColumnCaption(final String caption) {
-    return withAvailableGridCaption(caption);
-  }
-
-  /**
-   * Adds a new text column to this {@link Grid} with a value provider. The column will use a {@link
-   * TextRenderer}. The value is converted to a String using the provided {@code
-   * itemLabelGenerator}.
-   *
-   * @param itemLabelGenerator the value provider
-   * @param header the column header
-   * @return this instance
-   */
-  public TwinColGrid<T> addColumn(
-      final ItemLabelGenerator<T> itemLabelGenerator, final String header) {
-    getAvailableGrid().addColumn(new TextRenderer<>(itemLabelGenerator)).setHeader(header);
-    getSelectionGrid().addColumn(new TextRenderer<>(itemLabelGenerator)).setHeader(header);
-    return this;
-  }
-
-  /**
-   * Adds a new sortable text column to this {@link Grid} with a value provider. The column will use
-   * a {@link TextRenderer}. The value is converted to a String using the provided {@code
-   * itemLabelGenerator}.
-   *
-   * @param itemLabelGenerator the value provider
-   * @param comparator the in-memory comparator
-   * @param header the column header
-   * @return this instance
-   */
-  public TwinColGrid<T> addSortableColumn(
-      final ItemLabelGenerator<T> itemLabelGenerator,
-      Comparator<T> comparator,
-      final String header) {
-    forEachGrid(grid -> grid
-                .addColumn(new TextRenderer<>(itemLabelGenerator))
-                .setHeader(header)
-                .setComparator(comparator)
-                .setSortable(true));
-    return this;
-  }
-
-  /**
-   * Adds a new sortable text column to this {@link Grid} with a value provider. The column will use
-   * a {@link TextRenderer}. The value is converted to a String using the provided {@code
-   * itemLabelGenerator}.
-   *
-   * @param itemLabelGenerator the value provider
-   * @param comparator the in-memory comparator
-   * @param header the column header
-   * @param header the column key
-   * @return this instance
-   */
-  public TwinColGrid<T> addSortableColumn(
-      final ItemLabelGenerator<T> itemLabelGenerator,
-      Comparator<T> comparator,
-      final String header,
-      final String key) {
-    forEachGrid(grid -> grid
-                .addColumn(new TextRenderer<>(itemLabelGenerator))
-                .setHeader(header)
-                .setComparator(comparator)
-                .setSortable(true)
-                .setKey(key));
-    return this;
+  public TwinColumn<T> addColumn(ValueProvider<T, ?> valueProvider) {
+    Column<T> availableColumn =
+        getAvailableGrid().addColumn(valueProvider);
+    Column<T> selectionColumn =
+        getSelectionGrid().addColumn(valueProvider);
+    return new TwinColumn<>(availableColumn, selectionColumn);
   }
 
   public TwinColGrid<T> withoutAddAllButton() {
@@ -730,7 +452,7 @@ public class TwinColGrid<T> extends VerticalLayout
    * @return The text shown or {@code null} if not set.
    */
   public String getAvailableGridCaption() {
-    return available.columnLabel.getText();
+    return available.getColumnLabel().getText();
   }
 
   /**
@@ -739,7 +461,7 @@ public class TwinColGrid<T> extends VerticalLayout
    * @return The text shown or {@code null} if not set.
    */
   public String getSelectionGridCaption() {
-    return selection.columnLabel.getText();
+    return selection.getColumnLabel().getText();
   }
 
   /**
@@ -800,7 +522,7 @@ public class TwinColGrid<T> extends VerticalLayout
    */
   <C> C collectValue(Collector<T, ?, C> collector) {
     Stream<T> stream = selection.getItems().stream();
-    SerializableComparator<T> comparator = createSortingComparator(selection.grid);
+    SerializableComparator<T> comparator = createSortingComparator(selection.getGrid());
     if (comparator != null) {
       return stream.sorted(comparator).collect(collector);
     } else {
@@ -830,7 +552,8 @@ public class TwinColGrid<T> extends VerticalLayout
         .addDataProviderListener(
             e -> {
               ComponentValueChangeEvent<TwinColGrid<T>, Set<T>> e2 =
-                  new ComponentValueChangeEvent<>(TwinColGrid.this, TwinColGrid.this, null, isFromClient);
+                  new ComponentValueChangeEvent<>(TwinColGrid.this, TwinColGrid.this, null,
+                      isFromClient);
               listener.valueChanged(e2);
             });
   }
@@ -860,103 +583,82 @@ public class TwinColGrid<T> extends VerticalLayout
     getElement().setAttribute("required", requiredIndicatorVisible);
   }
 
-  private void updateSelection(final Set<T> addedItems, final Set<T> removedItems, boolean isFromClient) {
+  private void updateSelection(final Set<T> addedItems, final Set<T> removedItems,
+      boolean isFromClient) {
     this.isFromClient = isFromClient;
-    available.getItems().addAll(removedItems);
-    available.getItems().removeAll(addedItems);
+    available.addAll(removedItems);
+    available.removeAll(addedItems);
 
-    selection.getItems().addAll(addedItems);
-    selection.getItems().removeAll(removedItems);
+    selection.addAll(addedItems);
+    selection.removeAll(removedItems);
 
     forEachGrid(grid -> {
       grid.getDataProvider().refreshAll();
       grid.getSelectionModel().deselectAll();
-        });
+    });
   }
 
-  private void configDragAndDrop(
-      final TwinColModel<T> sourceModel, final TwinColModel<T> targetModel) {
+  private void configDragAndDrop(TwinColModel<T, ?> sourceModel, TwinColModel<T, ?> targetModel) {
+    Set<T> draggedItems = new LinkedHashSet<>();
 
-    final Set<T> draggedItems = new LinkedHashSet<>();
+    Grid<T> draggedGrid = sourceModel.getGrid();
 
-    sourceModel.grid.setRowsDraggable(true);
-    sourceModel.grid.addDragStartListener(
+    sourceModel.getGrid().setRowsDraggable(true);
+    sourceModel.getGrid().addDragStartListener(
         event -> {
-          draggedGrid = sourceModel.grid;
-
-          if (!(sourceModel.grid.getSelectionModel() instanceof GridNoneSelectionModel)) {
+          if (!(sourceModel.getGrid().getSelectionModel() instanceof GridNoneSelectionModel)) {
             draggedItems.addAll(event.getDraggedItems());
           }
 
-          sourceModel.grid
+          sourceModel.getGrid()
               .setDropMode(sourceModel.isReorderingEnabled() ? GridDropMode.BETWEEN : null);
-          targetModel.grid.setDropMode(
+          targetModel.getGrid().setDropMode(
               targetModel.isReorderingEnabled() ? GridDropMode.BETWEEN : GridDropMode.ON_GRID);
         });
 
-    sourceModel.grid.addDragEndListener(
+    sourceModel.getGrid().addDragEndListener(
         event -> {
-          if (targetModel.droppedInsideGrid
-              && sourceModel.grid == draggedGrid
+          if (targetModel.isDroppedInsideGrid()
+              && sourceModel.getGrid() == draggedGrid
               && !draggedItems.isEmpty()) {
 
-            final ListDataProvider<T> dragGridSourceDataProvider = sourceModel.getDataProvider();
+            sourceModel.removeAll(draggedItems);
 
-            dragGridSourceDataProvider.getItems().removeAll(draggedItems);
-            dragGridSourceDataProvider.refreshAll();
-
-            targetModel.droppedInsideGrid = false;
+            targetModel.setDroppedInsideGrid(false);
 
             draggedItems.clear();
-            sourceModel.grid.deselectAll();
-
-            sourceModel.grid.setDropMode(null);
-            targetModel.grid.setDropMode(null);
+            sourceModel.getGrid().deselectAll();
+            sourceModel.getDataProvider().refreshAll();
+            sourceModel.getGrid().setDropMode(null);
+            targetModel.getGrid().setDropMode(null);
           }
           draggedItems.clear();
         });
 
-    targetModel.grid.addDropListener(
+    targetModel.getGrid().addDropListener(
         event -> {
           if (!draggedItems.isEmpty()) {
             isFromClient = true;
-            targetModel.droppedInsideGrid = true;
+            targetModel.setDroppedInsideGrid(true);
             T dropOverItem = event.getDropTargetItem().orElse(null);
-            addItems(targetModel, draggedItems, dropOverItem, event.getDropLocation());
+            targetModel.addItems(draggedItems, dropOverItem, event.getDropLocation());
           }
         });
 
-    sourceModel.grid.addDropListener(event -> {
+    sourceModel.getGrid().addDropListener(event -> {
       event.getDropTargetItem().ifPresent(dropOverItem -> {
         if (sourceModel.isReorderingEnabled()
             && event.getSource() == draggedGrid
             && !draggedItems.contains(dropOverItem)
             && !draggedItems.isEmpty()) {
           isFromClient = true;
-          sourceModel.getItems().removeAll(draggedItems);
-          addItems(sourceModel, draggedItems, dropOverItem, event.getDropLocation());
+          sourceModel.removeAll(draggedItems);
+          sourceModel.addItems(draggedItems, dropOverItem, event.getDropLocation());
           draggedItems.clear();
-          draggedGrid = null;
         }
       });
     });
 
-  }
-
-  private void addItems(TwinColModel<T> model, Collection<T> draggedItems,
-      T dropOverItem, GridDropLocation dropLocation) {
-    if (dropOverItem != null) {
-      Collection<T> collection = model.getItems();
-      List<T> list = new ArrayList<>(collection);
-      int dropIndex = list.indexOf(dropOverItem) + (dropLocation == GridDropLocation.BELOW ? 1 : 0);
-      list.addAll(dropIndex, draggedItems);
-      model.getItems().clear();
-      model.getItems().addAll(list);
-      model.getDataProvider().refreshAll();
-    } else {
-      model.getItems().addAll(draggedItems);
-      model.getDataProvider().refreshAll();
-    }
   }
 
   /** Allow drag-and-drop within the selection grid. */
@@ -967,83 +669,12 @@ public class TwinColGrid<T> extends VerticalLayout
 
   /** Configure whether drag-and-drop within the selection grid is allowed. */
   public void setSelectionGridReorderingAllowed(boolean value) {
-    selection.allowReordering = value;
+    selection.setAllowReordering(value);
   }
 
   /** Return whether drag-and-drop within the selection grid is allowed. */
   public boolean isSelectionGridReorderingAllowed() {
-    return selection.allowReordering;
-  }
-
-  /** @deprecated Use {@code getAvailableGrid().addSelectionListener(listener);} */
-  @Deprecated
-  public void addLeftGridSelectionListener(SelectionListener<Grid<T>, T> listener) {
-    getAvailableGrid().addSelectionListener(listener);
-  }
-
-  /** @deprecated Use {@code getSelectionGrid().addSelectionListener(listener);} */
-  @Deprecated
-  public void addRightGridSelectionListener(SelectionListener<Grid<T>, T> listener) {
-    getSelectionGrid().addSelectionListener(listener);
-  }
-
-  public TwinColGrid<T> addFilterableColumn(
-      final ItemLabelGenerator<T> itemLabelGenerator,
-      SerializableFunction<T, String> filterableValue,
-      final String header,
-      String filterPlaceholder,
-      boolean enableClearButton, String key) {
-    forEachSide(
-        side -> {
-          Column<T> column =
-              side.grid.addColumn(new TextRenderer<>(itemLabelGenerator)).setHeader(header);
-
-          Optional.ofNullable(key).ifPresent(column::setKey);
-
-          TextField filterTF = new TextField();
-          filterTF.setClearButtonVisible(enableClearButton);
-
-          filterTF.addValueChangeListener(
-              event ->
-                  side.getDataProvider()
-                      .addFilter(
-                          filterableEntity ->
-                              StringUtils.containsIgnoreCase(
-                                  filterableValue.apply(filterableEntity), filterTF.getValue())));
-
-          if (side.headerRow == null) {
-            side.headerRow = side.grid.appendHeaderRow();
-          }
-
-          side.headerRow.getCell(column).setComponent(filterTF);
-          filterTF.setValueChangeMode(ValueChangeMode.EAGER);
-          filterTF.setSizeFull();
-          filterTF.setPlaceholder(filterPlaceholder);
-        });
-
-    return this;
-  }
-
-  public TwinColGrid<T> addFilterableColumn(
-      final ItemLabelGenerator<T> itemLabelGenerator,
-      final String header,
-      String filterPlaceholder,
-      boolean enableClearButton) {
-    return addFilterableColumn(itemLabelGenerator, itemLabelGenerator, header, filterPlaceholder,
-        enableClearButton, null);
-  }
-
-  public TwinColGrid<T> addFilterableColumn(ItemLabelGenerator<T> itemLabelGenerator,
-      SerializableFunction<T, String> filterableValue, String header, String filterPlaceholder,
-      boolean enableClearButton) {
-    return addFilterableColumn(itemLabelGenerator, filterableValue, header, filterPlaceholder,
-        enableClearButton, null);
-  }
-
-  public TwinColGrid<T> addFilterableColumn(ItemLabelGenerator<T> itemLabelGenerator, String header,
-      String filterPlaceholder, boolean enableClearButton, String key) {
-    return addFilterableColumn(itemLabelGenerator, itemLabelGenerator, header, filterPlaceholder,
-        enableClearButton, key);
+    return selection.isAllowReordering();
   }
 
   public TwinColGrid<T> selectRowOnClick() {
@@ -1051,14 +682,14 @@ public class TwinColGrid<T> extends VerticalLayout
       grid.addClassName("hide-selector-col");
 
       grid.addItemClickListener(
-              c -> {
+          c -> {
             if (grid.getSelectedItems().contains(c.getItem())) {
               grid.deselect(c.getItem());
-                } else {
+            } else {
               grid.select(c.getItem());
-                }
-              });
-        });
+            }
+          });
+    });
     return this;
   }
 
@@ -1107,8 +738,8 @@ public class TwinColGrid<T> extends VerticalLayout
    */
   public void setMoveItemsByDoubleClick(boolean value) {
     forEachSide(side -> {
-      if (value && side.moveItemsByDoubleClick == null) {
-        side.moveItemsByDoubleClick = side.grid.addItemDoubleClickListener(ev -> {
+      if (value && side.getMoveItemsByDoubleClick() == null) {
+        side.addItemDoubleClickListener(ev -> {
           Set<T> item = Collections.singleton(ev.getItem());
           if (side == available) {
             updateSelection(item, Collections.emptySet(), true);
@@ -1118,9 +749,8 @@ public class TwinColGrid<T> extends VerticalLayout
           }
         });
       }
-      if (!value && side.moveItemsByDoubleClick != null) {
-        side.moveItemsByDoubleClick.remove();
-        side.moveItemsByDoubleClick = null;
+      if (!value) {
+        side.removeItemDoubleClickListener();
       }
     });
   }
@@ -1132,6 +762,59 @@ public class TwinColGrid<T> extends VerticalLayout
     } else {
       this.withOrientation(Orientation.HORIZONTAL);
     }
+  }
+
+  @SuppressWarnings("unchecked")
+  private LazyTwinColModel<T> availableAsLazy() {
+    if (!TwinColModelMode.LAZY.equals(available.getMode())) {
+      throw new IllegalStateException("Available model is not in lazy mode");
+    }
+    return (LazyTwinColModel<T>) available;
+  }
+
+  @SuppressWarnings("unchecked")
+  private EagerTwinColModel<T> availableAsEager() {
+    if (!TwinColModelMode.EAGER.equals(available.getMode())) {
+      throw new IllegalStateException("Available model is not in eager mode");
+    }
+    return (EagerTwinColModel<T>) available;
+  }
+
+  /**
+   * Apply a filter configuration.
+   * 
+   * @param filter
+   * @return
+   */
+  public TwinColGrid<T> withFilter(FilterConfiguration<T, ?> filter) {
+    if (!filter.supports(available.getMode())) {
+      throw new IllegalArgumentException("TwinColGrid " + available.getMode().toString()
+          + " mode does not support this type of filter configuration.");
+    }
+    filter.apply(this);
+    return this;
+  }
+
+  TwinColGrid<T> addFilterableColumn(LazyFilterableColumn<T> filter) {
+    if (filter.getLazyFilterField() != null) {
+      availableAsLazy().addFilterableColumn(filter.getColumn().getAvailableColumn(), filter);
+    }
+    if (filter.getEagerFilterCondition() != null) {
+      selection.addFilterableColumn(filter.getColumn().getSelectionColumn(), filter.asEager());
+    }
+    return this;
+  }
+
+  TwinColGrid<T> addFilterableColumn(EagerFilterableColumn<T> filter) {
+    if (filter.getFilterCondition() != null) {
+      availableAsEager().addFilterableColumn(filter.getColumn().getAvailableColumn(), filter);
+      selection.addFilterableColumn(filter.getColumn().getSelectionColumn(), filter);
+    }
+    return this;
+  }
+
+  <F extends LazyFilter<T>> void setLazyFilter(F filter) {
+    availableAsLazy().setFilter(filter);
   }
 
 }
