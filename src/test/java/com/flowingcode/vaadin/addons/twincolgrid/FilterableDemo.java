@@ -20,6 +20,7 @@
 
 package com.flowingcode.vaadin.addons.twincolgrid;
 
+import com.flowingcode.vaadin.addons.demo.DemoSource;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -31,6 +32,7 @@ import org.apache.commons.lang3.StringUtils;
 
 @SuppressWarnings("serial")
 @PageTitle("Filterable")
+@DemoSource
 @Route(value = "twincolgrid/filterable", layout = TwincolDemoView.class)
 public class FilterableDemo extends VerticalLayout {
 

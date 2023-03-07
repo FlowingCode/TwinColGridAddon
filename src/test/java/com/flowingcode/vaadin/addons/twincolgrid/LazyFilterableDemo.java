@@ -20,6 +20,7 @@
 
 package com.flowingcode.vaadin.addons.twincolgrid;
 
+import com.flowingcode.vaadin.addons.demo.DemoSource;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.notification.Notification;
@@ -38,28 +39,28 @@ import org.apache.commons.lang3.StringUtils;
 
 @SuppressWarnings("serial")
 @PageTitle("Lazy Filterable")
+@DemoSource
 @Route(value = "twincolgrid/lazyfilterable", layout = TwincolDemoView.class)
 public class LazyFilterableDemo extends VerticalLayout {
 
   public LazyFilterableDemo() {
     BookService bookService = new BookService();
+    BookFilter bookFilter = new BookFilter();
 
-    DataProvider<Book, BookFilter> availableDataProvider =
+    DataProvider<Book, Void> availableDataProvider =
         DataProvider.fromFilteringCallbacks(
             query -> {
-              BookFilter filter = query.getFilter().orElseGet(BookFilter::new);
-              filter.setSorting(query.getSortOrders().stream()
+              bookFilter.setSorting(query.getSortOrders().stream()
                   .map(q -> new SortOrder<>(q.getSorted(), q.getDirection()))
                   .collect(Collectors.toList()));
-              return bookService.fetch(query.getOffset(), query.getLimit(), filter);
+              return bookService.fetch(query.getOffset(), query.getLimit(), bookFilter);
             },
-            query -> bookService.count(query.getFilter().orElseGet(BookFilter::new)));
+            query -> bookService.count(bookFilter));
 
     Grid<Book> availableGrid = new Grid<>();
     availableGrid.setDataProvider(availableDataProvider);
 
     Grid<Book> selectionGrid = new Grid<>();
-    BookFilter bookFilter = new BookFilter();
 
     final TwinColGrid<Book> twinColGrid =
         new TwinColGrid<>(availableGrid, selectionGrid)
