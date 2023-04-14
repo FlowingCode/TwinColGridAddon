@@ -31,11 +31,13 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import lombok.experimental.ExtensionMethod;
 
 @SuppressWarnings("serial")
 @PageTitle("Orientation")
 @DemoSource
 @Route(value = "twincolgrid/orientation", layout = TwincolDemoView.class)
+@ExtensionMethod(CompatibilityExtension.class) // hide-source
 public class OrientationDemo extends VerticalLayout {
 
   private final Set<Book> selectedBooks = new HashSet<>();
