@@ -18,6 +18,9 @@
  * #L%
  */
 
+.twincol-grid {
+  min-height: calc(var(--lumo-space-m) * 13);
+}
 .twincol-grid .twincol-grid-label {
   color: var(--lumo-secondary-text-color);
   font-weight: 500;
