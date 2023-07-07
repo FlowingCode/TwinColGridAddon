@@ -22,8 +22,8 @@ public class FilterableTwinColumn<T> extends TwinColumn<T> {
    * @see TextField#setPlaceholder(String)
    */
   public FilterableTwinColumn<T> setFilterPlaceholder(String filterPlaceholder) {
-    TwinColGrid.getFilterTextField(getAvailableColumn()).setPlaceholder(filterPlaceholder);
-    TwinColGrid.getFilterTextField(getSelectionColumn()).setPlaceholder(filterPlaceholder);
+    LegacyTwinColGrid.getFilterTextField(getAvailableColumn()).setPlaceholder(filterPlaceholder);
+    LegacyTwinColGrid.getFilterTextField(getSelectionColumn()).setPlaceholder(filterPlaceholder);
     return this;
   }
 
@@ -33,8 +33,8 @@ public class FilterableTwinColumn<T> extends TwinColumn<T> {
    * @see TextField#setClearButtonVisible(boolean)
    */
   public FilterableTwinColumn<T> setClearButtonVisible(boolean clearButtonVisible) {
-    TwinColGrid.getFilterTextField(getAvailableColumn()).setClearButtonVisible(clearButtonVisible);
-    TwinColGrid.getFilterTextField(getSelectionColumn()).setClearButtonVisible(clearButtonVisible);
+    LegacyTwinColGrid.getFilterTextField(getAvailableColumn()).setClearButtonVisible(clearButtonVisible);
+    LegacyTwinColGrid.getFilterTextField(getSelectionColumn()).setClearButtonVisible(clearButtonVisible);
     return this;
   }
 

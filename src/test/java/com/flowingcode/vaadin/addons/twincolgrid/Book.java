@@ -19,39 +19,23 @@
  */
 package com.flowingcode.vaadin.addons.twincolgrid;
 
-import java.util.Objects;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
+@Getter
+@EqualsAndHashCode
 public class Book {
 
   private final String isbn;
 
   private final String title;
 
-  public Book(final String isbn, final String title) {
-    this.isbn = isbn;
-    this.title = title;
-  }
-
-  public String getIsbn() {
-    return isbn;
-  }
-
-  public String getTitle() {
-    return title;
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(isbn, title);
-  }
-
-  @Override
-  public boolean equals(final Object obj) {
-    return ObjectUtils.equals(this, (Book) obj, Book::getIsbn, Book::getTitle);
-  }
+  private final int price;
 
   @Override
   public String toString() {
-    return "[Book " + isbn + " - " + title + "]";
+    return "[Book " + isbn + " - " + title + " - " + price + "]";
   }
 }
