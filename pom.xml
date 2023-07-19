@@ -27,6 +27,14 @@
         </license>
     </licenses>
 
+    <developers>
+            <developer>
+            <id>flowingcode</id>
+            <organization>Flowing Code</organization>
+            <organizationUrl>https://www.flowingcode.com</organizationUrl>
+        </developer>
+    </developers>
+    
     <repositories>
         <repository>
             <id>Vaadin Directory</id>
