@@ -255,7 +255,7 @@ public class TwinColGrid<T> extends VerticalLayout
   }
 
   private void updateContainerLayout() {
-    Component oldContainerComponent = available.getLayout().getParent().get();
+    Component oldContainerComponent = available.getLayout().getParent().orElse(null);
     Component newContainerComponent = createContainerLayout();
     replace(oldContainerComponent, newContainerComponent);
   }
@@ -378,7 +378,6 @@ public class TwinColGrid<T> extends VerticalLayout
     getAvailableGrid().setDataProvider(dataProvider);
     if (selection.getDataProvider() != null) {
       selection.getItems().clear();
-//      selection.getDataProvider().refreshAll();
     }
   }
 

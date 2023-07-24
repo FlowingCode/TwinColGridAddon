@@ -10,7 +10,7 @@ public abstract class FilterConfiguration<T, C extends FilterableColumn<T>> {
   protected final Collection<C> filteredColumns = new ArrayList<>();
 
   @SafeVarargs
-  public FilterConfiguration(C... columns) {
+  protected FilterConfiguration(C... columns) {
     filteredColumns.addAll(Arrays.asList(columns));
   }
 
