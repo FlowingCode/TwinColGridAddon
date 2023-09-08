@@ -4,7 +4,7 @@
 	<groupId>com.flowingcode.vaadin.addons</groupId>
 	<artifactId>twincolgrid</artifactId>
 	<version>2.9.3-SNAPSHOT</version>
-	<name>TwinColGrid</name>
+	<name>TwinColGrid add-on</name>
 	<description>Dual list component based on Vaadin Grids</description>
 	<url>https://www.flowingcode.com/en/open-source/</url>
 	
