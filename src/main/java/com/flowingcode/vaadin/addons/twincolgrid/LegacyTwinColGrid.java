@@ -1,21 +1,28 @@
 package com.flowingcode.vaadin.addons.twincolgrid;
 
+import com.vaadin.flow.component.ComponentUtil;
 import com.vaadin.flow.component.ItemLabelGenerator;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.Grid.Column;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.renderer.TextRenderer;
 import com.vaadin.flow.data.selection.SelectionListener;
+import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.function.SerializableFunction;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.function.Supplier;
 import lombok.NonNull;
+import org.apache.commons.lang3.StringUtils;
 
 /** Implementation of {@code TwinColGrid} with deprecated methods from version 2.9.0. */
 @SuppressWarnings("serial")
 @Deprecated
 public class LegacyTwinColGrid<T> extends TwinColGrid<T> {
 
+  private static final String COMPONENT_DATA_FILTER = "TwinColGrid#filterTF";
+  
   /** @deprecated Use getAvailableGrid() */
   @Deprecated protected final Grid<T> leftGrid;
 
@@ -28,6 +35,8 @@ public class LegacyTwinColGrid<T> extends TwinColGrid<T> {
   /** @deprecated Use getSelectionGrid().getDataProvider() */
   @Deprecated protected ListDataProvider<T> rightGridDataProvider;
 
+  private boolean explicitHeaderRow = true;
+  
   /** Constructs a new TwinColGrid with an empty {@link ListDataProvider}. */
   @SuppressWarnings("unchecked")
   public LegacyTwinColGrid() {
@@ -283,6 +292,22 @@ public class LegacyTwinColGrid<T> extends TwinColGrid<T> {
     leftGridDataProvider = dataProvider;
     super.setDataProvider(dataProvider);
   }
+  
+  /**
+   * Adds a column to each grids. Both columns will use a {@link TextRenderer} and the value
+   * will be converted to a String by using the provided {@code itemLabelGenerator}.
+   *
+   * @param itemLabelGenerator the value provider
+   * @return the pair of columns
+   */
+  public TwinColumn<T> addColumn(ItemLabelGenerator<T> itemLabelGenerator) {
+    createFirstHeaderRowIfNeeded();
+    Column<T> availableColumn =
+        getAvailableGrid().addColumn(new TextRenderer<>(itemLabelGenerator));
+    Column<T> selectionColumn =
+        getSelectionGrid().addColumn(new TextRenderer<>(itemLabelGenerator));
+    return new TwinColumn<>(availableColumn, selectionColumn);
+  }
 
   /**
    * Adds a new text column to this {@link Grid} with a value provider. The column will use a
@@ -421,4 +446,84 @@ public class LegacyTwinColGrid<T> extends TwinColGrid<T> {
     return addFilterableColumn(itemLabelGenerator, itemLabelGenerator, header, filterPlaceholder,
         enableClearButton, key);
   }
+
+  public FilterableTwinColumn<T> addFilterableColumn(ItemLabelGenerator<T> itemLabelGenerator) {
+    return addFilterableColumn(itemLabelGenerator, itemLabelGenerator);
+  }
+
+  private void createFirstHeaderRowIfNeeded() {
+    if (explicitHeaderRow) {
+      forEachGrid(grid -> {
+        if (grid.getColumns().isEmpty() && grid.getHeaderRows().isEmpty()) {
+          grid.appendHeaderRow();
+        }
+      });
+    }
+  }
+
+  /**
+   * Configure this component to create the first header row (for column header labels). If no
+   * column will have a header, this property must be set to {@code false}.
+   *
+   * <p>
+   * When this property is {@code true} (default), the first column added through this component
+   * will {@linkplain Grid#appendHeaderRow() append} a header row, which will be the "default header
+   * row" (used by {@code Column.setHeader}). If no headers are set, then the default header row
+   * will be empty.
+   *
+   * <p>
+   * When this property is {@code false}, then {@code Column.setHeader} will allocate a header row
+   * when called (which prevents an empty row if no headers are set, but also replaces the filter
+   * componentes).
+   *
+   * @param value whether the first header row will be created when a column is added.
+   * @return this instance
+   */
+  public TwinColGrid<T> createFirstHeaderRow(boolean value) {
+    explicitHeaderRow = value;
+    return this;
+  }
+
+  public FilterableTwinColumn<T> addFilterableColumn(ItemLabelGenerator<T> itemLabelGenerator,
+      SerializableFunction<T, String> filterableValue) {
+
+    createFirstHeaderRowIfNeeded();
+
+    Column<T> availableColumn =
+        createFilterableColumn(availableAsEager(), itemLabelGenerator, filterableValue);
+    Column<T> selectionColumn =
+        createFilterableColumn(selection, itemLabelGenerator, filterableValue);
+
+    return new FilterableTwinColumn<>(availableColumn, selectionColumn);
+  }
+  
+  private Column<T> createFilterableColumn(EagerTwinColModel<T> side,
+      ItemLabelGenerator<T> itemLabelGenerator,
+      SerializableFunction<T, String> filterableValue) {
+    Column<T> column = side.grid.addColumn(new TextRenderer<>(itemLabelGenerator));
+    TextField filterTF = new TextField();
+
+    filterTF.addValueChangeListener(
+        event -> side.getDataProvider()
+            .addFilter(
+                filterableEntity -> StringUtils.containsIgnoreCase(
+                    filterableValue.apply(filterableEntity), filterTF.getValue())));
+
+    if (side.headerRow == null) {
+      side.headerRow = side.grid.appendHeaderRow();
+    }
+
+    side.headerRow.getCell(column).setComponent(filterTF);
+
+    filterTF.setValueChangeMode(ValueChangeMode.EAGER);
+    filterTF.setSizeFull();
+
+    ComponentUtil.setData(column, COMPONENT_DATA_FILTER, filterTF);
+    return column;
+  }
+
+  static TextField getFilterTextField(Column<?> column) {
+    return (TextField) ComponentUtil.getData(column, COMPONENT_DATA_FILTER);
+  }
+  
 }
