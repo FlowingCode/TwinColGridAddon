@@ -49,7 +49,7 @@
         <url>https://github.com/FlowingCode/TwinColGridAddon</url>
         <connection>scm:git:git://github.com/FlowingCode/TwinColGridAddon.git</connection>
         <developerConnection>scm:git:ssh://git@github.com:/FlowingCode/TwinColGridAddon.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>v2.x</tag>
     </scm>
 
     <distributionManagement>
