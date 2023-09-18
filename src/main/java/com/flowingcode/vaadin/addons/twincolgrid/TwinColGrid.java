@@ -418,7 +418,7 @@ public class TwinColGrid<T> extends VerticalLayout
 
   private VerticalLayout getVerticalButtonContainer() {
     fakeButtonContainerLabel.getElement().setProperty("innerHTML", "&nbsp;");
-    fakeButtonContainerLabel.setVisible(false);
+    updateFakeButtonContainerVisiblity();
 
     VerticalLayout vButtonContainer =
         new VerticalLayout(
@@ -427,6 +427,11 @@ public class TwinColGrid<T> extends VerticalLayout
     vButtonContainer.setSpacing(false);
     vButtonContainer.setSizeUndefined();
     return vButtonContainer;
+  }
+
+  private void updateFakeButtonContainerVisiblity() {
+    fakeButtonContainerLabel
+        .setVisible(available.columnLabel.isVisible() || selection.columnLabel.isVisible());
   }
 
   private HorizontalLayout getHorizontalButtonContainer() {
@@ -570,7 +575,7 @@ public class TwinColGrid<T> extends VerticalLayout
   public TwinColGrid<T> withAvailableGridCaption(final String caption) {
     available.columnLabel.setText(caption);
     available.columnLabel.setVisible(true);
-    fakeButtonContainerLabel.setVisible(true);
+    updateFakeButtonContainerVisiblity();
     return this;
   }
 
@@ -583,7 +588,7 @@ public class TwinColGrid<T> extends VerticalLayout
   public TwinColGrid<T> withSelectionGridCaption(final String caption) {
     selection.columnLabel.setText(caption);
     selection.columnLabel.setVisible(true);
-    fakeButtonContainerLabel.setVisible(true);
+    updateFakeButtonContainerVisiblity();
     return this;
   }
 
