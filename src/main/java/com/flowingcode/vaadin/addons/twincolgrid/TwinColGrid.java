@@ -63,6 +63,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -92,7 +93,8 @@ public class TwinColGrid<T> extends VerticalLayout
     TwinColModel(@NonNull Grid<T> grid, String className) {
       this.grid = grid;
       layout = new VerticalLayout(columnLabel, grid);
-
+      grid.setId("grid-"+UUID.randomUUID().toString());
+      columnLabel.setFor(grid);
       layout.setClassName(className);
       grid.setClassName("twincol-grid-items");
       columnLabel.setClassName("twincol-grid-label");
