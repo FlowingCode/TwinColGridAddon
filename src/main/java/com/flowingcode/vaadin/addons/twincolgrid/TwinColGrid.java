@@ -149,6 +149,8 @@ public class TwinColGrid<T> extends VerticalLayout
 
   private boolean explicitHeaderRow = true;
 
+  private String layoutId;
+  
   private static <T> ListDataProvider<T> emptyDataProvider() {
     return DataProvider.ofCollection(new LinkedHashSet<>());
   }
@@ -255,6 +257,7 @@ public class TwinColGrid<T> extends VerticalLayout
     if (captionText != null) {
       if (captionLabel == null) {
         captionLabel = new Label();
+        captionLabel.setFor(layoutId);
         addComponentAsFirst(captionLabel);
       }
       captionLabel.setText(captionText);
@@ -331,6 +334,12 @@ public class TwinColGrid<T> extends VerticalLayout
     throw new IllegalStateException();
   }
 
+  private String getLayoutId() {
+    return Optional.ofNullable(layoutId).orElseGet(()->{
+      return this.layoutId = "twincol-" + UUID.randomUUID();
+    });
+  }
+  
   private HorizontalLayout createHorizontalContainer(boolean reverse) {
     buttonContainer = getVerticalButtonContainer();
     HorizontalLayout hl;
@@ -339,6 +348,7 @@ public class TwinColGrid<T> extends VerticalLayout
     } else {
       hl = new HorizontalLayout(available.layout, buttonContainer, selection.layout);
     }
+    hl.setId(getLayoutId());
     hl.getElement().getStyle().set("min-height", "0px");
     hl.getElement().getStyle().set("flex", "1 1 0px");
     hl.setMargin(false);
@@ -354,6 +364,7 @@ public class TwinColGrid<T> extends VerticalLayout
     } else {
       vl = new VerticalLayout(available.layout, buttonContainer, selection.layout);
     }
+    vl.setId(getLayoutId());
     vl.getElement().getStyle().set("min-width", "0px");
     vl.getElement().getStyle().set("flex", "1 1 0px");
     vl.setMargin(false);
