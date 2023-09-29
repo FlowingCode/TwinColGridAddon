@@ -40,6 +40,7 @@ import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.grid.dnd.GridDropLocation;
 import com.vaadin.flow.component.grid.dnd.GridDropMode;
 import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -139,7 +140,7 @@ public class TwinColGrid<T> extends VerticalLayout
 
   private Grid<T> draggedGrid;
 
-  private Label fakeButtonContainerLabel = new Label();
+  private Span fakeButtonContainerLabel = new Span();
 
   private Orientation orientation = Orientation.HORIZONTAL;
 
