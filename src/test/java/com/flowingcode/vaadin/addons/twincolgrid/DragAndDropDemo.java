@@ -23,7 +23,6 @@ package com.flowingcode.vaadin.addons.twincolgrid;
 import com.flowingcode.vaadin.addons.demo.DemoSource;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.function.SerializableRunnable;
@@ -64,7 +63,7 @@ public class DragAndDropDemo extends VerticalLayout {
     twinColGrid.setCaption("TwinColGrid demo with drag and drop support");
     twinColGrid.setValue(selectedBooks);
 
-    final Label countLabel = new Label("Selected items in left grid: 0");
+    final Span countLabel = new Span("Selected items in left grid: 0");
     twinColGrid
         .getAvailableGrid()
         .addSelectionListener(
