@@ -16,7 +16,7 @@ Component also supports drag and drop between grids.
 
 ## Online demo
 
-Try the add-on demo at http://addonsv14.flowingcode.com/twincolgrid
+Try the add-on demo at http://addonsv24.flowingcode.com/twincolgrid
 
 ## Download release
 
