@@ -22,6 +22,27 @@ Try the add-on demo at http://addonsv14.flowingcode.com/twincolgrid
 
 Official releases are available at Vaadin Directory https://vaadin.com/directory/component/twincolgrid-add-on 
 
+### Maven install
+
+Add the following dependencies in your pom.xml file:
+
+```xml
+<dependency>
+   <groupId>com.flowingcode.vaadin.addons</groupId>
+   <artifactId>twincolgrid</artifactId>
+   <version>X.Y.Z</version>
+</dependency>
+```
+
+```xml
+<repository>
+   <id>vaadin-addons</id>
+   <url>https://maven.vaadin.com/vaadin-addons</url>
+</repository>
+```
+
+For SNAPSHOT versions see [here](https://maven.flowingcode.com/snapshots/).
+
 ## Building and running demo
 ```
 git clone https://github.com/FlowingCode/TwinColGrid
