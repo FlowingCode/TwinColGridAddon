@@ -395,7 +395,7 @@
 			<properties>
 				<maven.compiler.source>17</maven.compiler.source>
 				<maven.compiler.target>17</maven.compiler.target>
-				<vaadin.version>24.1-SNAPSHOT</vaadin.version>
+				<vaadin.version>24.2-SNAPSHOT</vaadin.version>
 				<jetty.version>11.0.12</jetty.version>
 			</properties>
 			<repositories>
