@@ -40,23 +40,10 @@
     
     <repositories>
       <repository>
-        <id>central</id>
-        <url>https://repo.maven.apache.org/maven2</url>
-        <snapshots>
-          <enabled>false</enabled>
-        </snapshots>
+            <id>Vaadin Directory</id>
+            <url>https://maven.vaadin.com/vaadin-addons</url>
       </repository>
       <repository>
-        <id>vaadin-snapshots</id>
-        <url>https://tools.vaadin.com/nexus/content/repositories/vaadin-snapshots/</url>
-        <snapshots>
-          <enabled>true</enabled>
-        </snapshots>
-        <releases>
-          <enabled>false</enabled>
-        </releases>
-      </repository>
-		<repository>
 			<id>FlowingCode Snapshots</id>
 			<url>https://maven.flowingcode.com/snapshots</url>
 			<snapshots>
@@ -67,26 +54,6 @@
 			</releases>
 		</repository>
     </repositories>
-	
-    <pluginRepositories>
-      <pluginRepository>
-        <id>central</id>
-        <url>https://repo.maven.apache.org/maven2</url>
-        <snapshots>
-          <enabled>false</enabled>
-        </snapshots>
-      </pluginRepository>
-      <pluginRepository>
-        <id>vaadin-snapshots</id>
-        <url>https://tools.vaadin.com/nexus/content/repositories/vaadin-snapshots/</url>
-        <snapshots>
-          <enabled>true</enabled>
-        </snapshots>
-        <releases>
-          <enabled>false</enabled>
-        </releases>
-      </pluginRepository>
-    </pluginRepositories>
 	
 	<scm>
         <url>https://github.com/FlowingCode/TwinColGridAddon</url>
@@ -384,7 +351,7 @@
 		<profile>
 			<id>v23</id>
 			<properties>
-				<vaadin.version>23.3-SNAPSHOT</vaadin.version>
+				<vaadin.version>23.3.5</vaadin.version>
 				<maven.compiler.source>11</maven.compiler.source>
 				<maven.compiler.target>11</maven.compiler.target>				
 			</properties>
@@ -395,7 +362,7 @@
 			<properties>
 				<maven.compiler.source>17</maven.compiler.source>
 				<maven.compiler.target>17</maven.compiler.target>
-				<vaadin.version>24.2-SNAPSHOT</vaadin.version>
+				<vaadin.version>24.1.10</vaadin.version>
 				<jetty.version>11.0.12</jetty.version>
 			</properties>
 			<repositories>
