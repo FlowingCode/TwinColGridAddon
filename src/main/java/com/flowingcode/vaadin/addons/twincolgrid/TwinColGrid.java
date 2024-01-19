@@ -76,7 +76,6 @@ import org.apache.commons.lang3.StringUtils;
 
 @SuppressWarnings("serial")
 @JsModule(value = "./src/fc-twin-col-grid-auto-resize.js")
-@CssImport(value = "./styles/multiselect-cb-hide.css", themeFor = "vaadin-grid")
 @CssImport(value = "./styles/twin-col-grid-button.css")
 @CssImport(value = "./styles/twincol-grid.css")
 public class TwinColGrid<T> extends VerticalLayout
@@ -1066,8 +1065,10 @@ public class TwinColGrid<T> extends VerticalLayout
   }
 
   public TwinColGrid<T> selectRowOnClick() {
-    forEachGrid(grid -> {
-      grid.addClassName("hide-selector-col");
+    forEachGrid(
+        grid -> {
+          grid.getElement().executeJs(
+              "if (this.querySelector('vaadin-grid-flow-selection-column')) { this.querySelector('vaadin-grid-flow-selection-column').hidden = true }");
 
       grid.addItemClickListener(
               c -> {
