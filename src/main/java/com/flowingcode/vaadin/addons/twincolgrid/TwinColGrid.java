@@ -883,6 +883,10 @@ public class TwinColGrid<T> extends VerticalLayout
   public HasValue<? extends ValueChangeEvent<List<T>>, List<T>> asList() {
     return new TwinColGridListAdapter<>(this);
   }
+  
+  public HasValue<? extends ValueChangeEvent<Set<T>>, Set<T>> asSet() {
+    return new TwinColGridSetAdapter<>(this);
+  }
 
   @Override
   public Set<T> getEmptyValue() {
