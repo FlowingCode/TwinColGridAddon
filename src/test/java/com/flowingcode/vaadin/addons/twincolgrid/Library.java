@@ -19,9 +19,11 @@
  */
 package com.flowingcode.vaadin.addons.twincolgrid;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Library {
+@SuppressWarnings("serial")
+public class Library implements Serializable {
 
   private final String name;
 
