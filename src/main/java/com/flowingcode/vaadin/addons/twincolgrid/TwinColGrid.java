@@ -150,7 +150,7 @@ public class TwinColGrid<T> extends VerticalLayout
   private boolean explicitHeaderRow = true;
 
   private String layoutId;
-  
+
   private static <T> ListDataProvider<T> emptyDataProvider() {
     return DataProvider.ofCollection(new LinkedHashSet<>());
   }
@@ -339,7 +339,7 @@ public class TwinColGrid<T> extends VerticalLayout
       return this.layoutId = "twincol-" + UUID.randomUUID();
     });
   }
-  
+
   private HorizontalLayout createHorizontalContainer(boolean reverse) {
     buttonContainer = getVerticalButtonContainer();
     HorizontalLayout hl;
@@ -928,12 +928,14 @@ public class TwinColGrid<T> extends VerticalLayout
             side.moveItemsByDoubleClick =
                 side.grid.addItemDoubleClickListener(
                     ev -> {
-                      Set<T> item = Collections.singleton(ev.getItem());
-                      if (side == available) {
-                        updateSelection(item, Collections.emptySet(), true);
-                      }
-                      if (side == selection) {
-                        updateSelection(Collections.emptySet(), item, true);
+                      if (!isReadOnly()) {
+                        Set<T> item = Collections.singleton(ev.getItem());
+                        if (side == available) {
+                          updateSelection(item, Collections.emptySet(), true);
+                        }
+                        if (side == selection) {
+                          updateSelection(Collections.emptySet(), item, true);
+                        }
                       }
                     });
           }
