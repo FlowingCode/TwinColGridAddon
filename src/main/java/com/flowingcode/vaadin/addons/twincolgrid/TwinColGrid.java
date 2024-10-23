@@ -684,6 +684,7 @@ public class TwinColGrid<T> extends VerticalLayout
     removeButton.setEnabled(!readOnly);
     addAllButton.setEnabled(!readOnly);
     removeAllButton.setEnabled(!readOnly);
+    setClassName("readonly", readOnly);
   }
 
   @Override
