@@ -199,9 +199,9 @@ public class TwinColumn<T> {
    *        header of each column
    * @return this instance, for method chaining
    */
-  public TwinColumn<T> setHeader(Supplier<Component> footerComponentSupplier) {
-    availableColumn.setHeader(footerComponentSupplier.get());
-    selectionColumn.setHeader(footerComponentSupplier.get());
+  public TwinColumn<T> setHeader(Supplier<Component> headerComponentSupplier) {
+    availableColumn.setHeader(headerComponentSupplier.get());
+    selectionColumn.setHeader(headerComponentSupplier.get());
     return this;
   }
 
@@ -210,7 +210,7 @@ public class TwinColumn<T> {
    *
    * @see Column#setFooter(String)
    *
-   * @param footerComponentSuppleir a supplier that instantiates the component to be used in the
+   * @param footerComponentSupplier a supplier that instantiates the component to be used in the
    *        footer of each column
    * @return this instance, for method chaining
    */

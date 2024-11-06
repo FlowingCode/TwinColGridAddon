@@ -251,7 +251,7 @@ public class TwinColGrid<T> extends VerticalLayout
   /**
    * Sets the component caption.
    *
-   * @param captinText the component caption.
+   * @param captionText the component caption.
    */
   public void setCaption(String captionText) {
     if (captionText != null) {
@@ -282,7 +282,7 @@ public class TwinColGrid<T> extends VerticalLayout
    * Sets orientation for TwinColGridComponent
    *
    * @param orientation
-   * @return
+   * @return this instance for method chaining.
    */
   public TwinColGrid<T> withOrientation(Orientation orientation) {
     if (this.orientation != orientation) {
@@ -336,7 +336,7 @@ public class TwinColGrid<T> extends VerticalLayout
 
   private String getLayoutId() {
     return Optional.ofNullable(layoutId).orElseGet(()->{
-      return this.layoutId = "twincol-" + UUID.randomUUID();
+      return layoutId = "twincol-" + UUID.randomUUID();
     });
   }
 
