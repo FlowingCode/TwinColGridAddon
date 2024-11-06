@@ -89,8 +89,8 @@ public class LegacyTwinColGrid<T> extends TwinColGrid<T> {
    *
    * @param dataProvider the data provider, not {@code null}
    * @param caption the component caption
-   * @deprecated Use {@link #TwinColGrid()} and {@link #setDataProvider(ListDataProvider)}, {@link
-   *     #setCaption(String)}
+   * @deprecated Use {@link TwinColGrid#TwinColGrid()} and
+   *             {@link #setDataProvider(ListDataProvider)}, {@link #setCaption(String)}
    */
   @Deprecated
   @SuppressWarnings("unchecked")
@@ -147,7 +147,8 @@ public class LegacyTwinColGrid<T> extends TwinColGrid<T> {
    *
    * @param caption the caption to set, can be {@code null}
    * @param options the options, cannot be {@code null}
-   * @deprecated Use {@link #TwinColGrid(Collection)} and {{@link #setCaption(String)}
+   * @deprecated Use {@link TwinColGrid#TwinColGrid(Collection)} and
+   *             {{@link TwinColGrid#setCaption(String)}
    */
   @Deprecated
   @SuppressWarnings("unchecked")
@@ -338,7 +339,7 @@ public class LegacyTwinColGrid<T> extends TwinColGrid<T> {
    * @param itemLabelGenerator the value provider
    * @param comparator the in-memory comparator
    * @param header the column header
-   * @param header the column key
+   * @param key the column key
    * @return this instance
    */
   @Deprecated
