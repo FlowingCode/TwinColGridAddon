@@ -88,3 +88,13 @@ Then, follow these steps for creating a contribution:
 This add-on is distributed under Apache License 2.0. For license terms, see LICENSE.txt.
 
 TwinColGrid Add-on is written by Flowing Code S.A.
+
+## Special configuration when using Spring
+
+By default, Vaadin Flow only includes ```com/vaadin/flow/component``` to be always scanned for UI components and views. For this reason, the add-on might need to be allowed in order to display correctly. 
+
+To do so, just add ```com.flowingcode``` to the ```vaadin.allowed-packages``` property in ```src/main/resources/application.properties```, like:
+
+```vaadin.allowed-packages = com.vaadin,org.vaadin,dev.hilla,com.flowingcode```
+ 
+More information on Spring scanning configuration [here](https://vaadin.com/docs/latest/integrations/spring/configuration/#configure-the-scanning-of-packages).
