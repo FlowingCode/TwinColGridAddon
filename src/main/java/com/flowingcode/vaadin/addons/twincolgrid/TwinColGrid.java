@@ -375,6 +375,7 @@ public class TwinColGrid<T> extends VerticalLayout
 
   private VerticalLayout getVerticalButtonContainer() {
     fakeButtonContainerLabel.getElement().setProperty("innerHTML", "&nbsp;");
+    fakeButtonContainerLabel.setClassName("fake-button-container-label");
     updateFakeButtonContainerVisiblity();
 
     VerticalLayout vButtonContainer =

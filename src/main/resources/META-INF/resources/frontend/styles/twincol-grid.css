@@ -44,3 +44,7 @@
   color: var(--lumo-error-text-color);
 }
 
+.twincol-grid .fake-button-container-label {
+  font-size: var(--lumo-font-size-s);
+  margin-bottom: calc(var(--vaadin-button-margin, var(--lumo-space-xs))* -1);
+}
