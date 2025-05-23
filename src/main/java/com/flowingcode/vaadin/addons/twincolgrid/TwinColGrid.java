@@ -618,8 +618,7 @@ public class TwinColGrid<T> extends VerticalLayout
    */
   @Override
   public Set<T> getValue() {
-    return Collections.unmodifiableSet(
-        collectValue(Collectors.<T, Set<T>>toCollection(LinkedHashSet::new)));
+    return collectValue(Collectors.<T, Set<T>>toCollection(LinkedHashSet::new));
   }
 
   /**

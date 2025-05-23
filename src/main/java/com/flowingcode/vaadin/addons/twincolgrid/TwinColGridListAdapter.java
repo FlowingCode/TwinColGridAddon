@@ -85,7 +85,7 @@ class TwinColGridListAdapter<T> implements HasValue<ValueChangeEvent<List<T>>, L
 
   @Override
   public List<T> getValue() {
-    return Collections.unmodifiableList(delegate.collectValue(Collectors.toList()));
+    return delegate.collectValue(Collectors.toList());
   }
 
   @Override
