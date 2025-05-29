@@ -28,6 +28,7 @@ import com.vaadin.flow.component.HasComponents;
 import com.vaadin.flow.component.HasSize;
 import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.HasValue.ValueChangeEvent;
+import com.vaadin.flow.component.HasValueAndElement;
 import com.vaadin.flow.component.ItemLabelGenerator;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
@@ -78,7 +79,7 @@ import org.apache.commons.lang3.StringUtils;
 @CssImport(value = "./styles/twin-col-grid-button.css")
 @CssImport(value = "./styles/twincol-grid.css")
 public class TwinColGrid<T> extends VerticalLayout
-    implements HasValue<ValueChangeEvent<Set<T>>, Set<T>>, HasComponents, HasSize {
+    implements HasValueAndElement<ValueChangeEvent<Set<T>>, Set<T>>, HasComponents, HasSize {
 
   private static final class TwinColModel<T> implements Serializable {
     final Grid<T> grid;
