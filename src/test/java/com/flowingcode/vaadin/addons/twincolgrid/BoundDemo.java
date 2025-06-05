@@ -2,7 +2,7 @@
  * #%L
  * TwinColGrid add-on
  * %%
- * Copyright (C) 2017 - 2022 Flowing Code
+ * Copyright (C) 2017 - 2025 Flowing Code
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,7 +58,9 @@ public class BoundDemo extends VerticalLayout {
     twinColGrid.setCaption("TwinColGrid demo with Binder and row select without checkbox");
 
     final Binder<Library> binder = new Binder<>();
-    binder.forField(twinColGrid.asList()).asRequired().bind(Library::getBooks, Library::setBooks);
+    binder.forField(twinColGrid.asList())
+      .asRequired("You must add at least one book.")
+      .bind(Library::getBooks, Library::setBooks);
     binder.setBean(library);
 
     add(twinColGrid);
