@@ -2,7 +2,7 @@
  * #%L
  * TwinColGrid add-on
  * %%
- * Copyright (C) 2017 - 2022 Flowing Code
+ * Copyright (C) 2017 - 2025 Flowing Code
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@
  */
 package com.flowingcode.vaadin.addons.twincolgrid;
 
+import com.vaadin.flow.component.HasValidation;
 import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.HasValue.ValueChangeEvent;
 import com.vaadin.flow.shared.Registration;
@@ -40,9 +41,9 @@ import lombok.experimental.Delegate;
  */
 @SuppressWarnings("serial")
 @RequiredArgsConstructor
-class TwinColGridListAdapter<T> implements HasValue<ValueChangeEvent<List<T>>, List<T>> {
+class TwinColGridListAdapter<T> implements HasValue<ValueChangeEvent<List<T>>, List<T>>, HasValidation {
 
-  private interface IDelegate {
+  private interface IDelegate extends HasValidation {
     boolean isEmpty();
 
     void clear();

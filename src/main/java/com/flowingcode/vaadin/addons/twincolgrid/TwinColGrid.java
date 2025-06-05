@@ -2,7 +2,7 @@
  * #%L
  * TwinColGrid add-on
  * %%
- * Copyright (C) 2017 - 2022 Flowing Code
+ * Copyright (C) 2017 - 2025 Flowing Code
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentUtil;
 import com.vaadin.flow.component.HasComponents;
 import com.vaadin.flow.component.HasSize;
+import com.vaadin.flow.component.HasValidation;
 import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.HasValue.ValueChangeEvent;
 import com.vaadin.flow.component.HasValueAndElement;
@@ -79,7 +80,7 @@ import org.apache.commons.lang3.StringUtils;
 @CssImport(value = "./styles/twin-col-grid-button.css")
 @CssImport(value = "./styles/twincol-grid.css")
 public class TwinColGrid<T> extends VerticalLayout
-    implements HasValueAndElement<ValueChangeEvent<Set<T>>, Set<T>>, HasComponents, HasSize {
+    implements HasValueAndElement<ValueChangeEvent<Set<T>>, Set<T>>, HasComponents, HasSize, HasValidation {
 
   private static final class TwinColModel<T> implements Serializable {
     final Grid<T> grid;
@@ -142,6 +143,8 @@ public class TwinColGrid<T> extends VerticalLayout
 
   private Span fakeButtonContainerLabel = new Span();
 
+  private Span errorMessageSpan = new Span();
+  
   private Orientation orientation = Orientation.HORIZONTAL;
 
   private boolean autoResize = false;
@@ -184,7 +187,10 @@ public class TwinColGrid<T> extends VerticalLayout
 
     available = new TwinColModel<>(availableGrid, "twincol-grid-available");
     selection = new TwinColModel<>(selectionGrid, "twincol-grid-selection");
-
+    
+    errorMessageSpan.setClassName("twincol-grid-error-message");
+    selection.layout.addComponentAtIndex(1, errorMessageSpan);
+    
     setClassName("twincol-grid");
 
     setMargin(false);
@@ -678,6 +684,26 @@ public class TwinColGrid<T> extends VerticalLayout
   }
 
   @Override
+  public void setErrorMessage(String errorMessage) {
+    errorMessageSpan.setText(errorMessage);
+  }
+
+  @Override
+  public String getErrorMessage() {
+    return errorMessageSpan.getText();
+  }
+
+  @Override
+  public void setInvalid(boolean invalid) {
+    getElement().setAttribute("invalid", invalid);
+  }
+
+  @Override
+  public boolean isInvalid() {
+    return getElement().getAttribute("invalid") != null;
+  }
+  
+  @Override
   public void setReadOnly(final boolean readOnly) {
     getAvailableGrid().setSelectionMode(readOnly ? SelectionMode.NONE : SelectionMode.MULTI);
     getSelectionGrid().setSelectionMode(readOnly ? SelectionMode.NONE : SelectionMode.MULTI);
@@ -956,4 +982,5 @@ public class TwinColGrid<T> extends VerticalLayout
       this.withOrientation(Orientation.HORIZONTAL);
     }
   }
+  
 }
