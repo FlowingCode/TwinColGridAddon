@@ -2,7 +2,7 @@
  * #%L
  * TwinColGrid add-on
  * %%
- * Copyright (C) 2017 - 2022 Flowing Code
+ * Copyright (C) 2017 - 2025 Flowing Code
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,6 +42,19 @@
 
 .twincol-grid[invalid] .twincol-grid-selection .twincol-grid-label::after {
   color: var(--lumo-error-text-color);
+}
+
+.twincol-grid .twincol-grid-selection .twincol-grid-error-message {
+    display: none;
+}
+
+.twincol-grid[invalid] .twincol-grid-selection .twincol-grid-error-message {
+	font-size: var(--vaadin-input-field-error-font-size, var(--lumo-font-size-xs));
+    line-height: var(--lumo-line-height-xs);
+    font-weight: var(--vaadin-input-field-error-font-weight, 400);
+    color: var(--vaadin-input-field-error-color, var(--lumo-error-text-color));
+    display: block;
+    padding-bottom: 4px;
 }
 
 .twincol-grid .fake-button-container-label {
