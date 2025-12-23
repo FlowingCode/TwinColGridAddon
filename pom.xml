@@ -423,6 +423,11 @@
                     <scope>test</scope>
                 </dependency>
                 <dependency>
+                    <groupId>com.vaadin</groupId>
+                    <artifactId>vaadin-dev</artifactId>
+                    <optional>true</optional>
+                </dependency>
+                <dependency>
                     <groupId>jakarta.servlet</groupId>
                     <artifactId>jakarta.servlet-api</artifactId>
                     <version>6.0.0</version>
