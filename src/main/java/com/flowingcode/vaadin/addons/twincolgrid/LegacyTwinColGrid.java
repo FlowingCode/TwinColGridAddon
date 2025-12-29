@@ -11,7 +11,18 @@ import java.util.Comparator;
 import java.util.function.Supplier;
 import lombok.NonNull;
 
-/** Implementation of {@code TwinColGrid} with deprecated methods from version 2.9.0. */
+/**
+ * Implementation of {@code TwinColGrid} with deprecated methods from version 2.9.0.
+ * <p>
+ * This class was introduced in version 3.0.0 to maintain backward compatibility with the API from
+ * the previous major version. It facilitates migration by hosting methods that were removed or
+ * changed in the primary implementation.
+ * </p>
+ *
+ * @deprecated As of 3.0.0, this class exists only for migration purposes. New projects should use
+ *             {@code TwinColGrid} directly.
+ * @param <T> the type of items in the grid
+ */
 @SuppressWarnings("serial")
 @Deprecated
 public class LegacyTwinColGrid<T> extends TwinColGrid<T> {
