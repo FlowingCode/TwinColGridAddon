@@ -72,7 +72,6 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.NonNull;
-import org.apache.commons.lang3.StringUtils;
 
 @SuppressWarnings("serial")
 @JsModule(value = "./src/fc-twin-col-grid-auto-resize.js")
