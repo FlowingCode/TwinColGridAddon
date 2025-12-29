@@ -137,9 +137,9 @@ public class FilterableTwinColumn<T> extends TwinColumn<T> {
   }
 
   @Override
-  public FilterableTwinColumn<T> setClassNameGenerator(
-      SerializableFunction<T, String> classNameGenerator) {
-    super.setClassNameGenerator(classNameGenerator);
+  public FilterableTwinColumn<T> setPartNameGenerator(
+      SerializableFunction<T, String> partNameGenerator) {
+    super.setPartNameGenerator(partNameGenerator);
     return this;
   }
 

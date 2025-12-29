@@ -20,6 +20,7 @@
 package com.flowingcode.vaadin.addons.twincolgrid;
 
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.grid.SortOrderProvider;
 import com.vaadin.flow.data.provider.QuerySortOrder;
@@ -240,17 +241,21 @@ public class TwinColumn<T> {
   }
 
   /**
-   * Sets the function that is used for generating CSS class names for cells in both columns.
+   * Sets the function that is used for generating CSS part names for cells in both columns.
+   * Returning {@code null} from the generator results in no custom part name being set. Multiple
+   * part names can be returned from the generator as space-separated.
+   * <p>
+   * If {@link Grid#setPartNameGenerator(SerializableFunction)} is used together with this method,
+   * resulting part names from both methods will be effective.
    *
-   * @see Column#setClassNameGenerator(SerializableFunction)
-   *
-   * @param classNameGenerator the class name generator to set, not {@code null}
+   * @param partNameGenerator the part name generator to set, not {@code null}
    * @return this instance, for method chaining
-   * @throws NullPointerException if {@code classNameGenerator} is {@code null}
+   * @throws NullPointerException if {@code partNameGenerator} is {@code null}
+   * @see Column#setPartNameGenerator(SerializableFunction)
    */
-  public TwinColumn<T> setClassNameGenerator(SerializableFunction<T, String> classNameGenerator) {
-    availableColumn.setClassNameGenerator(classNameGenerator);
-    selectionColumn.setClassNameGenerator(classNameGenerator);
+  public TwinColumn<T> setPartNameGenerator(SerializableFunction<T, String> partNameGenerator) {
+    availableColumn.setPartNameGenerator(partNameGenerator);
+    selectionColumn.setPartNameGenerator(partNameGenerator);
     return this;
   }
 
