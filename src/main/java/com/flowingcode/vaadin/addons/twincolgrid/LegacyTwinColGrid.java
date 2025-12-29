@@ -82,7 +82,7 @@ public class LegacyTwinColGrid<T> extends TwinColGrid<T> {
    * Constructs a new empty TwinColGrid with caption
    *
    * @param caption the component caption
-   * @deprecated Use {@link TwinColGrid#TwinColGrid()} and {{@link #setCaption(String)}
+   * @deprecated Use {@link TwinColGrid#TwinColGrid()} and {@link #setCaption(String)}
    */
   @Deprecated
   @SuppressWarnings("unchecked")
@@ -159,7 +159,7 @@ public class LegacyTwinColGrid<T> extends TwinColGrid<T> {
    * @param caption the caption to set, can be {@code null}
    * @param options the options, cannot be {@code null}
    * @deprecated Use {@link TwinColGrid#TwinColGrid(Collection)} and
-   *             {{@link TwinColGrid#setCaption(String)}
+   *             {@link TwinColGrid#setCaption(String)}
    */
   @Deprecated
   @SuppressWarnings("unchecked")
