@@ -15,6 +15,13 @@ The user can select items from the list on the left and click on the ">" button 
 Items can be deselected by selecting them in the right list and clicking on the "<" button.
 Component also supports drag and drop between grids.
 
+## Supported versions
+
+| Vaadin Version | Add-on Version |
+|---|---|
+| 24-25 | 4.x |
+| 14-24 | 3.x |
+
 ## Online demo
 
 Try the add-on demo at http://addonsv24.flowingcode.com/twincolgrid
