@@ -355,7 +355,7 @@ public class TwinColGrid<T> extends VerticalLayout
     }
     hl.setId(getLayoutId());
     hl.getElement().getStyle().set("min-height", "0px");
-    hl.getElement().getStyle().set("flex", "1 1 0px");
+    hl.getElement().getStyle().set("flex", "1 1 auto");
     hl.setMargin(false);
     hl.setWidthFull();
     return hl;
@@ -370,8 +370,8 @@ public class TwinColGrid<T> extends VerticalLayout
       vl = new VerticalLayout(available.layout, buttonContainer, selection.layout);
     }
     vl.setId(getLayoutId());
-    vl.getElement().getStyle().set("min-width", "0px");
-    vl.getElement().getStyle().set("flex", "1 1 0px");
+    vl.getElement().getStyle().set("min-height", "0px");
+    vl.getElement().getStyle().set("flex", "1 1 auto");
     vl.setMargin(false);
     vl.setPadding(false);
     vl.setHeightFull();
