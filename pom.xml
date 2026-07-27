@@ -15,6 +15,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <jetty.version>11.0.26</jetty.version>
+        <lombok.version>1.18.40</lombok.version>
     </properties>
     <organization>
 	   <name>Flowing Code</name>
@@ -119,7 +120,7 @@
         <dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>1.18.34</version>
+			<version>${lombok.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -148,6 +149,24 @@
     </dependencies>
 
     <build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.13.0</version>
+					<configuration>
+						<annotationProcessorPaths>
+							<path>
+								<groupId>org.projectlombok</groupId>
+								<artifactId>lombok</artifactId>
+								<version>${lombok.version}</version>
+							</path>
+						</annotationProcessorPaths>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
         <plugins>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
