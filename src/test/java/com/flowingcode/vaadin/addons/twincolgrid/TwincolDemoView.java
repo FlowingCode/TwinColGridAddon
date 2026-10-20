@@ -30,7 +30,7 @@ import com.vaadin.flow.router.Route;
 @SuppressWarnings("serial")
 @ParentLayout(DemoLayout.class)
 @Route("twincolgrid")
-@StyleSheet("context://frontend/styles/demo-styles.css")
+@StyleSheet("context://styles/demo-styles.css")
 @GithubLink("https://github.com/FlowingCode/TwinColGridAddon")
 public class TwincolDemoView extends TabbedDemo {
 
