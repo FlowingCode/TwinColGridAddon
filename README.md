@@ -16,6 +16,18 @@ The user can select items from the list on the left and click on the ">" button 
 Items can be deselected by selecting them in the right list and clicking on the "<" button.
 Component also supports drag and drop between grids.
 
+Additional features:
+
+* Add all and remove all buttons (each button can be hidden)
+* Move items with a double click
+* Sortable and filterable columns
+* Horizontal or vertical orientation (also reversed), optionally updated when the component is resized
+* Reordering of the selected items
+* Binder support, with the value as a set or as a list
+* Read-only and required states, and error message
+* Row selection on click, without checkboxes
+* Captions for the component and for each grid
+
 ## Supported versions
 
 | Vaadin Version | Add-on Version |
@@ -25,11 +37,11 @@ Component also supports drag and drop between grids.
 
 ## Online demo
 
-Try the add-on demo at http://addonsv24.flowingcode.com/twincolgrid
+[Online demo here](https://addonsv25.flowingcode.com/twincolgrid)
 
 ## Download release
 
-Official releases are available at Vaadin Directory https://vaadin.com/directory/component/twincolgrid-add-on 
+[Available in Vaadin Directory](https://vaadin.com/directory/component/twincolgrid-add-on)
 
 ### Maven install
 
@@ -42,28 +54,20 @@ Add the following dependencies in your pom.xml file:
    <version>X.Y.Z</version>
 </dependency>
 ```
+<!-- the above dependency should be updated with latest released version information -->
 
 Release versions are available from Maven Central repository. For SNAPSHOT versions see [here](https://maven.flowingcode.com/snapshots/).
 
 ## Building and running demo
-```
-git clone https://github.com/FlowingCode/TwinColGrid
-mvn clean install
-mvn jetty:run
-```
+
+- git clone repository
+- mvn clean install jetty:run
 
 To see the demo, navigate to http://localhost:8080/
 
 ## Release notes
 
-- **Version 2.0.0** First release for Vaadin 14+ NPM mode. Several API improvements
-- **Version 1.0.0** First release of the component. This version has dependencies that are not available in the public repositories.
-- **Version 1.0.1** First stable release. Compatible with Vaadin 8.1/8.2.
-- **Version 1.0.2** Compatible with Vaadin 8.3 and later. Support for Vaadin Designer. Read-only mode.
-
-## Roadmap
-
-This component is developed as a hobby with no public roadmap or any guarantees of upcoming releases. 
+See [here](https://github.com/FlowingCode/TwinColGridAddon/releases)
 
 ## Issue tracking
 
@@ -105,13 +109,32 @@ This add-on is distributed under Apache License 2.0. For license terms, see LICE
 
 TwinColGrid Add-on is written by Flowing Code S.A.
 
+# Developer Guide
+
+## Getting started
+
+```java
+TwinColGrid<Book> twinColGrid = new TwinColGrid<>(availableBooks)
+    .withAvailableGridCaption("Available books")
+    .withSelectionGridCaption("Added books")
+    .withDragAndDropSupport()
+    .withSizeFull();
+
+twinColGrid.addColumn(Book::getIsbn).setComparator(Book::getIsbn).setHeader("ISBN");
+twinColGrid.addColumn(Book::getTitle).setComparator(Book::getTitle).setHeader("Title");
+twinColGrid.setValue(selectedBooks);
+```
+
+For more examples, see the [demo sources](https://github.com/FlowingCode/TwinColGridAddon/tree/master/src/test/java/com/flowingcode/vaadin/addons/twincolgrid).
+
 ## Special configuration when using Spring
 
-By default, Vaadin Flow only includes ```com/vaadin/flow/component``` to be always scanned for UI components and views. For this reason, the add-on might need to be allowed in order to display correctly. 
+By default, Vaadin Flow only includes `com/vaadin/flow/component` to be always scanned for UI components and views. For this reason, the add-on might need to be allowed in order to display correctly. 
 
-To do so, just add ```com.flowingcode``` to the ```vaadin.allowed-packages``` property in ```src/main/resources/application.properties```, like:
+To do so, just add `com.flowingcode` to the `vaadin.allowed-packages` property in `src/main/resources/application.properties`, like:
 
-```vaadin.allowed-packages = com.vaadin,org.vaadin,dev.hilla,com.flowingcode```
+```
+vaadin.allowed-packages = com.vaadin,org.vaadin,dev.hilla,com.flowingcode
+```
  
 More information on Spring scanning configuration [here](https://vaadin.com/docs/latest/integrations/spring/configuration/#configure-the-scanning-of-packages).
-
